@@ -1216,3 +1216,104 @@ button:focus-visible {
   .manifesto__lead { font-size: var(--fs-h3); }
   .manifesto__signature { font-size: var(--fs-h3); }
 }
+
+/* ==========================================================================
+   PÁGINA: PARA MOTORISTAS
+   Componentes exclusivos desta página — extensão do design system da Home
+   e do Sobre Nós, sem alterar nenhuma regra existente acima. A seção de
+   "soluções" (.perfil, já usado nos perfis de Giovana/Vitor) é reaproveitada
+   como bloco modular: cada solução futura (além de Match Automotivo e
+   GI Conecta) pode usar a mesma estrutura eyebrow → título → texto →
+   destaque → CTA/status, sem precisar de novos componentes.
+   WordPress: template page-para-motoristas.php / CPT "solucoes"
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   23. NAVEGAÇÃO INTERNA — CONHEÇA NOSSAS SOLUÇÕES
+   Lista de âncoras reutilizável: novas soluções futuras só precisam de um
+   novo <a class="btn-bracket"> apontando para o id da nova seção.
+   -------------------------------------------------------------------------- */
+.solucoes-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+/* --------------------------------------------------------------------------
+   24. BLOCO — DESTAQUE NUMÉRICO (usado no MATCH AUTOMOTIVO: 35 variáveis / 3 opções)
+   Componente genérico: qualquer solução futura pode reutilizá-lo para
+   destacar números-chave da sua proposta.
+   -------------------------------------------------------------------------- */
+.stat-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.stat-destaque__numero {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h1);
+  line-height: 1;
+  color: var(--color-orange);
+}
+.stat-destaque__label {
+  display: block;
+  margin-top: var(--space-2xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-70);
+  max-width: 18ch;
+}
+
+/* --------------------------------------------------------------------------
+   25. BLOCO — ASSINATURA DE SOLUÇÃO
+   Linha de fechamento em destaque para uma solução (ex.: "O carro certo,
+   para seu estilo de vida."). Reutilizável por futuras soluções.
+   -------------------------------------------------------------------------- */
+.solucao__assinatura {
+  margin-top: var(--space-lg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+.solucao__assinatura span { color: var(--color-orange); }
+
+.solucao__cta { margin-top: var(--space-lg); }
+
+/* --------------------------------------------------------------------------
+   26. BLOCO — SELO "EM DESENVOLVIMENTO"
+   Identificação discreta para soluções futuras do portal que já são
+   apresentadas, mas ainda não estão implementadas (ex.: GI Conecta).
+   -------------------------------------------------------------------------- */
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-lg);
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-offwhite-25);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+.badge-tag--on-light { border-color: var(--color-graphite-15); }
+
+/* --------------------------------------------------------------------------
+   27. RESPONSIVO — PARA MOTORISTAS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .stat-grupo { gap: var(--space-lg); }
+  .stat-destaque__numero { font-size: var(--fs-h2); }
+}
