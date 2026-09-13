@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-label="Placeholder de thumbnail de vídeo">
+  <defs>
+    <pattern id="hatchv" width="14" height="14" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#252525"/>
+      <line x1="0" y1="0" x2="0" y2="14" stroke="#F4F1EA14" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="720" fill="url(#hatchv)"/>
+  <rect x="0.5" y="0.5" width="1279" height="719" fill="none" stroke="#F4F1EA33" stroke-width="1"/>
+
+  <g stroke="#C65A32" stroke-width="2">
+    <path d="M36,76 L36,36 L76,36"/>
+    <path d="M1204,36 L1244,36 L1244,76"/>
+    <path d="M1244,644 L1244,684 L1204,684"/>
+    <path d="M76,684 L36,684 L36,644"/>
+  </g>
+
+  <g transform="translate(640,330)">
+    <circle cx="0" cy="0" r="46" fill="none" stroke="#F4F1EA" stroke-width="1.5"/>
+    <path d="M-14,-22 L26,0 L-14,22 Z" fill="#C65A32"/>
+  </g>
+
+  <g transform="translate(640,412)" text-anchor="middle" font-family="Helvetica, Arial, sans-serif">
+    <text font-size="13" letter-spacing="2" fill="#F4F1EAAA">THUMBNAIL PLACEHOLDER — SUBSTITUIR</text>
+  </g>
+</svg>

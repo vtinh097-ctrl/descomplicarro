@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Placeholder de fotografia editorial">
+  <defs>
+    <pattern id="hatch" width="14" height="14" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#F4F1EA"/>
+      <line x1="0" y1="0" x2="0" y2="14" stroke="#25252514" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="900" fill="url(#hatch)"/>
+  <rect x="0.5" y="0.5" width="1199" height="899" fill="none" stroke="#25252533" stroke-width="1"/>
+
+  <!-- crosshair corners -->
+  <g stroke="#C65A32" stroke-width="2">
+    <path d="M40,80 L40,40 L80,40"/>
+    <path d="M1120,40 L1160,40 L1160,80"/>
+    <path d="M1160,820 L1160,860 L1120,860"/>
+    <path d="M80,860 L40,860 L40,820"/>
+  </g>
+
+  <g transform="translate(600,450)" text-anchor="middle" font-family="Helvetica, Arial, sans-serif">
+    <rect x="-170" y="-46" width="340" height="92" fill="none" stroke="#252525" stroke-width="1" stroke-dasharray="6 6"/>
+    <text y="-6" font-size="28" letter-spacing="4" fill="#252525" font-weight="700">IMAGEM</text>
+    <text y="26" font-size="13" letter-spacing="2" fill="#25252599">PLACEHOLDER — SUBSTITUIR</text>
+  </g>
+</svg>
