@@ -919,3 +919,381 @@ button:focus-visible {
   }
   .ad-slot__placeholder-text { text-align: left; }
 }
+
+/* ==========================================================================
+   PÁGINA: SOBRE NÓS
+   Componentes exclusivos desta página — extensão do design system da Home,
+   sem alterar nenhuma regra existente acima.
+   WordPress: template page-sobre-nos.php / template-parts/sobre/*.php
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   15. BLOCO N.01 — O DESCOMPLICARRO (texto + sequência conceitual + manifesto)
+   -------------------------------------------------------------------------- */
+.section--descomplicarro { position: relative; overflow: hidden; z-index: 0; }
+
+.bloco-texto {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-2xl) var(--space-lg);
+  align-items: start;
+}
+
+.bloco-texto__col { max-width: 62ch; }
+
+.bloco-texto__col p {
+  margin-top: var(--space-md);
+  font-size: var(--fs-body);
+  color: var(--color-graphite);
+}
+.bloco-texto__col p:first-child { margin-top: 0; }
+.bloco-texto__col p.is-lead { font-size: var(--fs-lead); }
+.bloco-texto__col p.is-forte { font-weight: 700; }
+
+.bloco-texto__triade {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) 0;
+  border-top: var(--border-width) solid var(--color-graphite-15);
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+  display: grid;
+  gap: var(--space-xs);
+}
+.bloco-texto__triade p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+}
+
+/* Sequência conceitual: COMPLEXIDADE → COMPREENSÃO → AUTONOMIA → DECISÃO */
+.sequencia {
+  position: sticky;
+  top: calc(var(--space-lg) + 4rem);
+  display: flex;
+  flex-direction: column;
+}
+.sequencia__passo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding-block: var(--space-sm);
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+}
+.sequencia__passo:first-child { padding-top: 0; }
+.sequencia__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+  flex-shrink: 0;
+}
+.sequencia__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+}
+.sequencia__passo:last-child { border-bottom: 0; }
+.sequencia__passo:last-child .sequencia__label { color: var(--color-orange); }
+
+/* Painel Manifesto — inserção escura dentro da seção clara */
+.manifesto-panel {
+  margin-top: var(--space-2xl);
+  background-color: var(--color-graphite);
+  color: var(--color-offwhite);
+  padding: var(--space-xl) var(--space-lg);
+}
+.manifesto-panel__eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: var(--space-lg);
+}
+.manifesto-panel__text {
+  max-width: 68ch;
+  display: grid;
+  gap: var(--space-sm);
+}
+.manifesto-panel__text p {
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+}
+.manifesto-panel__signature {
+  margin-top: var(--space-lg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-offwhite);
+  text-transform: uppercase;
+}
+.manifesto-panel__signature span { color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   16. BLOCO N.02 — DUAS EXPERIÊNCIAS. UM MESMO PROPÓSITO.
+   -------------------------------------------------------------------------- */
+.duas-experiencias {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xl) var(--space-lg);
+  align-items: center;
+}
+.duas-experiencias__figure { position: relative; }
+.duas-experiencias__image {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.duas-experiencias__frame-mark {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--color-orange);
+}
+.duas-experiencias__frame-mark--tl { top: -14px; left: -14px; border-right: 0; border-bottom: 0; }
+.duas-experiencias__frame-mark--br { bottom: -14px; right: -14px; border-left: 0; border-top: 0; }
+.duas-experiencias__caption {
+  margin-top: var(--space-xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+.duas-experiencias__text p {
+  margin-top: var(--space-md);
+  font-size: var(--fs-body);
+}
+.duas-experiencias__text p:first-child { margin-top: 0; }
+.duas-experiencias__text p.is-destaque {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+}
+.duas-experiencias__text p.is-forte { font-weight: 700; }
+
+/* --------------------------------------------------------------------------
+   17. BLOCO N.03 / N.04 — PERFIS (GIOVANA TOSO / VITOR)
+   -------------------------------------------------------------------------- */
+.section--giovana,
+.section--vitor { position: relative; overflow: hidden; z-index: 0; }
+
+.perfil {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: var(--space-2xl) var(--space-lg);
+  align-items: center;
+}
+.perfil--reverse { grid-template-columns: 3fr 2fr; }
+.perfil--reverse .perfil__figure { order: 2; }
+.perfil--reverse .perfil__body { order: 1; }
+
+.perfil__figure { position: relative; }
+.perfil__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.perfil__frame-mark {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-orange);
+}
+.perfil__frame-mark--tl { top: -12px; left: -12px; border-right: 0; border-bottom: 0; }
+.perfil__frame-mark--br { bottom: -12px; right: -12px; border-left: 0; border-top: 0; }
+.perfil__caption {
+  margin-top: var(--space-xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+
+.perfil__role {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: var(--space-xs);
+}
+.perfil__name { font-size: var(--fs-h2); text-transform: uppercase; }
+.perfil__text {
+  margin-top: var(--space-md);
+  max-width: 54ch;
+  font-size: var(--fs-body);
+}
+
+/* --------------------------------------------------------------------------
+   18. BLOCO N.05 — NOSSO JEITO DE FAZER
+   -------------------------------------------------------------------------- */
+.section--jeito { position: relative; overflow: hidden; z-index: 0; }
+
+.jeito-intro {
+  max-width: 66ch;
+  margin-bottom: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+.jeito-intro__item h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: var(--space-xs);
+}
+.jeito-intro__item p { margin-top: var(--space-2xs); font-size: var(--fs-body); }
+.jeito-intro__item p:first-of-type { margin-top: 0; }
+
+.principios-list__eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+  margin-bottom: var(--space-sm);
+}
+
+.principio {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: var(--space-md);
+  padding-block: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.principios-list .principio:last-child { border-bottom: var(--border-width) solid var(--color-graphite-15); }
+.principio__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+}
+.principio__title { font-size: var(--fs-h3); text-transform: uppercase; }
+.principio__desc {
+  margin-top: var(--space-2xs);
+  max-width: 58ch;
+  color: var(--color-graphite-70);
+}
+
+.jeito-assinatura {
+  margin-top: var(--space-xl);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+.jeito-assinatura span { color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   19. BLOCO N.06 — FECHAMENTO
+   -------------------------------------------------------------------------- */
+.fechamento__intro {
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+  max-width: 50ch;
+  margin-bottom: var(--space-lg);
+}
+
+.fechamento__assinatura {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+}
+.fechamento__assinatura span { display: block; }
+.fechamento__assinatura span:last-child { color: var(--color-orange); }
+
+.fechamento__detalhe {
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  max-width: 84ch;
+}
+.fechamento__detalhe p { font-size: var(--fs-small); color: var(--color-offwhite-80); }
+.fechamento__detalhe strong {
+  display: block;
+  font-family: var(--font-display);
+  color: var(--color-offwhite);
+  text-transform: uppercase;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-button);
+  margin-bottom: var(--space-2xs);
+}
+
+.fechamento__final {
+  margin-top: var(--space-xl);
+  max-width: 62ch;
+  color: var(--color-offwhite-80);
+}
+.fechamento__final p + p { margin-top: var(--space-sm); }
+.fechamento__final p.is-forte { color: var(--color-offwhite); font-weight: 700; }
+
+.acessos-grid {
+  margin-top: var(--space-2xl);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+.acessos-grid .porta-card { border-top-color: var(--color-offwhite-25); }
+.acessos-grid .porta-card__index { color: var(--color-offwhite-55); }
+.acessos-grid .porta-card__title { color: var(--color-offwhite); }
+.acessos-grid .porta-card__desc { color: var(--color-offwhite-80); }
+.acessos-grid .porta-card:hover,
+.acessos-grid .porta-card:focus-visible { border-top-color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   20. RESPONSIVO — SOBRE NÓS — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .bloco-texto { grid-template-columns: 1fr; }
+  .sequencia {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 var(--space-md);
+    margin-top: var(--space-lg);
+  }
+  .sequencia__passo { border-bottom: 0; padding-block: var(--space-2xs); }
+
+  .duas-experiencias { grid-template-columns: 1fr; }
+  .duas-experiencias__figure { order: -1; }
+
+  .perfil,
+  .perfil--reverse { grid-template-columns: 1fr; }
+  .perfil--reverse .perfil__figure,
+  .perfil__figure { order: -1; }
+  .perfil--reverse .perfil__body,
+  .perfil__body { order: 2; }
+
+  .fechamento__detalhe { grid-template-columns: repeat(2, 1fr); }
+  .acessos-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   21. RESPONSIVO — SOBRE NÓS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .sequencia { flex-direction: column; gap: 0; }
+  .sequencia__passo { border-bottom: var(--border-width) solid var(--color-graphite-15); padding-block: var(--space-sm); }
+  .sequencia__passo:first-child { padding-top: 0; }
+  .sequencia__passo:last-child { border-bottom: 0; }
+
+  .principio { grid-template-columns: 1fr; gap: var(--space-2xs); }
+  .fechamento__detalhe { grid-template-columns: 1fr; }
+  .acessos-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .manifesto-panel { padding: var(--space-lg) var(--space-sm); }
+  .bloco-texto__triade p { font-size: 1.15rem; }
+}
