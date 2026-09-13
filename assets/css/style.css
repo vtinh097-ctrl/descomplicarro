@@ -27,7 +27,7 @@
   --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   --font-body: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
 
-  --fs-h1: clamp(2.25rem, 1.4rem + 3.4vw, 4.25rem);
+  --fs-h1: clamp(2rem, 1.35rem + 2.3vw, 3.25rem);
   --fs-h2: clamp(1.875rem, 1.3rem + 2vw, 3rem);
   --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
   --fs-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
@@ -399,7 +399,7 @@ button:focus-visible {
 
 .section--abertura__inner {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 3fr 2fr;
   gap: var(--space-2xl) var(--space-lg);
   align-items: center;
 }
@@ -415,14 +415,14 @@ button:focus-visible {
   font-size: var(--fs-h1);
   line-height: var(--lh-tight);
   color: var(--color-offwhite);
-  max-width: 22ch;
+  max-width: 32ch;
 }
 
 .abertura__paragraph {
   margin-top: var(--space-md);
   font-size: var(--fs-lead);
   color: var(--color-offwhite-80);
-  max-width: 40ch;
+  max-width: 46ch;
 }
 
 .abertura__content .btn-bracket {
@@ -461,13 +461,13 @@ button:focus-visible {
   position: relative;
   display: block;
   border-top: var(--border-width) solid var(--color-graphite);
-  padding-top: var(--space-sm);
+  padding-top: var(--space-xs);
   transition: border-color var(--transition-base);
 }
 
 .porta-card__index {
   position: absolute;
-  top: var(--space-sm);
+  top: var(--space-xs);
   right: 0;
   font-family: var(--font-display);
   font-size: var(--fs-eyebrow);
@@ -476,7 +476,7 @@ button:focus-visible {
 
 .porta-card__media {
   overflow: hidden;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 8 / 9;
   background-color: var(--color-graphite-08);
 }
 
@@ -498,7 +498,7 @@ button:focus-visible {
 }
 
 .porta-card__body {
-  padding-top: var(--space-sm);
+  padding-top: var(--space-xs);
 }
 
 .porta-card__title {
@@ -515,7 +515,7 @@ button:focus-visible {
 
 .porta-card__arrow {
   display: inline-block;
-  margin-top: var(--space-xs);
+  margin-top: var(--space-2xs);
   color: var(--color-orange);
   font-family: var(--font-display);
   transition: transform var(--transition-base);
@@ -524,6 +524,12 @@ button:focus-visible {
 .porta-card:hover .porta-card__arrow,
 .porta-card:focus-visible .porta-card__arrow {
   transform: translateX(6px);
+}
+
+/* Seção mais compacta verticalmente: aproxima as portas de entrada do
+   bloco seguinte, preservando o respiro entre os quatro acessos */
+.section--portas {
+  padding-bottom: var(--space-xl);
 }
 
 /* --------------------------------------------------------------------------
@@ -586,6 +592,11 @@ button:focus-visible {
   max-width: 34ch;
 }
 
+/* Aproxima o CTA "VER MAIS" dos três conteúdos selecionados */
+.section--emfoco .section-cta {
+  margin-top: var(--space-md);
+}
+
 /* --------------------------------------------------------------------------
    9. BLOCO 4 — YOUTUBE
    -------------------------------------------------------------------------- */
@@ -634,6 +645,14 @@ button:focus-visible {
   font-size: var(--fs-small);
   color: var(--color-offwhite-80);
   max-width: 34ch;
+}
+
+/* Seção mais compacta: aproxima os vídeos, o CTA e o início do rodapé */
+.section--youtube {
+  padding-bottom: var(--space-xl);
+}
+.section--youtube .section-cta {
+  margin-top: var(--space-md);
 }
 
 /* --------------------------------------------------------------------------
@@ -691,7 +710,135 @@ button:focus-visible {
 }
 
 /* --------------------------------------------------------------------------
-   11. RESPONSIVO — TABLET (≤ 1024px)
+   11. TEXTURA GRÁFICA DE FUNDO
+   Aplicação discreta da biblioteca gráfica da marca (grids, coordenadas,
+   conexões) nas superfícies das seções. Baixíssimo contraste — nunca deve
+   competir com o conteúdo. Um elemento predominante + um pequeno detalhe
+   de intervenção em laranja, por seção.
+   -------------------------------------------------------------------------- */
+
+/* Contêiner de posicionamento: garante que a textura fique atrás do
+   conteúdo (z-index negativo) sem afetar o fluxo do layout */
+.section--portas,
+.section--emfoco,
+.section--youtube {
+  position: relative;
+  overflow: hidden;
+  /* z-index (mesmo 0) força um contexto de empilhamento próprio na seção,
+     para que os elementos de fundo com z-index negativo fiquem presos
+     entre o background da seção e seu conteúdo — nunca atrás do fundo */
+  z-index: 0;
+}
+
+.section-bg-graphic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* PORTAS DE ENTRADA — grid técnico muito sutil, parcial, canto superior direito */
+/* Posicionado no canto inferior direito — área de respiro abaixo das
+   imagens/textos das portas, onde o grid não fica encoberto pelo conteúdo */
+.section--portas::before {
+  content: '';
+  position: absolute;
+  bottom: -12%;
+  right: -5%;
+  width: 44%;
+  height: 58%;
+  background-image:
+    repeating-linear-gradient(to right, rgba(37, 37, 37, 0.28) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, rgba(37, 37, 37, 0.28) 0 1px, transparent 1px 48px);
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, black, transparent 75%);
+          mask-image: radial-gradient(circle at 100% 100%, black, transparent 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+/* pequeno detalhe de intervenção — cruz em laranja sobre um nó do grid */
+.section--portas::after {
+  content: '';
+  position: absolute;
+  bottom: 14%;
+  right: 20%;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(var(--color-orange), var(--color-orange)) center / 100% 1.5px no-repeat,
+    linear-gradient(var(--color-orange), var(--color-orange)) center / 1.5px 100% no-repeat;
+  opacity: 0.55;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   12. COMPONENTE: ESPAÇO PUBLICITÁRIO
+   WordPress: widget/área gerenciável (ex.: template-parts/ad-slot.php)
+   Preparado para futuramente receber imagem/banner, alt, link externo e
+   identificação de anunciante. Placeholder enquanto não há anúncio ativo.
+   -------------------------------------------------------------------------- */
+.ad-slot {
+  background-color: var(--color-offwhite);
+  color: var(--color-graphite);
+  padding-block: var(--space-lg);
+}
+
+.ad-slot__unit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  position: relative;
+  min-height: 96px;
+  padding: var(--space-md) var(--space-lg);
+  border: var(--border-width) dashed var(--color-graphite-15);
+  transition: border-color var(--transition-base);
+}
+
+.ad-slot__unit:hover,
+.ad-slot__unit:focus-visible {
+  border-color: var(--color-orange);
+}
+
+.ad-slot__eyebrow {
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+
+.ad-slot__placeholder-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+  text-align: center;
+  transition: color var(--transition-base);
+}
+
+.ad-slot__unit:hover .ad-slot__placeholder-text,
+.ad-slot__unit:focus-visible .ad-slot__placeholder-text {
+  color: var(--color-orange);
+}
+
+.ad-slot__frame-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-orange);
+  opacity: 0.6;
+}
+.ad-slot__frame-mark--tl { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+.ad-slot__frame-mark--br { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+/* --------------------------------------------------------------------------
+   13. RESPONSIVO — TABLET (≤ 1024px)
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .portas-grid { grid-template-columns: repeat(2, 1fr); }
@@ -703,12 +850,10 @@ button:focus-visible {
   .abertura__image { aspect-ratio: 16 / 9; }
 
   .site-footer__inner { grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
-}
 
-/* --------------------------------------------------------------------------
-   12. RESPONSIVO — MOBILE (≤ 720px)
-   -------------------------------------------------------------------------- */
-@media (max-width: 720px) {
+  /* Os sete itens do menu não cabem ao lado da logo até o desktop cheio;
+     o menu responsivo (hambúrguer) cobre tablet e mobile para evitar
+     rolagem horizontal no header */
   .nav-toggle { display: flex; }
 
   .site-nav {
@@ -736,7 +881,12 @@ button:focus-visible {
     color: var(--color-offwhite);
   }
   .site-nav__link.is-current { color: var(--color-orange); }
+}
 
+/* --------------------------------------------------------------------------
+   14. RESPONSIVO — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
   .emfoco-grid,
   .youtube-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
 
@@ -750,4 +900,22 @@ button:focus-visible {
 
   .abertura__heading { max-width: none; }
   .abertura__paragraph { max-width: none; }
+
+  /* Elementos gráficos de fundo: reduzidos/ocultos no mobile para não
+     prejudicar a leitura em telas pequenas */
+  .section-bg-graphic,
+  .section--portas::before,
+  .section--portas::after {
+    display: none;
+  }
+
+  .ad-slot { padding-block: var(--space-md); }
+  .ad-slot__unit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    min-height: 0;
+    padding: var(--space-sm);
+  }
+  .ad-slot__placeholder-text { text-align: left; }
 }
