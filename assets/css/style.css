@@ -1091,6 +1091,7 @@ button:focus-visible {
 .jeito-intro__item p:first-of-type { margin-top: 0; }
 
 .principios-list__eyebrow {
+  margin-top: var(--space-xl);
   font-family: var(--font-display);
   font-size: var(--fs-eyebrow);
   letter-spacing: var(--ls-eyebrow);
@@ -1528,4 +1529,75 @@ button:focus-visible {
   .jornada__label { font-size: 0.875rem; }
   .formacao-item__head { flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); }
   .formacao-item { padding-top: var(--space-xl); }
+}
+
+/* ==========================================================================
+   PÁGINA: PALESTRAS & WORKSHOPS
+   Componentes exclusivos desta página — extensão do design system existente,
+   sem alterar nenhuma regra acima. A maior parte da página reaproveita
+   componentes já construídos (.perfil, .principios-list, .destaque-linhas,
+   .manifesto, .fechamento__detalhe, .btn-bracket, .figure-caption).
+   WordPress: template page-palestras-workshops.php
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   35. BLOCO N.01 — FORMATOS
+   Lista editorial (não cards): numeração + linha fina por item. Um novo
+   formato futuro é só mais um .formato-item.
+   -------------------------------------------------------------------------- */
+.formatos-grid {
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 var(--space-xl);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.formato-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+}
+.formato-item__indice {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+  flex-shrink: 0;
+}
+.formato-item__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+}
+
+/* --------------------------------------------------------------------------
+   36. COMPONENTE — GALERIA EDITORIAL
+   Reutilizada na galeria DOMINIUM (3 fotos) e em "Já estivemos por aqui"
+   (4 fotos). A contagem de colunas se ajusta sozinha ao número de itens
+   (auto-fit) — novos registros futuros só precisam de um novo .galeria__item,
+   sem reconstruir a seção.
+   -------------------------------------------------------------------------- */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.galeria__item { position: relative; }
+.galeria__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.galeria__image--paisagem { aspect-ratio: 4 / 3; }
+
+/* --------------------------------------------------------------------------
+   37. RESPONSIVO — PALESTRAS & WORKSHOPS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .formatos-grid { grid-template-columns: 1fr; }
+  .galeria { grid-template-columns: 1fr; }
 }
