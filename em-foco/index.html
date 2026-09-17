@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Em Foco — DESCOMPLICARRO | Entenda. Questione. Decida.</title>
+<meta name="description" content="Informação automotiva além da superfície. Notícias, reviews, guias, conteúdo técnico e bastidores para entender o que acontece no setor automotivo.">
+
+<!-- FAVICON: substituir pelos arquivos oficiais da identidade visual -->
+<!-- <link rel="icon" href="/favicon.ico"> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+<!-- ==========================================================================
+     COMPONENTE: HEADER / NAVEGAÇÃO PRINCIPAL
+     Idêntico às demais páginas — WordPress: template-parts/header.php
+     ========================================================================== -->
+<header class="site-header" id="topo">
+  <div class="container site-header__inner">
+
+    <a href="/" class="site-logo" aria-label="DESCOMPLICARRO — página inicial">
+      <!-- LOGO OFICIAL: substituir todo este bloco pela identidade oficial
+           (wordmark + monograma) fornecida pela marca. Manter área de
+           respiro equivalente no header. -->
+      <span class="site-logo__mark" aria-hidden="true"></span>
+      <span class="site-logo__text">
+        <span class="site-logo__word">DESCOMPLICARRO</span>
+        <span class="site-logo__tagline">Entenda. Questione. Decida.</span>
+      </span>
+    </a>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle__box">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </span>
+      <span class="nav-toggle__label">Menu</span>
+    </button>
+
+    <!-- NAVEGAÇÃO: substituir por menu dinâmico do WordPress (wp_nav_menu) -->
+    <nav class="site-nav" id="siteNav" aria-label="Navegação principal">
+      <ul class="site-nav__list">
+        <li><a href="/" class="site-nav__link">HOME</a></li>
+        <li><a href="/para-motoristas" class="site-nav__link">PARA MOTORISTAS</a></li>
+        <li><a href="/para-oficinas" class="site-nav__link">PARA OFICINAS</a></li>
+        <li><a href="/palestras-workshops" class="site-nav__link">PALESTRAS &amp; WORKSHOPS</a></li>
+        <li><a href="/em-foco" class="site-nav__link is-current" aria-current="page">EM FOCO</a></li>
+        <li><a href="/sobre-nos" class="site-nav__link">SOBRE NÓS</a></li>
+        <li><a href="/contato" class="site-nav__link">CONTATO</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main id="conteudo-principal">
+
+  <!-- ==========================================================================
+       BLOCO N.00 — EM FOCO (abertura compacta)
+       Mais curta que a abertura institucional: sem imagem, protagonismo
+       vai direto para o conteúdo. Navegação para as cinco editorias —
+       URLs internas organizadas para substituição futura por rotas reais.
+       WordPress: template-parts/em-foco/section-abertura.php
+       ========================================================================== -->
+  <section class="section section--emfoco-hero section--graphite emfoco-hero" aria-labelledby="emfoco-heading">
+    <div class="container">
+
+      <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>ABERTURA</span></div>
+
+      <h1 id="emfoco-heading" class="abertura__heading">EM FOCO</h1>
+      <p class="emfoco-hero__assinatura">Informação automotiva além da superfície.</p>
+      <p class="emfoco-hero__paragrafo">Notícias, reviews, guias, conteúdo técnico e bastidores para entender o que acontece no setor automotivo — e o que isso significa na prática.</p>
+
+      <!-- NAVEGAÇÃO DE EDITORIAS: cada item levará futuramente para a página
+           própria da editoria (arquivo de taxonomia no WordPress). -->
+      <nav class="editorias-nav" aria-label="Editorias do Em Foco">
+        <a href="/em-foco/noticias" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">NOTÍCIAS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+        <a href="/em-foco/reviews" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">REVIEWS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+        <a href="/em-foco/guias" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">GUIAS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+        <a href="/em-foco/tecnica" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">TÉCNICA</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+        <a href="/em-foco/bastidores" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">BASTIDORES</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </nav>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.01 — DESTAQUES
+       Capa editorial: 1 matéria principal + 2 secundárias. Estrutura de
+       dados pensada para futuramente alimentar também os três destaques
+       "Em Foco" da Home (mesmo componente .emfoco-card).
+       PLACEHOLDERS: nenhuma matéria real ou inventada — apenas indicadores
+       de conteúdo editorial realista, sem Lorem Ipsum.
+       WordPress: template-parts/em-foco/section-destaques.php
+       (os 3 itens virão de um campo "destaques_em_foco", selecionado
+       manualmente — mesma lógica já usada nos 3 destaques da Home)
+       ========================================================================== -->
+  <section class="section section--destaques-emfoco section--offwhite" aria-labelledby="destaques-heading">
+    <div class="container">
+
+      <div class="section-index"><span>N.01</span><span class="section-index__line"></span><span>DESTAQUES</span></div>
+      <h2 id="destaques-heading" class="visually-hidden">Destaques</h2>
+
+      <div class="destaques-grid">
+
+        <!-- MATÉRIA PRINCIPAL -->
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card emfoco-card--principal">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria principal ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <!-- DUAS MATÉRIAS SECUNDÁRIAS -->
+        <div class="destaques-secundarios">
+          <a href="/em-foco/reviews/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Reviews</span>
+            <h3 class="emfoco-card__title">[ Título da matéria secundária 01 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+          <a href="/em-foco/tecnica/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Técnica</span>
+            <h3 class="emfoco-card__title">[ Título da matéria secundária 02 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ESPAÇO PUBLICITÁRIO 01 — depois dos Destaques
+       Mesmo componente já aprovado no restante do projeto.
+       ========================================================================== -->
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-destaques-ultimas">
+    <div class="container">
+      <!-- PUBLICIDADE: substituir "#" pelo link do anunciante; inserir
+           <img> com alt e, quando necessário, identificação do anunciante -->
+      <a href="#" class="ad-slot__unit">
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+        <span class="ad-slot__eyebrow">Publicidade</span>
+        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.02 — ÚLTIMAS PUBLICAÇÕES
+       6 publicações de qualquer editoria, com composição dinâmica (o
+       primeiro item ocupa duas colunas). Botão "Carregar mais" preparado
+       conceitualmente para paginação/carregamento dinâmico no WordPress —
+       sem lógica de infinite scroll simulada em JS.
+       WordPress: template-parts/em-foco/section-ultimas.php
+       (query das matérias mais recentes, qualquer editoria)
+       ========================================================================== -->
+  <section class="section section--ultimas section--offwhite" aria-labelledby="ultimas-heading">
+    <div class="container">
+
+      <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>ÚLTIMAS PUBLICAÇÕES</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="ultimas-heading" class="section-heading">ÚLTIMAS</h2>
+      </div>
+
+      <div class="ultimas-grid">
+
+        <a href="/em-foco/guias/materia-modelo" class="emfoco-card emfoco-card--wide">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Guias</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 01 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 02 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <a href="/em-foco/bastidores/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Bastidores</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 03 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <a href="/em-foco/reviews/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Reviews</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 04 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <a href="/em-foco/tecnica/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Técnica</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 05 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da publicação 06 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+
+      </div>
+
+      <div class="section-cta">
+        <!-- CARREGAR MAIS: preparado para paginação/carregamento dinâmico via
+             WordPress (ex.: WP_Query com paged, ou endpoint REST). Sem
+             simulação de matérias infinitas em JavaScript nesta etapa. -->
+        <button type="button" class="btn-bracket" data-action="carregar-mais" data-pagina-atual="1">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">CARREGAR MAIS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.03 — EDITORIAS
+       Cada editoria em seu próprio bloco, com ritmo editorial: fundo,
+       proporção de imagem e direção do grid variam entre elas, mantendo o
+       mesmo componente .emfoco-card em todas. CTA de cada editoria levará
+       futuramente para /em-foco/<editoria>.
+       WordPress: template-parts/em-foco/section-editoria-resumo.php,
+       repetido para as 5 editorias (query com taxonomia "editoria")
+       ========================================================================== -->
+
+  <!-- NOTÍCIAS -->
+  <section class="section section--editoria-noticias section--offwhite" aria-labelledby="editoria-noticias-heading">
+    <div class="container">
+
+      <div class="section-index"><span>N.03</span><span class="section-index__line"></span><span>EDITORIAS</span></div>
+
+      <div class="editoria-cabecalho">
+        <h2 id="editoria-noticias-heading" class="section-heading">NOTÍCIAS</h2>
+        <p class="solucao__assinatura">O que está acontecendo.</p>
+      </div>
+
+      <div class="editoria-materias">
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+      </div>
+
+      <div class="editoria-cta">
+        <a href="/em-foco/noticias" class="btn-bracket">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">VER MAIS NOTÍCIAS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section section--editoria-reviews section--graphite" aria-labelledby="editoria-reviews-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="1200" y1="140" x2="740" y2="140" stroke="#F4F1EA" stroke-width="1" opacity="0.09"></line>
+      <line x1="740" y1="140" x2="740" y2="420" stroke="#F4F1EA" stroke-width="1" opacity="0.09"></line>
+      <circle cx="740" cy="420" r="4" fill="#C65A32" opacity="0.55"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="editoria-cabecalho">
+        <h2 id="editoria-reviews-heading" class="section-heading section-heading--on-dark">REVIEWS</h2>
+        <p class="solucao__assinatura">O que testamos e analisamos.</p>
+      </div>
+
+      <div class="editoria-materias editoria-materias--retrato">
+        <a href="/em-foco/reviews/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Reviews</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+          <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
+        </a>
+        <a href="/em-foco/reviews/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Reviews</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+          <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
+        </a>
+      </div>
+
+      <div class="editoria-cta">
+        <a href="/em-foco/reviews" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">VER MAIS REVIEWS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GUIAS -->
+  <section class="section section--editoria-guias section--offwhite" aria-labelledby="editoria-guias-heading">
+    <div class="container editoria-layout--lateral">
+
+      <div class="editoria-bloco-texto">
+        <div class="editoria-cabecalho">
+          <h2 id="editoria-guias-heading" class="section-heading">GUIAS</h2>
+          <p class="solucao__assinatura">O que você precisa <span>entender para decidir.</span></p>
+        </div>
+        <div class="editoria-cta">
+          <a href="/em-foco/guias" class="btn-bracket">
+            <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+            <span class="btn-bracket__label">VER MAIS GUIAS</span>
+            <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="editoria-bloco-materias">
+        <div class="editoria-materias">
+          <a href="/em-foco/guias/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Guias</span>
+            <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+          <a href="/em-foco/guias/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Guias</span>
+            <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TÉCNICA -->
+  <section class="section section--editoria-tecnica section--graphite" aria-labelledby="editoria-tecnica-heading">
+    <div class="container editoria-layout--lateral editoria-layout--lateral-reversa">
+
+      <div class="editoria-bloco-texto">
+        <div class="editoria-cabecalho">
+          <h2 id="editoria-tecnica-heading" class="section-heading section-heading--on-dark">TÉCNICA</h2>
+          <p class="solucao__assinatura">Como funciona, <span>como diagnosticar e como reparar.</span></p>
+        </div>
+        <div class="editoria-cta">
+          <a href="/em-foco/tecnica" class="btn-bracket btn-bracket--on-dark">
+            <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+            <span class="btn-bracket__label">VER MAIS TÉCNICA</span>
+            <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="editoria-bloco-materias">
+        <div class="editoria-materias">
+          <a href="/em-foco/tecnica/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Técnica</span>
+            <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+            <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
+          </a>
+          <a href="/em-foco/tecnica/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media">
+              <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+            </div>
+            <span class="emfoco-card__category">Técnica</span>
+            <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+            <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BASTIDORES -->
+  <section class="section section--editoria-bastidores section--offwhite" aria-labelledby="editoria-bastidores-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="0" y1="120" x2="1200" y2="120" stroke="#252525" stroke-width="1" opacity="0.06"></line>
+      <circle cx="60" cy="820" r="220" fill="none" stroke="#252525" stroke-width="1" opacity="0.07"></circle>
+      <circle cx="1140" cy="120" r="4" fill="#C65A32" opacity="0.55"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="editoria-cabecalho">
+        <h2 id="editoria-bastidores-heading" class="section-heading">BASTIDORES</h2>
+        <p class="solucao__assinatura">Quem, como <span>e onde o setor acontece.</span></p>
+      </div>
+
+      <div class="editoria-materias editoria-materias--paisagem">
+        <a href="/em-foco/bastidores/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Bastidores</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+        <a href="/em-foco/bastidores/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media">
+            <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+          </div>
+          <span class="emfoco-card__category">Bastidores</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+      </div>
+
+      <div class="editoria-cta">
+        <a href="/em-foco/bastidores" class="btn-bracket">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">VER MAIS BASTIDORES</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ESPAÇO PUBLICITÁRIO 02 — depois das Editorias
+       Último espaço publicitário tradicional da capa.
+       ========================================================================== -->
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-editorias-youtube">
+    <div class="container">
+      <!-- PUBLICIDADE: substituir "#" pelo link do anunciante; inserir
+           <img> com alt e, quando necessário, identificação do anunciante -->
+      <a href="#" class="ad-slot__unit">
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+        <span class="ad-slot__eyebrow">Publicidade</span>
+        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.04 — NO YOUTUBE
+       Reaproveita exatamente o componente .video-card / .youtube-grid já
+       construído na Home. Seção intencionalmente menor — o protagonismo do
+       Em Foco é editorial, o vídeo é extensão do conteúdo.
+       WordPress: template-parts/em-foco/section-youtube.php
+       ========================================================================== -->
+  <section class="section section--youtube section--graphite" aria-labelledby="emfoco-youtube-heading">
+    <div class="container">
+
+      <div class="section-index section-index--on-dark"><span>N.04</span><span class="section-index__line"></span><span>NO YOUTUBE</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="emfoco-youtube-heading" class="section-heading section-heading--on-dark">NO YOUTUBE</h2>
+      </div>
+
+      <div class="youtube-grid">
+
+        <a href="#" class="video-card" target="_blank" rel="noopener noreferrer" aria-label="Assistir: [ Título do vídeo 01 ] (abre no YouTube)">
+          <div class="video-card__media">
+            <img src="/assets/images/placeholder-video.svg" alt="" class="video-card__image">
+          </div>
+          <h3 class="video-card__title">[ Título do vídeo 01 ]</h3>
+          <span class="video-card__date video-card__date--on-dark">[ Data ]</span>
+        </a>
+
+        <a href="#" class="video-card" target="_blank" rel="noopener noreferrer" aria-label="Assistir: [ Título do vídeo 02 ] (abre no YouTube)">
+          <div class="video-card__media">
+            <img src="/assets/images/placeholder-video.svg" alt="" class="video-card__image">
+          </div>
+          <h3 class="video-card__title">[ Título do vídeo 02 ]</h3>
+          <span class="video-card__date video-card__date--on-dark">[ Data ]</span>
+        </a>
+
+        <a href="#" class="video-card" target="_blank" rel="noopener noreferrer" aria-label="Assistir: [ Título do vídeo 03 ] (abre no YouTube)">
+          <div class="video-card__media">
+            <img src="/assets/images/placeholder-video.svg" alt="" class="video-card__image">
+          </div>
+          <h3 class="video-card__title">[ Título do vídeo 03 ]</h3>
+          <span class="video-card__date video-card__date--on-dark">[ Data ]</span>
+        </a>
+
+      </div>
+
+      <div class="section-cta">
+        <!-- LINK: substituir "#" pela URL definitiva do canal oficial do DESCOMPLICARRO -->
+        <a href="#" class="btn-bracket btn-bracket--on-dark" target="_blank" rel="noopener noreferrer">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">VEJA TODOS NO YOUTUBE</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ==========================================================================
+     COMPONENTE: FOOTER
+     Idêntico às demais páginas — WordPress: template-parts/footer.php
+     ========================================================================== -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container site-footer__inner">
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Contatos</h2>
+      <ul class="site-footer__list">
+        <!-- CONTATO: substituir pelos dados oficiais -->
+        <li><a href="mailto:contato@descomplicarro.com.br">PLACEHOLDER — e-mail@descomplicarro</a></li>
+        <li><span>PLACEHOLDER — telefone / WhatsApp</span></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Redes sociais</h2>
+      <ul class="site-footer__list site-footer__list--inline">
+        <!-- REDES SOCIAIS: substituir "#" pelas URLs oficiais dos perfis -->
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Institucional</h2>
+      <ul class="site-footer__list">
+        <!-- PÁGINAS LEGAIS: substituir "#" pelas páginas definitivas -->
+        <li><a href="/politica-de-privacidade">Política de Privacidade</a></li>
+        <li><a href="/termos-de-uso">Termos de Uso</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="container">
+      <!-- Ao conceder o registro da marca, alterar para: © DESCOMPLICARRO® — Todos os direitos reservados. -->
+      <p>© DESCOMPLICARRO — Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

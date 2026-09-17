@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[ Título da matéria ] — Notícias — Em Foco — DESCOMPLICARRO</title>
+<meta name="description" content="[ Resumo/linha fina da matéria para meta description — preencher no WordPress a partir do excerpt. ]">
+
+<!-- FAVICON: substituir pelos arquivos oficiais da identidade visual -->
+<!-- <link rel="icon" href="/favicon.ico"> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<!-- ==========================================================================
+     TEMPLATE DE MATÉRIA INDIVIDUAL — página-modelo reutilizável para
+     qualquer matéria, de qualquer editoria (CPT "materias" no WordPress:
+     single-materia.php). Este arquivo representa uma matéria de exemplo em
+     Notícias; a mesma estrutura serve as demais editorias — só o conteúdo
+     dinâmico muda. Nenhuma matéria, autor ou marca aqui é real.
+     ========================================================================== -->
+
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+<!-- COMPONENTE: HEADER / NAVEGAÇÃO PRINCIPAL — idêntico às demais páginas -->
+<header class="site-header" id="topo">
+  <div class="container site-header__inner">
+
+    <a href="/" class="site-logo" aria-label="DESCOMPLICARRO — página inicial">
+      <span class="site-logo__mark" aria-hidden="true"></span>
+      <span class="site-logo__text">
+        <span class="site-logo__word">DESCOMPLICARRO</span>
+        <span class="site-logo__tagline">Entenda. Questione. Decida.</span>
+      </span>
+    </a>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle__box">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </span>
+      <span class="nav-toggle__label">Menu</span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="Navegação principal">
+      <ul class="site-nav__list">
+        <li><a href="/" class="site-nav__link">HOME</a></li>
+        <li><a href="/para-motoristas" class="site-nav__link">PARA MOTORISTAS</a></li>
+        <li><a href="/para-oficinas" class="site-nav__link">PARA OFICINAS</a></li>
+        <li><a href="/palestras-workshops" class="site-nav__link">PALESTRAS &amp; WORKSHOPS</a></li>
+        <li><a href="/em-foco" class="site-nav__link is-current" aria-current="page">EM FOCO</a></li>
+        <li><a href="/sobre-nos" class="site-nav__link">SOBRE NÓS</a></li>
+        <li><a href="/contato" class="site-nav__link">CONTATO</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main id="conteudo-principal">
+  <article>
+
+    <!-- ==========================================================================
+         CABEÇALHO + IMAGEM PRINCIPAL + PRIMEIRO BLOCO DO CORPO
+         "Atualizado em" e "tempo de leitura" só aparecem quando preenchidos.
+         ========================================================================== -->
+    <div class="section section--offwhite">
+      <div class="container">
+
+        <header>
+          <nav class="breadcrumb" aria-label="Trilha de navegação">
+            <a href="/">Home</a><span class="breadcrumb__sep" aria-hidden="true">/</span>
+            <a href="/em-foco">Em Foco</a><span class="breadcrumb__sep" aria-hidden="true">/</span>
+            <a href="/em-foco/noticias">Notícias</a><span class="breadcrumb__sep" aria-hidden="true">/</span>
+            <span aria-current="page">[ Título da matéria ]</span>
+          </nav>
+
+          <div class="materia-header">
+            <span class="materia-editoria">Notícias</span>
+            <h1 class="materia-titulo">[ Título da matéria ]</h1>
+            <p class="materia-subtitulo">[ Linha fina / subtítulo — uma frase que complementa o título e resume o essencial da matéria. ]</p>
+
+            <p class="materia-meta">
+              <!-- AUTORIA: sistema preparado para múltiplos autores (Giovana Toso,
+                   Vitor Lima, colaboradores) — nenhum autor fixo no template. -->
+              <span>Por <strong><a href="#">[ Nome do autor ]</a></strong></span>
+              <span>Publicado em <time datetime="2026-01-01"><strong>[ Data de publicação ]</strong></time></span>
+              <!-- ATUALIZADO EM: exibir apenas quando a matéria tiver sido
+                   atualizada (recalls, legislação, informações técnicas etc.). -->
+              <span>Atualizado em <time datetime="2026-01-02"><strong>[ Data de atualização ]</strong></time></span>
+              <!-- TEMPO DE LEITURA: exibir apenas quando disponível. -->
+              <span><strong>[ 0 min ]</strong> de leitura</span>
+            </p>
+
+            <!-- CONTEÚDO EM PARCERIA — campo opcional. Exibir apenas quando
+                 houver relação comercial com a marca citada; nunca omitir ou
+                 esconder no fim do texto quando aplicável. Remover este bloco
+                 por completo em matérias 100% editoriais. -->
+            <p class="materia-parceria">Conteúdo em parceria com [ Marca ]</p>
+          </div>
+        </header>
+
+        <figure class="materia-imagem-principal">
+          <img src="/assets/images/placeholder-photo.svg" alt="[ Descrever a imagem principal da matéria ]">
+          <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
+          <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
+          <figcaption class="figure-caption">Imagem principal — placeholder, substituir pela fotografia oficial</figcaption>
+        </figure>
+
+        <!-- CORPO DA MATÉRIA (parte 1) — largura de leitura editorial (68ch) -->
+        <div class="materia-corpo">
+          <p>[ Parágrafo de abertura da matéria. Este é um placeholder estrutural — o texto real será inserido pelo WordPress através do editor de blocos, substituindo integralmente este conteúdo. ]</p>
+          <p>[ Segundo parágrafo, dando continuidade ao raciocínio apresentado na abertura, com espaço para desenvolver o contexto da matéria. ]</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ESPAÇO PUBLICITÁRIO — após a introdução/primeiros blocos. Seção de
+         nível superior (mesmo componente/largura usados no resto do site),
+         não encaixada dentro da coluna estreita de leitura. -->
+    <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="materia-apos-introducao">
+      <div class="container">
+        <a href="#" class="ad-slot__unit">
+          <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+          <span class="ad-slot__eyebrow">Publicidade</span>
+          <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+          <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         CORPO DA MATÉRIA (parte 2) — tipografia completa: H2/H3, listas,
+         citação, imagem interna, box informativo, tabela, links e vídeo
+         incorporado.
+         ========================================================================== -->
+    <div class="section section--offwhite">
+      <div class="container">
+        <div class="materia-corpo">
+
+          <h2>[ Subtítulo H2 — novo bloco temático da matéria ]</h2>
+
+          <p>[ Parágrafo explicando o novo bloco temático introduzido pelo H2 acima. ]</p>
+
+          <h3>[ Subtítulo H3 — subdivisão dentro do bloco ]</h3>
+
+          <p>[ Parágrafo de apoio ao H3, com um <a href="#">link de exemplo</a> dentro do corpo do texto. ]</p>
+
+          <ul>
+            <li>[ Item de lista 01 ]</li>
+            <li>[ Item de lista 02 ]</li>
+            <li>[ Item de lista 03 ]</li>
+          </ul>
+
+          <blockquote>[ Citação em destaque — declaração de uma fonte, especialista ou documento oficial citado na matéria. ]</blockquote>
+
+          <figure>
+            <img src="/assets/images/placeholder-photo.svg" alt="[ Descrever a imagem interna ]">
+            <figcaption class="figure-caption">Legenda da imagem interna — placeholder</figcaption>
+          </figure>
+
+          <div class="materia-box">
+            <span class="materia-box__titulo">Destaque técnico</span>
+            <p>[ Box informativo para destacar um dado técnico, um resumo rápido ou uma informação de referência dentro da matéria. ]</p>
+          </div>
+
+          <h2>[ Segundo subtítulo H2 ]</h2>
+
+          <p>[ Parágrafo do segundo bloco temático. ]</p>
+
+          <table>
+            <caption class="visually-hidden">[ Descrição da tabela ]</caption>
+            <thead>
+              <tr>
+                <th scope="col">[ Coluna 01 ]</th>
+                <th scope="col">[ Coluna 02 ]</th>
+                <th scope="col">[ Coluna 03 ]</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>[ Dado ]</td>
+                <td>[ Dado ]</td>
+                <td>[ Dado ]</td>
+              </tr>
+              <tr>
+                <td>[ Dado ]</td>
+                <td>[ Dado ]</td>
+                <td>[ Dado ]</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ol>
+            <li>[ Passo 01 ]</li>
+            <li>[ Passo 02 ]</li>
+            <li>[ Passo 03 ]</li>
+          </ol>
+
+          <!-- VÍDEO INCORPORADO — placeholder de proporção, sem player real -->
+          <figure>
+            <div class="materia-video-embed">
+              <span class="figure-caption">[ Vídeo incorporado — placeholder ]</span>
+            </div>
+            <figcaption class="figure-caption">Legenda do vídeo incorporado — placeholder</figcaption>
+          </figure>
+
+          <p>[ Parágrafo de fechamento da matéria. ]</p>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ESPAÇO PUBLICITÁRIO — mais abaixo no conteúdo, quando a matéria tiver
+         comprimento suficiente. -->
+    <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="materia-final-conteudo">
+      <div class="container">
+        <a href="#" class="ad-slot__unit">
+          <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+          <span class="ad-slot__eyebrow">Publicidade</span>
+          <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+          <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         CRÉDITOS + RODAPÉ DA MATÉRIA — tags, compartilhamento
+         ========================================================================== -->
+    <div class="section section--offwhite">
+      <div class="container">
+
+        <!-- CRÉDITOS / FONTES — exibir apenas quando aplicável -->
+        <p class="materia-creditos">Fontes: [ créditos e fontes utilizadas na apuração, quando aplicável. ]</p>
+
+        <div class="materia-rodape">
+
+          <div class="tag-chips" aria-label="Tags desta matéria">
+            <a href="#" class="tag-chip">Recall</a>
+            <a href="#" class="tag-chip">Segurança</a>
+            <a href="#" class="tag-chip">[ Marca ]</a>
+            <a href="#" class="tag-chip">[ Modelo ]</a>
+          </div>
+
+          <nav class="materia-compartilhar" aria-label="Compartilhar matéria">
+            <p class="principios-list__eyebrow">Compartilhar</p>
+            <ul class="compartilhar-lista">
+              <li><a href="#">WhatsApp</a></li>
+              <li><a href="#">Facebook</a></li>
+              <li><a href="#">LinkedIn</a></li>
+              <li><a href="#">Copiar link</a></li>
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         CONTEÚDOS RELACIONADOS — 3 matérias. Seleção futura por editoria,
+         tags e relação temática (sem algoritmo implementado nesta etapa).
+         Reaproveita .emfoco-grid / .emfoco-card (Home).
+         ========================================================================== -->
+    <section class="section section--emfoco section--offwhite" aria-labelledby="relacionados-heading">
+      <div class="container">
+
+        <div class="section-heading-row">
+          <h2 id="relacionados-heading" class="section-heading">CONTEÚDOS RELACIONADOS</h2>
+        </div>
+
+        <div class="emfoco-grid">
+          <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+            <span class="emfoco-card__category">Notícias</span>
+            <h3 class="emfoco-card__title">[ Título relacionado 01 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+          <a href="/em-foco/tecnica/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+            <span class="emfoco-card__category">Técnica</span>
+            <h3 class="emfoco-card__title">[ Título relacionado 02 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+          <a href="/em-foco/guias/materia-modelo" class="emfoco-card">
+            <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+            <span class="emfoco-card__category">Guias</span>
+            <h3 class="emfoco-card__title">[ Título relacionado 03 ]</h3>
+            <span class="emfoco-card__date">[ Data ]</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </article>
+</main>
+
+<!-- COMPONENTE: FOOTER — idêntico às demais páginas -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container site-footer__inner">
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Contatos</h2>
+      <ul class="site-footer__list">
+        <li><a href="mailto:contato@descomplicarro.com.br">PLACEHOLDER — e-mail@descomplicarro</a></li>
+        <li><span>PLACEHOLDER — telefone / WhatsApp</span></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Redes sociais</h2>
+      <ul class="site-footer__list site-footer__list--inline">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Institucional</h2>
+      <ul class="site-footer__list">
+        <li><a href="/politica-de-privacidade">Política de Privacidade</a></li>
+        <li><a href="/termos-de-uso">Termos de Uso</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="container">
+      <p>© DESCOMPLICARRO — Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>

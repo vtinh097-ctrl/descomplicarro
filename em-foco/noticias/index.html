@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notícias — Em Foco — DESCOMPLICARRO</title>
+<meta name="description" content="O que está acontecendo no setor automotivo. Notícias do DESCOMPLICARRO — recalls, lançamentos, mercado e indústria.">
+
+<!-- FAVICON: substituir pelos arquivos oficiais da identidade visual -->
+<!-- <link rel="icon" href="/favicon.ico"> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<!-- ==========================================================================
+     TEMPLATE DE EDITORIA — reutilizável para as cinco editorias do Em Foco
+     (Notícias, Reviews, Guias, Técnica, Bastidores).
+     Este arquivo representa NOTÍCIAS como exemplo; no WordPress corresponde
+     a um único template-editoria.php servindo o arquivo de taxonomia
+     "editoria" para qualquer um dos cinco termos — não cinco templates
+     separados. Trocar nome/assinatura/URL/conteúdo é o suficiente para
+     gerar as outras quatro páginas (/em-foco/reviews, /em-foco/guias,
+     /em-foco/tecnica, /em-foco/bastidores).
+     ========================================================================== -->
+
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+<!-- COMPONENTE: HEADER / NAVEGAÇÃO PRINCIPAL — idêntico às demais páginas -->
+<header class="site-header" id="topo">
+  <div class="container site-header__inner">
+
+    <a href="/" class="site-logo" aria-label="DESCOMPLICARRO — página inicial">
+      <span class="site-logo__mark" aria-hidden="true"></span>
+      <span class="site-logo__text">
+        <span class="site-logo__word">DESCOMPLICARRO</span>
+        <span class="site-logo__tagline">Entenda. Questione. Decida.</span>
+      </span>
+    </a>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle__box">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </span>
+      <span class="nav-toggle__label">Menu</span>
+    </button>
+
+    <nav class="site-nav" id="siteNav" aria-label="Navegação principal">
+      <ul class="site-nav__list">
+        <li><a href="/" class="site-nav__link">HOME</a></li>
+        <li><a href="/para-motoristas" class="site-nav__link">PARA MOTORISTAS</a></li>
+        <li><a href="/para-oficinas" class="site-nav__link">PARA OFICINAS</a></li>
+        <li><a href="/palestras-workshops" class="site-nav__link">PALESTRAS &amp; WORKSHOPS</a></li>
+        <li><a href="/em-foco" class="site-nav__link is-current" aria-current="page">EM FOCO</a></li>
+        <li><a href="/sobre-nos" class="site-nav__link">SOBRE NÓS</a></li>
+        <li><a href="/contato" class="site-nav__link">CONTATO</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main id="conteudo-principal">
+
+  <!-- ==========================================================================
+       ABERTURA DA EDITORIA — nome + assinatura, no mesmo espírito compacto
+       da abertura do Em Foco.
+       ========================================================================== -->
+  <section class="section section--emfoco-hero section--graphite emfoco-hero" aria-labelledby="editoria-heading">
+    <div class="container">
+
+      <nav class="breadcrumb breadcrumb--on-dark" aria-label="Trilha de navegação">
+        <a href="/">Home</a><span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <a href="/em-foco">Em Foco</a><span class="breadcrumb__sep" aria-hidden="true">/</span>
+        <span aria-current="page">Notícias</span>
+      </nav>
+
+      <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>EDITORIA</span></div>
+
+      <h1 id="editoria-heading" class="abertura__heading">NOTÍCIAS</h1>
+      <p class="emfoco-hero__assinatura">O que está acontecendo.</p>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DESTAQUE DA EDITORIA — matéria principal desta editoria.
+       Reaproveita .emfoco-card--principal (mesmo componente da capa).
+       ========================================================================== -->
+  <section class="section section--offwhite" aria-labelledby="editoria-destaque-heading">
+    <div class="container">
+
+      <h2 id="editoria-destaque-heading" class="visually-hidden">Destaque de Notícias</h2>
+
+      <a href="/em-foco/noticias/materia-modelo" class="emfoco-card emfoco-card--principal">
+        <div class="emfoco-card__media">
+          <img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image">
+        </div>
+        <span class="emfoco-card__category">Notícias</span>
+        <h3 class="emfoco-card__title">[ Título da matéria em destaque ]</h3>
+        <span class="emfoco-card__date">[ Data ]</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ÚLTIMAS MATÉRIAS DA EDITORIA — grid + carregar mais, mesma lógica de
+       paginação futura da capa do Em Foco.
+       ========================================================================== -->
+  <section class="section section--offwhite" aria-labelledby="editoria-ultimas-heading">
+    <div class="container">
+
+      <div class="section-heading-row">
+        <h2 id="editoria-ultimas-heading" class="section-heading">ÚLTIMAS EM NOTÍCIAS</h2>
+      </div>
+
+      <div class="ultimas-grid">
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 01 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 02 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+        <a href="/em-foco/noticias/materia-modelo" class="emfoco-card">
+          <div class="emfoco-card__media"><img src="/assets/images/placeholder-photo.svg" alt="" class="emfoco-card__image"></div>
+          <span class="emfoco-card__category">Notícias</span>
+          <h3 class="emfoco-card__title">[ Título da matéria 03 ]</h3>
+          <span class="emfoco-card__date">[ Data ]</span>
+        </a>
+      </div>
+
+      <div class="section-cta">
+        <!-- CARREGAR MAIS: mesma preparação conceitual da capa do Em Foco,
+             escopada à taxonomia desta editoria (WP_Query por term). -->
+        <button type="button" class="btn-bracket" data-action="carregar-mais" data-editoria="noticias" data-pagina-atual="1">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">CARREGAR MAIS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </button>
+      </div>
+
+      <!-- TAGS RELACIONADAS — exemplos conceituais da taxonomia de tags
+           (independente das 5 editorias); aparecem apenas quando aplicável. -->
+      <div class="tag-chips" aria-label="Tags relacionadas a Notícias">
+        <a href="#" class="tag-chip">Recall</a>
+        <a href="#" class="tag-chip">Lançamentos</a>
+        <a href="#" class="tag-chip">Mercado</a>
+        <a href="#" class="tag-chip">Indústria</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ESPAÇO PUBLICITÁRIO — mesmo componente já aprovado no restante do projeto.
+       ========================================================================== -->
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-editoria-noticias">
+    <div class="container">
+      <a href="#" class="ad-slot__unit">
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+        <span class="ad-slot__eyebrow">Publicidade</span>
+        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- COMPONENTE: FOOTER — idêntico às demais páginas -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container site-footer__inner">
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Contatos</h2>
+      <ul class="site-footer__list">
+        <li><a href="mailto:contato@descomplicarro.com.br">PLACEHOLDER — e-mail@descomplicarro</a></li>
+        <li><span>PLACEHOLDER — telefone / WhatsApp</span></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Redes sociais</h2>
+      <ul class="site-footer__list site-footer__list--inline">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Institucional</h2>
+      <ul class="site-footer__list">
+        <li><a href="/politica-de-privacidade">Política de Privacidade</a></li>
+        <li><a href="/termos-de-uso">Termos de Uso</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="container">
+      <p>© DESCOMPLICARRO — Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
