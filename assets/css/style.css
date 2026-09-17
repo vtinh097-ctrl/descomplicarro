@@ -1317,3 +1317,215 @@ button:focus-visible {
   .stat-grupo { gap: var(--space-lg); }
   .stat-destaque__numero { font-size: var(--fs-h2); }
 }
+
+/* ==========================================================================
+   PÁGINA: PARA OFICINAS
+   Componentes exclusivos desta página — extensão do design system da Home,
+   do Sobre Nós e do Para Motoristas, sem alterar nenhuma regra existente
+   acima. Vários blocos reaproveitam .perfil, .bloco-texto__col,
+   .destaque-linhas, .btn-bracket, .badge-tag e .ad-slot já construídos.
+   WordPress: template page-para-oficinas.php / CPTs "formacoes" e "parceiros"
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   28. COMPONENTE — JORNADA (etapas com setas)
+   Reutilizado em dois lugares: a jornada completa do atendimento ao
+   pós-venda (N.01) e a jornada interna do método T3V (modificador
+   --compacta). Novas etapas futuras só precisam de um novo
+   .jornada__etapa + separador.
+   -------------------------------------------------------------------------- */
+.jornada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.jornada__etapa {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+.jornada__indice {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+}
+.jornada__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+}
+.jornada__seta {
+  color: var(--color-graphite-45);
+  font-family: var(--font-display);
+}
+.jornada__seta--intervencao { color: var(--color-orange); }
+
+.jornada--compacta {
+  margin-top: var(--space-md);
+  padding-top: 0;
+  border-top: 0;
+  gap: var(--space-xs) var(--space-sm);
+}
+.jornada--compacta .jornada__label { font-size: var(--fs-small); }
+
+/* --------------------------------------------------------------------------
+   29. BLOCO N.02 — FORMAÇÃO
+   Cada treinamento é um bloco editorial completo (não um card comercial),
+   empilhado verticalmente e separado por uma linha fina. Reaproveita
+   .bloco-texto__col para os parágrafos e .perfil__name/.perfil__role para
+   título e etiqueta. Novos treinamentos futuros seguem a mesma estrutura:
+   .formacao-item com cabeçalho, texto, destaque opcional e CTA.
+   -------------------------------------------------------------------------- */
+.formacao {
+  display: flex;
+  flex-direction: column;
+}
+.formacao-item {
+  padding-top: var(--space-2xl);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.formacao-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.formacao-item__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+.formacao-item__indice {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  color: var(--color-orange);
+}
+.formacao-item__jornada-tag {
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-graphite-15);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+
+.formacao-item__conceito {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  max-width: 48ch;
+}
+
+/* --------------------------------------------------------------------------
+   30. BLOCO N.03 — FERRAMENTAS PARA A ROTINA (Pack de Papelaria)
+   Lista de etiquetas — "produto vivo": novos materiais futuros só
+   precisam de um novo .pack-tags__item, sem reconstruir a seção.
+   -------------------------------------------------------------------------- */
+.pack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+.pack-tags__item {
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-offwhite-25);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-offwhite-80);
+}
+.pack-tags__item--on-light {
+  border-color: var(--color-graphite-15);
+  color: var(--color-graphite-70);
+}
+
+/* --------------------------------------------------------------------------
+   31. COMPONENTE — NOTA DISCRETA
+   Aviso/disclaimer de baixo impacto visual, mas sempre legível — usado
+   para deixar claro o que é parceria externa e o que está sujeito a
+   critérios de curadoria.
+   -------------------------------------------------------------------------- */
+.nota-discreta {
+  margin-top: var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-orange);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 58ch;
+}
+.nota-discreta--on-dark { color: var(--color-offwhite-80); }
+
+/* --------------------------------------------------------------------------
+   32. BLOCO N.05 — PARCEIROS EM QUE ACREDITAMOS
+   QR Car reaproveita .perfil (mesmo bloco de Giovana/Vitor/soluções).
+   Os três acessos do Mecânico Que Lucra usam uma grade de peso igual —
+   sem imagem, sem hierarquia entre eles. Novo parceiro futuro pode
+   reaproveitar .perfil; novo acesso da mesma marca pode reaproveitar
+   .avancar-item.
+   -------------------------------------------------------------------------- */
+.avancar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.avancar-item {
+  border-top: var(--border-width) solid var(--color-graphite-15);
+  padding-top: var(--space-xs);
+}
+.avancar-item__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-graphite-45);
+}
+.avancar-item__title {
+  margin-top: var(--space-2xs);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+}
+.avancar-item__desc {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 30ch;
+}
+.avancar-item__cta { margin-top: var(--space-sm); }
+
+/* Espaçamento entre blocos .perfil empilhados na mesma seção (ex.: dois
+   parceiros em sequência em N.05) — evita repetir margin-top inline. */
+.perfil--espacado { margin-top: var(--space-2xl); }
+
+/* --------------------------------------------------------------------------
+   33. RESPONSIVO — PARA OFICINAS — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .avancar-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+}
+
+/* --------------------------------------------------------------------------
+   34. RESPONSIVO — PARA OFICINAS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .jornada { gap: var(--space-xs) var(--space-sm); }
+  .jornada__label { font-size: 0.875rem; }
+  .formacao-item__head { flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); }
+  .formacao-item { padding-top: var(--space-xl); }
+}

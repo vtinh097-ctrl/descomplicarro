@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Oficinas — DESCOMPLICARRO | Entenda. Questione. Decida.</title>
+<meta name="description" content="Conhecimento para oficinas que querem ir além do reparo. Formação, ferramentas para a rotina, GI Conecta para oficinas e parceiros em que acreditamos.">
+
+<!-- FAVICON: substituir pelos arquivos oficiais da identidade visual -->
+<!-- <link rel="icon" href="/favicon.ico"> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo-principal">Ir para o conteúdo principal</a>
+
+<!-- ==========================================================================
+     COMPONENTE: HEADER / NAVEGAÇÃO PRINCIPAL
+     Idêntico ao da Home, Sobre Nós e Para Motoristas — WordPress: template-parts/header.php
+     ========================================================================== -->
+<header class="site-header" id="topo">
+  <div class="container site-header__inner">
+
+    <a href="/" class="site-logo" aria-label="DESCOMPLICARRO — página inicial">
+      <!-- LOGO OFICIAL: substituir todo este bloco pela identidade oficial
+           (wordmark + monograma) fornecida pela marca. Manter área de
+           respiro equivalente no header. -->
+      <span class="site-logo__mark" aria-hidden="true"></span>
+      <span class="site-logo__text">
+        <span class="site-logo__word">DESCOMPLICARRO</span>
+        <span class="site-logo__tagline">Entenda. Questione. Decida.</span>
+      </span>
+    </a>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav">
+      <span class="nav-toggle__box">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </span>
+      <span class="nav-toggle__label">Menu</span>
+    </button>
+
+    <!-- NAVEGAÇÃO: substituir por menu dinâmico do WordPress (wp_nav_menu) -->
+    <nav class="site-nav" id="siteNav" aria-label="Navegação principal">
+      <ul class="site-nav__list">
+        <li><a href="/" class="site-nav__link">HOME</a></li>
+        <li><a href="/para-motoristas" class="site-nav__link">PARA MOTORISTAS</a></li>
+        <li><a href="/para-oficinas" class="site-nav__link is-current" aria-current="page">PARA OFICINAS</a></li>
+        <li><a href="/palestras-workshops" class="site-nav__link">PALESTRAS &amp; WORKSHOPS</a></li>
+        <li><a href="/em-foco" class="site-nav__link">EM FOCO</a></li>
+        <li><a href="/sobre-nos" class="site-nav__link">SOBRE NÓS</a></li>
+        <li><a href="/contato" class="site-nav__link">CONTATO</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<main id="conteudo-principal">
+
+  <!-- ==========================================================================
+       BLOCO N.00 — PARA OFICINAS
+       Reaproveita a estrutura da abertura da Home/Sobre Nós/Para Motoristas
+       (section--abertura), com kicker + headline, como no Sobre Nós.
+       WordPress: template-parts/oficinas/section-abertura.php
+       ========================================================================== -->
+  <section class="section section--abertura section--graphite" aria-labelledby="oficinas-heading">
+    <div class="container section--abertura__inner">
+
+      <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>ABERTURA</span></div>
+
+      <div class="abertura__content">
+        <span class="perfil__role">Para oficinas</span>
+        <h1 id="oficinas-heading" class="abertura__heading">
+          CONHECIMENTO PARA OFICINAS QUE QUEREM IR ALÉM DO REPARO.
+        </h1>
+        <p class="abertura__paragraph">
+          Uma oficina não entrega apenas um serviço técnico. Ela precisa diagnosticar, registrar, comunicar, orientar, gerar confiança e construir relacionamentos que façam o cliente querer voltar.
+        </p>
+        <p class="abertura__paragraph">
+          No DESCOMPLICARRO, acreditamos que conhecimento técnico, processos e comunicação podem transformar a forma como uma oficina trabalha — e também a forma como ela é percebida pelo cliente.
+        </p>
+        <p class="abertura__paragraph is-forte">
+          Por isso, desenvolvemos conteúdos, treinamentos e ferramentas para profissionais e empresas que querem aprimorar sua operação, seu atendimento e a maneira como entregam valor.
+        </p>
+      </div>
+
+      <div class="abertura__figure">
+        <!-- IMAGEM DE ABERTURA: substituir por fotografia editorial de ambiente
+             de oficina. Não utilizar fotos de banco de imagens genéricas. -->
+        <img src="/assets/images/placeholder-photo.svg" alt="Fotografia editorial de ambiente de oficina — imagem oficial a ser adicionada posteriormente" class="abertura__image">
+        <span class="abertura__frame-mark abertura__frame-mark--tl"></span>
+        <span class="abertura__frame-mark abertura__frame-mark--br"></span>
+        <p class="figure-caption figure-caption--on-dark">Foto — ambiente de oficina</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.01 — DA ENTRADA AO PÓS-VENDA
+       Jornada editorial (não um infográfico corporativo): linhas, numeração
+       e laranja queimado como único ponto de intervenção, entre VENDA e
+       ENTREGA — o ponto de virada entre a venda e o pós-venda.
+       WordPress: template-parts/oficinas/section-jornada.php
+       ========================================================================== -->
+  <section class="section section--jornada-oficinas section--offwhite" aria-labelledby="jornada-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="0" y1="120" x2="1200" y2="120" stroke="#252525" stroke-width="1" opacity="0.06"></line>
+      <line x1="1040" y1="0" x2="1040" y2="900" stroke="#252525" stroke-width="1" opacity="0.06"></line>
+      <circle cx="1040" cy="120" r="4" fill="#C65A32" opacity="0.55"></circle>
+      <circle cx="60" cy="820" r="220" fill="none" stroke="#252525" stroke-width="1" opacity="0.07"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="section-index"><span>N.01</span><span class="section-index__line"></span><span>DA ENTRADA AO PÓS-VENDA</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="jornada-heading" class="section-heading">UM BOM SERVIÇO PASSA POR MUITO MAIS DO QUE O ELEVADOR.</h2>
+      </div>
+
+      <div class="bloco-texto__col">
+        <p>Cada etapa da jornada influencia a próxima. Da forma como o cliente é recebido à maneira como o diagnóstico é registrado, apresentado e acompanhado depois da entrega.</p>
+        <p>Por isso, nossas soluções atuam em diferentes pontos dessa jornada.</p>
+      </div>
+
+      <!-- Jornada completa: atendimento → checklist → evidências → tradução →
+           venda → entrega → pós-venda → retenção -->
+      <div class="jornada" aria-label="Jornada do atendimento ao pós-venda">
+        <span class="jornada__etapa"><span class="jornada__indice">01</span><span class="jornada__label">Atendimento</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">02</span><span class="jornada__label">Checklist</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">03</span><span class="jornada__label">Evidências</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">04</span><span class="jornada__label">Tradução</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">05</span><span class="jornada__label">Venda</span></span>
+        <span class="jornada__seta jornada__seta--intervencao" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">06</span><span class="jornada__label">Entrega</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">07</span><span class="jornada__label">Pós-venda</span></span>
+        <span class="jornada__seta" aria-hidden="true">→</span>
+        <span class="jornada__etapa"><span class="jornada__indice">08</span><span class="jornada__label">Retenção</span></span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.02 — FORMAÇÃO
+       Quatro treinamentos próprios do DESCOMPLICARRO, em ordem fixa,
+       apresentados como blocos editoriais completos — não cards comerciais.
+       A etiqueta "Treinamento Descomplicarro" marca autoria; a etiqueta
+       da jornada da formação (Evidenciar → Traduzir e vender → Atender →
+       Relacionar e reter) conecta os quatro de forma sutil, sem hierarquia.
+       Novos treinamentos futuros seguem a mesma estrutura .formacao-item.
+       WordPress: template-parts/oficinas/section-formacao.php (CPT "formacoes")
+       ========================================================================== -->
+  <section class="section section--formacao section--offwhite" aria-labelledby="formacao-heading">
+    <div class="container">
+
+      <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>FORMAÇÃO</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="formacao-heading" class="section-heading">FORMAÇÃO</h2>
+      </div>
+
+      <div class="formacao">
+
+        <!-- 01 — CHECKLIST VENDEDOR -->
+        <div class="formacao-item">
+          <div class="formacao-item__head">
+            <span class="formacao-item__indice">01</span>
+            <span class="formacao-item__jornada-tag">Evidenciar</span>
+          </div>
+          <span class="perfil__role">Treinamento Descomplicarro</span>
+          <h3 class="perfil__name">Checklist Vendedor</h3>
+          <p class="formacao-item__conceito">Inspeção que gera evidências.</p>
+          <div class="bloco-texto__col">
+            <p>Um treinamento para ensinar o mecânico a realizar um checklist rápido e assertivo e utilizar recursos visuais e ferramentas lúdicas para produzir evidências e vídeos que ajudem o consultor no processo comercial.</p>
+          </div>
+          <div class="destaque-linhas">
+            <p>O mecânico não precisa vender.</p>
+            <p>Precisa entregar boas evidências para quem vende.</p>
+          </div>
+          <div class="solucao__cta">
+            <!-- HOTMART — INSERIR URL DE COMPRA DO CHECKLIST VENDEDOR -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">QUERO CONHECER O CHECKLIST VENDEDOR</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 02 — MÉTODO T3V -->
+        <div class="formacao-item">
+          <div class="formacao-item__head">
+            <span class="formacao-item__indice">02</span>
+            <span class="formacao-item__jornada-tag">Traduzir e vender</span>
+          </div>
+          <span class="perfil__role">Treinamento Descomplicarro</span>
+          <h3 class="perfil__name">Método T3V</h3>
+          <p class="formacao-item__conceito">Teoria. Técnica. Tradução. Venda.</p>
+          <div class="bloco-texto__col">
+            <p>Um método voltado ao consultor, para ajudá-lo a compreender a informação técnica, traduzi-la para uma linguagem que o cliente consiga entender e conduzir a apresentação dos serviços de forma mais clara e estruturada.</p>
+          </div>
+
+          <!-- Exploração visual do método: teoria → técnica → tradução → venda -->
+          <div class="jornada jornada--compacta" aria-label="Método T3V">
+            <span class="jornada__etapa"><span class="jornada__label">Teoria</span></span>
+            <span class="jornada__seta" aria-hidden="true">→</span>
+            <span class="jornada__etapa"><span class="jornada__label">Técnica</span></span>
+            <span class="jornada__seta" aria-hidden="true">→</span>
+            <span class="jornada__etapa"><span class="jornada__label">Tradução</span></span>
+            <span class="jornada__seta" aria-hidden="true">→</span>
+            <span class="jornada__etapa"><span class="jornada__label">Venda</span></span>
+          </div>
+
+          <div class="solucao__cta">
+            <!-- HOTMART — INSERIR URL DE COMPRA DO MÉTODO T3V -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">QUERO CONHECER O T3V</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 03 — MÉTODO MAIS -->
+        <div class="formacao-item">
+          <div class="formacao-item__head">
+            <span class="formacao-item__indice">03</span>
+            <span class="formacao-item__jornada-tag">Atender</span>
+          </div>
+          <span class="perfil__role">Treinamento Descomplicarro</span>
+          <h3 class="perfil__name">Método MAIS</h3>
+          <p class="formacao-item__conceito">Atendimento a mulheres.</p>
+          <div class="bloco-texto__col">
+            <p>Uma metodologia para compreender melhor a cliente mulher, suas expectativas e sua relação com o ambiente automotivo, ajudando oficinas a construir uma experiência de atendimento baseada em clareza, respeito e confiança.</p>
+          </div>
+          <div class="solucao__cta">
+            <!-- HOTMART — INSERIR URL DE COMPRA DO MÉTODO MAIS -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">QUERO CONHECER O MÉTODO MAIS</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 04 — DEPOIS DA ENTREGA -->
+        <div class="formacao-item">
+          <div class="formacao-item__head">
+            <span class="formacao-item__indice">04</span>
+            <span class="formacao-item__jornada-tag">Relacionar e reter</span>
+          </div>
+          <span class="perfil__role">Treinamento Descomplicarro</span>
+          <h3 class="perfil__name">Depois da Entrega</h3>
+          <p class="formacao-item__conceito">O pós-venda que mantém o cliente perto da oficina.</p>
+          <div class="bloco-texto__col">
+            <p>Um treinamento sobre o que acontece depois que o veículo é entregue: acompanhamento, relacionamento, experiência e processos que ajudam a aumentar a retenção e fazer com que bons clientes continuem voltando.</p>
+          </div>
+          <p class="solucao__assinatura">O relacionamento com o cliente <span>não termina quando o carro sai da oficina.</span></p>
+          <div class="solucao__cta">
+            <!-- HOTMART — INSERIR URL DE COMPRA DE DEPOIS DA ENTREGA -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">QUERO CONHECER DEPOIS DA ENTREGA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ESPAÇO PUBLICITÁRIO — após a área de Formação
+       Único espaço publicitário desta página. Reaproveita exatamente o
+       mesmo componente já aprovado na Home e no Para Motoristas.
+       WordPress: área gerenciável (ex.: bloco de anúncio / ACF de banner)
+       ========================================================================== -->
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="oficinas-formacao">
+    <div class="container">
+      <!-- PUBLICIDADE: substituir "#" pelo link do anunciante; inserir
+           <img> com alt e, quando necessário, identificação do anunciante -->
+      <a href="#" class="ad-slot__unit">
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
+        <span class="ad-slot__eyebrow">Publicidade</span>
+        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
+        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.03 — FERRAMENTAS PARA A ROTINA (Pack de Papelaria)
+       "Produto vivo": lista de etiquetas modular — novos materiais futuros
+       só precisam de um novo .pack-tags__item.
+       WordPress: template-parts/oficinas/section-pack.php
+       ========================================================================== -->
+  <section class="section section--pack section--graphite" aria-labelledby="pack-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="520" y1="150" x2="760" y2="65" stroke="#F4F1EA" stroke-width="1.5" opacity="0.1"></line>
+      <line x1="760" y1="65" x2="980" y2="135" stroke="#F4F1EA" stroke-width="1.5" opacity="0.1"></line>
+      <circle cx="520" cy="150" r="3" fill="#F4F1EA" opacity="0.28"></circle>
+      <circle cx="980" cy="135" r="3" fill="#F4F1EA" opacity="0.28"></circle>
+      <circle cx="1150" cy="55" r="5" fill="#C65A32" opacity="0.7"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="section-index section-index--on-dark"><span>N.03</span><span class="section-index__line"></span><span>FERRAMENTAS PARA A ROTINA</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="pack-heading" class="section-heading section-heading--on-dark">PACK DE PAPELARIA PARA OFICINAS</h2>
+      </div>
+
+      <div class="manifesto">
+        <p class="manifesto__lead">Conhecimento que vira processo.</p>
+        <div class="manifesto__body">
+          <p>Um conjunto de materiais desenvolvidos para facilitar e organizar diferentes etapas da rotina da oficina.</p>
+          <p>Além dos materiais operacionais, o pack poderá reunir workbooks dos treinamentos do DESCOMPLICARRO vendidos separadamente. Os cursos completos possuem seus próprios materiais didáticos — aqui, o foco é a comercialização dos workbooks e ferramentas práticas separadamente.</p>
+        </div>
+
+        <!-- Exemplos do que poderá compor o pack — lista modular, aberta a
+             novos materiais futuros sem reconstrução da seção. -->
+        <div class="pack-tags">
+          <span class="pack-tags__item">Check-in</span>
+          <span class="pack-tags__item">Check-out</span>
+          <span class="pack-tags__item">Checklists</span>
+          <span class="pack-tags__item">Atendimento</span>
+          <span class="pack-tags__item">Pós-venda</span>
+          <span class="pack-tags__item">Workbooks</span>
+          <span class="pack-tags__item">Ferramentas de processo</span>
+        </div>
+
+        <div class="solucao__cta">
+          <!-- HOTMART — INSERIR URL DE COMPRA DO PACK DE PAPELARIA -->
+          <a href="#" class="btn-bracket btn-bracket--on-dark" target="_blank" rel="noopener noreferrer">
+            <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+            <span class="btn-bracket__label">QUERO CONHECER O PACK</span>
+            <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.04 — GI CONECTA
+       Seção curta: apenas apresenta a oportunidade de credenciamento às
+       oficinas. Nenhuma funcionalidade do GI CONECTA (busca, mapa, filtros)
+       é criada aqui — a ferramenta em si terá presença maior em Para
+       Motoristas.
+       WordPress: template-parts/oficinas/section-gi-conecta.php
+       ========================================================================== -->
+  <section class="section section--gi-conecta-oficinas section--offwhite" aria-labelledby="gi-conecta-oficinas-heading">
+    <div class="container">
+
+      <div class="section-index"><span>N.04</span><span class="section-index__line"></span><span>GI CONECTA</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="gi-conecta-oficinas-heading" class="section-heading">SUA OFICINA NO GI CONECTA</h2>
+      </div>
+
+      <div class="bloco-texto__col">
+        <p>O GI CONECTA está sendo desenvolvido para aproximar motoristas de oficinas que valorizam atendimento, transparência e uma boa experiência para o cliente.</p>
+        <p>Se sua oficina acredita nesses mesmos princípios, você poderá solicitar a participação no processo de credenciamento.</p>
+      </div>
+
+      <div class="solucao__cta">
+        <!-- FORMULÁRIO DE CREDENCIAMENTO GI CONECTA — INSERIR URL -->
+        <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">QUERO ME CREDENCIAR</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+      <p class="nota-discreta">Credenciamento sujeito aos critérios de curadoria do GI Conecta.</p>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.05 — PARCEIROS EM QUE ACREDITAMOS
+       IMPORTANTE: QR Car e Mecânico Que Lucra são parceiros/projetos
+       externos — NÃO são produtos do DESCOMPLICARRO. A etiqueta "Parceiro
+       Descomplicarro" e a nota discreta abaixo tornam isso explícito.
+       QR Car reaproveita .perfil (mesmo bloco usado em Giovana/Vitor e nas
+       soluções de Para Motoristas). Os três acessos do Mecânico Que Lucra
+       usam .avancar-grid, com peso visual igual entre eles.
+       WordPress: template-parts/oficinas/section-parceiros.php (CPT "parceiros")
+       ========================================================================== -->
+  <section class="section section--parceiros section--offwhite" aria-labelledby="parceiros-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="1200" y1="140" x2="740" y2="140" stroke="#252525" stroke-width="1" opacity="0.07"></line>
+      <line x1="740" y1="140" x2="740" y2="420" stroke="#252525" stroke-width="1" opacity="0.07"></line>
+      <circle cx="740" cy="420" r="4" fill="#C65A32" opacity="0.5"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="section-index"><span>N.05</span><span class="section-index__line"></span><span>PARCEIROS EM QUE ACREDITAMOS</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="parceiros-heading" class="section-heading">PARCEIROS EM QUE ACREDITAMOS</h2>
+      </div>
+
+      <div class="bloco-texto__col">
+        <p class="is-lead">Boas soluções também fazem parte de uma oficina melhor.</p>
+        <p>O DESCOMPLICARRO também abre espaço para empresas, ferramentas e projetos de terceiros que conhecemos e acreditamos que podem contribuir com o desenvolvimento das oficinas.</p>
+      </div>
+
+      <p class="nota-discreta">As soluções apresentadas nesta seção são de empresas parceiras e não são produtos do DESCOMPLICARRO.</p>
+
+      <!-- PARCEIRO — QR CAR -->
+      <div class="perfil perfil--espacado">
+        <div class="perfil__figure">
+          <!-- LOGO/IMAGEM DO QR CAR: substituir pela identidade oficial fornecida pelo parceiro -->
+          <img src="/assets/images/placeholder-photo.svg" alt="Logo do QR Car — imagem oficial a ser adicionada posteriormente" class="perfil__image">
+          <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
+          <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
+          <p class="figure-caption">Logo — QR Car</p>
+        </div>
+
+        <div class="perfil__body">
+          <span class="badge-tag badge-tag--on-light">Parceiro Descomplicarro</span>
+          <h3 class="perfil__name">QR Car</h3>
+          <!-- TEXTO OFICIAL QR CAR — INSERIR: substituir pela descrição oficial
+               fornecida pelo parceiro. Não inventar descrição do produto. -->
+          <p class="perfil__text">[ TEXTO OFICIAL QR CAR — INSERIR ]</p>
+          <div class="solucao__cta">
+            <!-- QR CAR — INSERIR URL DO SITE/COMERCIAL OFICIAL -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">CONHEÇA O QR CAR</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARCEIRO — MECÂNICO QUE LUCRA -->
+      <div class="perfil perfil--reverse perfil--espacado">
+        <div class="perfil__figure">
+          <!-- LOGO/IMAGEM DO MECÂNICO QUE LUCRA: substituir pela identidade oficial fornecida pelo parceiro -->
+          <img src="/assets/images/placeholder-photo.svg" alt="Logo do Mecânico Que Lucra — imagem oficial a ser adicionada posteriormente" class="perfil__image">
+          <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
+          <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
+          <p class="figure-caption">Logo — Mecânico Que Lucra</p>
+        </div>
+
+        <div class="perfil__body">
+          <span class="badge-tag badge-tag--on-light">Parceiro Descomplicarro</span>
+          <h3 class="perfil__name">Mecânico Que Lucra</h3>
+          <p class="solucao__assinatura">Uma marca. <span>Três formas de avançar.</span></p>
+        </div>
+      </div>
+
+      <!-- Três acessos da marca — mesmo peso visual, sem hierarquia entre eles -->
+      <div class="avancar-grid">
+
+        <div class="avancar-item">
+          <span class="avancar-item__index">01</span>
+          <h4 class="avancar-item__title">ML Repertório</h4>
+          <p class="avancar-item__desc">Aprendizado e aplicação. Conteúdo para ampliar repertório e transformar conhecimento em aplicação na rotina.</p>
+          <div class="avancar-item__cta">
+            <!-- MECÂNICO QUE LUCRA — INSERIR URL COMERCIAL (ML REPERTÓRIO) -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">CONHEÇA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="avancar-item">
+          <span class="avancar-item__index">02</span>
+          <h4 class="avancar-item__title">ML Tração</h4>
+          <p class="avancar-item__desc">Orientação e troca em grupo. Desenvolvimento coletivo com orientação, discussão e troca de experiências entre profissionais.</p>
+          <div class="avancar-item__cta">
+            <!-- MECÂNICO QUE LUCRA — INSERIR URL COMERCIAL (ML TRAÇÃO) -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">CONHEÇA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="avancar-item">
+          <span class="avancar-item__index">03</span>
+          <h4 class="avancar-item__title">ML Comando</h4>
+          <p class="avancar-item__desc">Acompanhamento individual. Desenvolvimento mais próximo e direcionado aos desafios e necessidades de cada oficina.</p>
+          <div class="avancar-item__cta">
+            <!-- MECÂNICO QUE LUCRA — INSERIR URL COMERCIAL (ML COMANDO) -->
+            <a href="#" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">CONHEÇA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BLOCO N.06 — PALESTRAS & WORKSHOPS
+       Ponte curta para a página interna Palestras & Workshops.
+       WordPress: template-parts/oficinas/section-palestras.php
+       ========================================================================== -->
+  <section class="section section--palestras-bridge section--graphite" aria-labelledby="palestras-heading">
+    <svg class="section-bg-graphic" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <line x1="520" y1="150" x2="760" y2="65" stroke="#F4F1EA" stroke-width="1.5" opacity="0.1"></line>
+      <line x1="760" y1="65" x2="980" y2="135" stroke="#F4F1EA" stroke-width="1.5" opacity="0.1"></line>
+      <line x1="980" y1="135" x2="1150" y2="55" stroke="#F4F1EA" stroke-width="1.5" opacity="0.1"></line>
+      <circle cx="1150" cy="55" r="5" fill="#C65A32" opacity="0.7"></circle>
+    </svg>
+    <div class="container">
+
+      <div class="section-index section-index--on-dark"><span>N.06</span><span class="section-index__line"></span><span>PALESTRAS &amp; WORKSHOPS</span></div>
+
+      <div class="section-heading-row">
+        <h2 id="palestras-heading" class="section-heading section-heading--on-dark">QUER LEVAR ESSE CONHECIMENTO PARA DENTRO DA SUA EMPRESA?</h2>
+      </div>
+
+      <p class="abertura__paragraph">O DESCOMPLICARRO também desenvolve palestras, workshops, treinamentos e experiências personalizadas para empresas e equipes do setor automotivo.</p>
+
+      <div class="solucao__cta">
+        <a href="/palestras-workshops" class="btn-bracket btn-bracket--on-dark">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+          <span class="btn-bracket__label">CONHEÇA PALESTRAS &amp; WORKSHOPS</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ==========================================================================
+     COMPONENTE: FOOTER
+     Idêntico ao da Home, Sobre Nós e Para Motoristas — WordPress: template-parts/footer.php
+     ========================================================================== -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container site-footer__inner">
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Contatos</h2>
+      <ul class="site-footer__list">
+        <!-- CONTATO: substituir pelos dados oficiais -->
+        <li><a href="mailto:contato@descomplicarro.com.br">PLACEHOLDER — e-mail@descomplicarro</a></li>
+        <li><span>PLACEHOLDER — telefone / WhatsApp</span></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Redes sociais</h2>
+      <ul class="site-footer__list site-footer__list--inline">
+        <!-- REDES SOCIAIS: substituir "#" pelas URLs oficiais dos perfis -->
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__heading">Institucional</h2>
+      <ul class="site-footer__list">
+        <!-- PÁGINAS LEGAIS: substituir "#" pelas páginas definitivas -->
+        <li><a href="/politica-de-privacidade">Política de Privacidade</a></li>
+        <li><a href="/termos-de-uso">Termos de Uso</a></li>
+        <li><a href="/cookies">Cookies</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="container">
+      <!-- Ao conceder o registro da marca, alterar para: © DESCOMPLICARRO® — Todos os direitos reservados. -->
+      <p>© DESCOMPLICARRO — Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
