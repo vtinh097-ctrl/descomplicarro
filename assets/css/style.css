@@ -710,6 +710,21 @@ button:focus-visible {
 }
 
 /* --------------------------------------------------------------------------
+   10.1 FOOTER — ÁREA DE CONTATO (WhatsApp / E-mail)
+   -------------------------------------------------------------------------- */
+.footer-contato__texto {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+}
+
+.footer-contato__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
    11. TEXTURA GRÁFICA DE FUNDO
    Aplicação discreta da biblioteca gráfica da marca (grids, coordenadas,
    conexões) nas superfícies das seções. Baixíssimo contraste — nunca deve
