@@ -1,0 +1,2026 @@
+/*
+Theme Name: DESCOMPLICARRO
+Theme URI: https://descomplicarro.com.br
+Author: DESCOMPLICARRO
+Author URI: https://descomplicarro.com.br
+Description: Tema WordPress próprio do DESCOMPLICARRO. Reproduz fielmente a V1 aprovada (identidade grafite/off-white/laranja queimado, Space Grotesk + DM Sans, sistema editorial N.00/N.01) com administração de conteúdo pelo painel. Não é um redesign — é a migração técnica da V1 estática.
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 7.4
+Tested up to: 6.4
+License: Uso exclusivo do DESCOMPLICARRO
+Text Domain: descomplicarro
+
+Este arquivo contém, abaixo do cabeçalho exigido pelo WordPress, o CSS
+original da V1 (assets/css/style.css), copiado sem alterações. O tema
+carrega este arquivo via wp_enqueue_style( get_stylesheet_uri() ) em
+functions.php — não há reinterpretação visual nesta migração.
+*/
+
+/* ==========================================================================
+   DESCOMPLICARRO — HOME
+   CSS organizado por componente para facilitar migração para WordPress
+   (cada bloco de comentário corresponde a um template-part / bloco Gutenberg)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS DE IDENTIDADE VISUAL
+   -------------------------------------------------------------------------- */
+:root {
+  /* Cores da marca */
+  --color-graphite: #252525;
+  --color-offwhite: #F4F1EA;
+  --color-orange: #C65A32;
+  --color-orange-dark: #A6472A;
+
+  /* Tons derivados (uso funcional, nunca substituem as cores principais) */
+  --color-graphite-70: rgba(37, 37, 37, 0.7);
+  --color-graphite-45: rgba(37, 37, 37, 0.45);
+  --color-graphite-15: rgba(37, 37, 37, 0.15);
+  --color-graphite-08: rgba(37, 37, 37, 0.08);
+  --color-offwhite-80: rgba(244, 241, 234, 0.8);
+  --color-offwhite-55: rgba(244, 241, 234, 0.55);
+  --color-offwhite-25: rgba(244, 241, 234, 0.25);
+
+  /* Tipografia */
+  --font-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --fs-h1: clamp(2rem, 1.35rem + 2.3vw, 3.25rem);
+  --fs-h2: clamp(1.875rem, 1.3rem + 2vw, 3rem);
+  --fs-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --fs-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --fs-body: 1rem;
+  --fs-small: 0.9rem;
+  --fs-eyebrow: 0.8125rem;
+
+  --lh-tight: 1.15;
+  --lh-heading: 1.25;
+  --lh-body: 1.65;
+
+  --ls-eyebrow: 0.12em;
+  --ls-heading: 0.01em;
+  --ls-button: 0.06em;
+
+  /* Espaçamento */
+  --space-2xs: 0.375rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1.25rem;
+  --space-md: 2rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  --space-2xl: 7.5rem;
+
+  /* Layout */
+  --container-max: 1320px;
+  --container-padding: clamp(1.25rem, 1rem + 2vw, 3rem);
+  --grid-gap: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+
+  /* Bordas e raio (mínimo, editorial — não usar cantos muito arredondados) */
+  --radius-sm: 2px;
+  --border-width: 1px;
+
+  /* Transições */
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 380ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Camadas */
+  --z-header: 100;
+  --z-nav-overlay: 90;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET E BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-offwhite);
+  color: var(--color-graphite);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  margin: 0;
+}
+
+p { margin: 0; }
+
+button {
+  font-family: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Foco visível — acessibilidade */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-orange);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--color-orange);
+  color: var(--color-offwhite);
+  padding: var(--space-xs) var(--space-sm);
+  z-index: 999;
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+.skip-link:focus {
+  left: var(--space-sm);
+  top: var(--space-sm);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT / UTILITÁRIOS
+   -------------------------------------------------------------------------- */
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.section {
+  padding-block: var(--space-2xl);
+}
+
+.section--graphite {
+  background-color: var(--color-graphite);
+  color: var(--color-offwhite);
+}
+
+.section--offwhite {
+  background-color: var(--color-offwhite);
+  color: var(--color-graphite);
+}
+
+/* Marcação editorial "camadas de informação": numera cada seção da Home,
+   reforçando o processo complexidade → organização → compreensão */
+.section-index {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--color-orange);
+  text-transform: uppercase;
+}
+.section-index span:first-child { color: var(--color-orange); }
+.section-index span:last-child { color: var(--color-graphite-70); }
+.section-index--on-dark span:last-child { color: var(--color-offwhite-80); }
+.section-index__line {
+  flex: 1 1 auto;
+  height: var(--border-width);
+  background-color: var(--color-graphite-15);
+  max-width: 6rem;
+}
+.section-index--on-dark .section-index__line { background-color: var(--color-offwhite-25); }
+
+.section-heading-row {
+  margin-bottom: var(--space-lg);
+}
+
+.section-heading {
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+}
+.section-heading--on-dark { color: var(--color-offwhite); }
+
+.section-cta {
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   4. COMPONENTE: BOTÃO EDITORIAL "[ TEXTO ]"
+   -------------------------------------------------------------------------- */
+.btn-bracket {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-button);
+  text-transform: uppercase;
+  color: var(--color-graphite);
+  padding-block: var(--space-2xs);
+  border-bottom: var(--border-width) solid var(--color-graphite);
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.btn-bracket__bracket {
+  color: var(--color-orange);
+  transition: transform var(--transition-base);
+}
+
+.btn-bracket:hover,
+.btn-bracket:focus-visible {
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+.btn-bracket:hover .btn-bracket__bracket:first-child,
+.btn-bracket:focus-visible .btn-bracket__bracket:first-child { transform: translateX(-3px); }
+.btn-bracket:hover .btn-bracket__bracket:last-child,
+.btn-bracket:focus-visible .btn-bracket__bracket:last-child { transform: translateX(3px); }
+
+.btn-bracket--on-dark {
+  color: var(--color-offwhite);
+  border-color: var(--color-offwhite-55);
+}
+.btn-bracket--on-dark:hover,
+.btn-bracket--on-dark:focus-visible {
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+
+/* --------------------------------------------------------------------------
+   5. COMPONENTE: HEADER / NAVEGAÇÃO
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background-color: var(--color-offwhite);
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-sm);
+}
+
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+/* Slot reservado para o monograma oficial — placeholder técnico neutro */
+.site-logo__mark {
+  width: 2rem;
+  height: 2rem;
+  border: var(--border-width) solid var(--color-graphite);
+  position: relative;
+  flex-shrink: 0;
+}
+.site-logo__mark::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-orange);
+  transform: translate(-50%, -50%);
+}
+
+.site-logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.site-logo__word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  color: var(--color-graphite);
+}
+
+.site-logo__tagline {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--color-graphite-70);
+  text-transform: uppercase;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.site-nav__link {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-button);
+  color: var(--color-graphite);
+  position: relative;
+  padding-block: var(--space-2xs);
+}
+
+.site-nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-orange);
+  transition: width var(--transition-base);
+}
+
+.site-nav__link:hover::after,
+.site-nav__link:focus-visible::after,
+.site-nav__link.is-current::after {
+  width: 100%;
+}
+
+.site-nav__link.is-current { color: var(--color-orange); }
+
+/* Botão de menu — visível apenas no mobile */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex-shrink: 0;
+}
+
+.nav-toggle__box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 24px;
+}
+
+.nav-toggle__bar {
+  height: 2px;
+  background-color: var(--color-graphite);
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.nav-toggle__label {
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-button);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   6. BLOCO 1 — ABERTURA
+   -------------------------------------------------------------------------- */
+.section--abertura {
+  padding-block: var(--space-2xl);
+}
+
+.section--abertura__inner {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-2xl) var(--space-lg);
+  align-items: center;
+}
+
+.section--abertura .section-index {
+  grid-column: 1 / -1;
+  color: var(--color-orange);
+}
+.section--abertura .section-index span:last-child { color: var(--color-offwhite-80); }
+.section--abertura .section-index__line { background-color: var(--color-offwhite-25); }
+
+.abertura__heading {
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  color: var(--color-offwhite);
+  max-width: 32ch;
+}
+
+.abertura__paragraph {
+  margin-top: var(--space-md);
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+  max-width: 46ch;
+}
+
+.abertura__content .btn-bracket {
+  margin-top: var(--space-lg);
+}
+
+.abertura__figure {
+  position: relative;
+}
+
+.abertura__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.abertura__frame-mark {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--color-orange);
+}
+.abertura__frame-mark--tl { top: -14px; left: -14px; border-right: 0; border-bottom: 0; }
+.abertura__frame-mark--br { bottom: -14px; right: -14px; border-left: 0; border-top: 0; }
+
+/* --------------------------------------------------------------------------
+   7. BLOCO 2 — PORTAS DE ENTRADA
+   -------------------------------------------------------------------------- */
+.portas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--grid-gap);
+}
+
+.porta-card {
+  position: relative;
+  display: block;
+  border-top: var(--border-width) solid var(--color-graphite);
+  padding-top: var(--space-xs);
+  transition: border-color var(--transition-base);
+}
+
+.porta-card__index {
+  position: absolute;
+  top: var(--space-xs);
+  right: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-graphite-45);
+}
+
+.porta-card__media {
+  overflow: hidden;
+  aspect-ratio: 8 / 9;
+  background-color: var(--color-graphite-08);
+}
+
+.porta-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.porta-card:hover .porta-card__image,
+.porta-card:focus-visible .porta-card__image {
+  transform: scale(1.04);
+}
+
+.porta-card:hover,
+.porta-card:focus-visible {
+  border-color: var(--color-orange);
+}
+
+.porta-card__body {
+  padding-top: var(--space-xs);
+}
+
+.porta-card__title {
+  font-size: 1.1rem;
+  letter-spacing: var(--ls-heading);
+}
+
+.porta-card__desc {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 26ch;
+}
+
+.porta-card__arrow {
+  display: inline-block;
+  margin-top: var(--space-2xs);
+  color: var(--color-orange);
+  font-family: var(--font-display);
+  transition: transform var(--transition-base);
+}
+
+.porta-card:hover .porta-card__arrow,
+.porta-card:focus-visible .porta-card__arrow {
+  transform: translateX(6px);
+}
+
+/* Seção mais compacta verticalmente: aproxima as portas de entrada do
+   bloco seguinte, preservando o respiro entre os quatro acessos */
+.section--portas {
+  padding-bottom: var(--space-xl);
+}
+
+/* --------------------------------------------------------------------------
+   8. BLOCO 3 — EM FOCO
+   -------------------------------------------------------------------------- */
+.emfoco-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.emfoco-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.emfoco-card__media {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-graphite-08);
+}
+
+.emfoco-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.emfoco-card:hover .emfoco-card__image,
+.emfoco-card:focus-visible .emfoco-card__image {
+  transform: scale(1.04);
+}
+
+.emfoco-card__category {
+  margin-top: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+
+.emfoco-card__title {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+}
+
+.emfoco-card:hover .emfoco-card__title,
+.emfoco-card:focus-visible .emfoco-card__title {
+  color: var(--color-orange);
+}
+
+.emfoco-card__excerpt {
+  margin-top: var(--space-xs);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 34ch;
+}
+
+/* Aproxima o CTA "VER MAIS" dos três conteúdos selecionados */
+.section--emfoco .section-cta {
+  margin-top: var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   9. BLOCO 4 — YOUTUBE
+   -------------------------------------------------------------------------- */
+.youtube-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.video-card__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.video-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.video-card:hover .video-card__image,
+.video-card:focus-visible .video-card__image {
+  transform: scale(1.04);
+}
+
+.video-card__title {
+  margin-top: var(--space-sm);
+  font-size: 1.1rem;
+  color: var(--color-offwhite);
+}
+
+.video-card:hover .video-card__title,
+.video-card:focus-visible .video-card__title {
+  color: var(--color-orange);
+}
+
+.video-card__excerpt {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-small);
+  color: var(--color-offwhite-80);
+  max-width: 34ch;
+}
+
+/* Seção mais compacta: aproxima os vídeos, o CTA e o início do rodapé */
+.section--youtube {
+  padding-bottom: var(--space-xl);
+}
+.section--youtube .section-cta {
+  margin-top: var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   10. COMPONENTE: FOOTER
+   -------------------------------------------------------------------------- */
+.site-footer {
+  background-color: var(--color-graphite);
+  color: var(--color-offwhite-80);
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  padding-block: var(--space-xl);
+  border-bottom: var(--border-width) solid var(--color-offwhite-25);
+}
+
+.site-footer__heading {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+  margin-bottom: var(--space-sm);
+}
+
+.site-footer__list li {
+  margin-bottom: var(--space-2xs);
+  font-size: var(--fs-small);
+}
+
+.site-footer__list a {
+  transition: color var(--transition-base);
+}
+.site-footer__list a:hover,
+.site-footer__list a:focus-visible {
+  color: var(--color-orange);
+}
+
+.site-footer__list--inline {
+  display: flex;
+  gap: var(--space-sm);
+}
+.site-footer__list--inline li { margin-bottom: 0; }
+
+.site-footer__bottom {
+  padding-block: var(--space-sm);
+}
+
+.site-footer__bottom p {
+  font-size: var(--fs-eyebrow);
+  color: var(--color-offwhite-55);
+}
+
+/* --------------------------------------------------------------------------
+   10.1 FOOTER — ÁREA DE CONTATO (WhatsApp / E-mail)
+   -------------------------------------------------------------------------- */
+.footer-contato__texto {
+  margin-bottom: var(--space-sm);
+  font-size: var(--fs-small);
+  line-height: var(--lh-body);
+}
+
+.footer-contato__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   11. TEXTURA GRÁFICA DE FUNDO
+   Aplicação discreta da biblioteca gráfica da marca (grids, coordenadas,
+   conexões) nas superfícies das seções. Baixíssimo contraste — nunca deve
+   competir com o conteúdo. Um elemento predominante + um pequeno detalhe
+   de intervenção em laranja, por seção.
+   -------------------------------------------------------------------------- */
+
+/* Contêiner de posicionamento: garante que a textura fique atrás do
+   conteúdo (z-index negativo) sem afetar o fluxo do layout */
+.section--portas,
+.section--emfoco,
+.section--youtube {
+  position: relative;
+  overflow: hidden;
+  /* z-index (mesmo 0) força um contexto de empilhamento próprio na seção,
+     para que os elementos de fundo com z-index negativo fiquem presos
+     entre o background da seção e seu conteúdo — nunca atrás do fundo */
+  z-index: 0;
+}
+
+.section-bg-graphic {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* PORTAS DE ENTRADA — grid técnico muito sutil, parcial, canto superior direito */
+/* Posicionado no canto inferior direito — área de respiro abaixo das
+   imagens/textos das portas, onde o grid não fica encoberto pelo conteúdo */
+.section--portas::before {
+  content: '';
+  position: absolute;
+  bottom: -12%;
+  right: -5%;
+  width: 44%;
+  height: 58%;
+  background-image:
+    repeating-linear-gradient(to right, rgba(37, 37, 37, 0.28) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, rgba(37, 37, 37, 0.28) 0 1px, transparent 1px 48px);
+  -webkit-mask-image: radial-gradient(circle at 100% 100%, black, transparent 75%);
+          mask-image: radial-gradient(circle at 100% 100%, black, transparent 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+/* pequeno detalhe de intervenção — cruz em laranja sobre um nó do grid */
+.section--portas::after {
+  content: '';
+  position: absolute;
+  bottom: 14%;
+  right: 20%;
+  width: 13px;
+  height: 13px;
+  background:
+    linear-gradient(var(--color-orange), var(--color-orange)) center / 100% 1.5px no-repeat,
+    linear-gradient(var(--color-orange), var(--color-orange)) center / 1.5px 100% no-repeat;
+  opacity: 0.55;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   12. COMPONENTE: ESPAÇO PUBLICITÁRIO
+   WordPress: widget/área gerenciável (ex.: template-parts/ad-slot.php)
+   Preparado para futuramente receber imagem/banner, alt, link externo e
+   identificação de anunciante. Placeholder enquanto não há anúncio ativo.
+   -------------------------------------------------------------------------- */
+.ad-slot {
+  background-color: var(--color-offwhite);
+  color: var(--color-graphite);
+  padding-block: var(--space-lg);
+}
+
+.ad-slot__unit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  position: relative;
+  min-height: 96px;
+  padding: var(--space-md) var(--space-lg);
+  border: var(--border-width) dashed var(--color-graphite-15);
+  transition: border-color var(--transition-base);
+}
+
+.ad-slot__unit:hover,
+.ad-slot__unit:focus-visible {
+  border-color: var(--color-orange);
+}
+
+.ad-slot__eyebrow {
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+
+.ad-slot__placeholder-text {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+  text-align: center;
+  transition: color var(--transition-base);
+}
+
+.ad-slot__unit:hover .ad-slot__placeholder-text,
+.ad-slot__unit:focus-visible .ad-slot__placeholder-text {
+  color: var(--color-orange);
+}
+
+.ad-slot__frame-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--color-orange);
+  opacity: 0.6;
+}
+.ad-slot__frame-mark--tl { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+.ad-slot__frame-mark--br { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+
+/* --------------------------------------------------------------------------
+   13. RESPONSIVO — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .portas-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .section--abertura__inner {
+    grid-template-columns: 1fr;
+  }
+  .abertura__figure { order: -1; }
+  .abertura__image { aspect-ratio: 16 / 9; }
+
+  .site-footer__inner { grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
+
+  /* Os sete itens do menu não cabem ao lado da logo até o desktop cheio;
+     o menu responsivo (hambúrguer) cobre tablet e mobile para evitar
+     rolagem horizontal no header */
+  .nav-toggle { display: flex; }
+
+  .site-nav {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    z-index: var(--z-nav-overlay);
+    background-color: var(--color-graphite);
+    padding: calc(var(--space-2xl) + 2rem) var(--space-md) var(--space-md);
+    transform: translateX(100%);
+    transition: transform var(--transition-slow);
+    overflow-y: auto;
+  }
+
+  .site-nav.is-open { transform: translateX(0); }
+
+  .site-nav__list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .site-nav__link {
+    font-size: 1.25rem;
+    color: var(--color-offwhite);
+  }
+  .site-nav__link.is-current { color: var(--color-orange); }
+}
+
+/* --------------------------------------------------------------------------
+   14. RESPONSIVO — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .emfoco-grid,
+  .youtube-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+
+  .portas-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+
+  .site-footer__inner { grid-template-columns: 1fr; gap: var(--space-lg); }
+
+  .site-footer__list--inline { flex-wrap: wrap; }
+
+  .section { padding-block: var(--space-xl); }
+
+  .abertura__heading { max-width: none; }
+  .abertura__paragraph { max-width: none; }
+
+  /* Elementos gráficos de fundo: reduzidos/ocultos no mobile para não
+     prejudicar a leitura em telas pequenas */
+  .section-bg-graphic,
+  .section--portas::before,
+  .section--portas::after {
+    display: none;
+  }
+
+  .ad-slot { padding-block: var(--space-md); }
+  .ad-slot__unit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    min-height: 0;
+    padding: var(--space-sm);
+  }
+  .ad-slot__placeholder-text { text-align: left; }
+}
+
+/* ==========================================================================
+   PÁGINA: SOBRE NÓS
+   Componentes exclusivos desta página — extensão do design system da Home,
+   sem alterar nenhuma regra existente acima.
+   WordPress: template page-sobre-nos.php / template-parts/sobre/*.php
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   15. BLOCO N.00 — AJUSTES DE ABERTURA (kicker + parágrafo forte + legenda)
+   -------------------------------------------------------------------------- */
+.abertura__paragraph.is-forte { font-weight: 700; color: var(--color-offwhite); }
+
+/* Legenda de fotografia — compartilhada entre a abertura e os perfis */
+.figure-caption {
+  margin-top: var(--space-xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+.figure-caption--on-dark { color: var(--color-offwhite-55); }
+
+/* --------------------------------------------------------------------------
+   16. BLOCO N.01 — O ENCONTRO QUE VIROU DESCOMPLICARRO
+   -------------------------------------------------------------------------- */
+.section--encontro { position: relative; overflow: hidden; z-index: 0; }
+
+.bloco-texto__col { max-width: 62ch; }
+
+.bloco-texto__col p {
+  margin-top: var(--space-md);
+  font-size: var(--fs-body);
+  color: var(--color-graphite);
+}
+.bloco-texto__col p:first-child { margin-top: 0; }
+.bloco-texto__col p.is-lead { font-size: var(--fs-lead); }
+.bloco-texto__col p.is-forte { font-weight: 700; }
+
+/* Linhas em destaque — grupo curto de frases com ênfase tipográfica,
+   reutilizado no Encontro e no Manifesto */
+.destaque-linhas {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) 0;
+  border-top: var(--border-width) solid var(--color-graphite-15);
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+  display: grid;
+  gap: var(--space-xs);
+}
+.destaque-linhas p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+}
+.destaque-linhas--on-dark { border-color: var(--color-offwhite-25); }
+.destaque-linhas--on-dark p { color: var(--color-offwhite); }
+
+/* --------------------------------------------------------------------------
+   17. BLOCO N.04 — MANIFESTO
+   -------------------------------------------------------------------------- */
+.section--manifesto { position: relative; overflow: hidden; z-index: 0; }
+
+.manifesto { max-width: 68ch; }
+
+.manifesto__lead {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  color: var(--color-offwhite);
+}
+
+.manifesto__body {
+  margin-top: var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+}
+.manifesto__body p {
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+}
+
+.manifesto__signature {
+  margin-top: var(--space-xl);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h2);
+  line-height: 1.15;
+  letter-spacing: var(--ls-heading);
+  color: var(--color-offwhite);
+  text-transform: uppercase;
+}
+.manifesto__signature span {
+  display: block;
+  margin-top: var(--space-2xs);
+  color: var(--color-orange);
+}
+
+/* --------------------------------------------------------------------------
+   18. BLOCO N.02 / N.03 — PERFIS (GIOVANA TOSO / VITOR)
+   -------------------------------------------------------------------------- */
+.section--giovana,
+.section--vitor { position: relative; overflow: hidden; z-index: 0; }
+
+.perfil {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: var(--space-2xl) var(--space-lg);
+  align-items: center;
+}
+.perfil--reverse { grid-template-columns: 3fr 2fr; }
+.perfil--reverse .perfil__figure { order: 2; }
+.perfil--reverse .perfil__body { order: 1; }
+
+.perfil__figure { position: relative; }
+.perfil__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.perfil__frame-mark {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-orange);
+}
+.perfil__frame-mark--tl { top: -12px; left: -12px; border-right: 0; border-bottom: 0; }
+.perfil__frame-mark--br { bottom: -12px; right: -12px; border-left: 0; border-top: 0; }
+
+.perfil__role {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: var(--space-xs);
+}
+.perfil__name { font-size: var(--fs-h2); text-transform: uppercase; }
+.perfil__text {
+  margin-top: var(--space-md);
+  max-width: 54ch;
+  font-size: var(--fs-body);
+}
+
+/* --------------------------------------------------------------------------
+   19. BLOCO N.05 — NOSSO JEITO DE FAZER
+   -------------------------------------------------------------------------- */
+.section--jeito { position: relative; overflow: hidden; z-index: 0; }
+
+.jeito-intro {
+  max-width: 66ch;
+  margin-bottom: var(--space-xl);
+  display: grid;
+  gap: var(--space-lg);
+}
+.jeito-intro__item h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+  margin-bottom: var(--space-xs);
+}
+.jeito-intro__item p { margin-top: var(--space-2xs); font-size: var(--fs-body); }
+.jeito-intro__item p:first-of-type { margin-top: 0; }
+
+.principios-list__eyebrow {
+  margin-top: var(--space-xl);
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+  margin-bottom: var(--space-sm);
+}
+
+.principio {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: var(--space-md);
+  padding-block: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.principios-list .principio:last-child { border-bottom: var(--border-width) solid var(--color-graphite-15); }
+.principio__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+}
+.principio__title { font-size: var(--fs-h3); text-transform: uppercase; }
+.principio__desc {
+  margin-top: var(--space-2xs);
+  max-width: 58ch;
+  color: var(--color-graphite-70);
+}
+
+.jeito-assinatura {
+  margin-top: var(--space-xl);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+.jeito-assinatura span { color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   20. BLOCO N.06 — FECHAMENTO
+   -------------------------------------------------------------------------- */
+.fechamento__intro {
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+  max-width: 50ch;
+  margin-bottom: var(--space-lg);
+}
+
+.fechamento__assinatura {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+}
+.fechamento__assinatura span { display: block; }
+.fechamento__assinatura span:last-child { color: var(--color-orange); }
+
+.fechamento__detalhe {
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  max-width: 84ch;
+}
+.fechamento__detalhe p { font-size: var(--fs-small); color: var(--color-offwhite-80); }
+.fechamento__detalhe strong {
+  display: block;
+  font-family: var(--font-display);
+  color: var(--color-offwhite);
+  text-transform: uppercase;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-button);
+  margin-bottom: var(--space-2xs);
+}
+
+.fechamento__final {
+  margin-top: var(--space-xl);
+  max-width: 62ch;
+  color: var(--color-offwhite-80);
+}
+.fechamento__final p + p { margin-top: var(--space-sm); }
+.fechamento__final p.is-forte { color: var(--color-offwhite); font-weight: 700; }
+
+.acessos-grid {
+  margin-top: var(--space-2xl);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+.acessos-grid .porta-card { border-top-color: var(--color-offwhite-25); }
+.acessos-grid .porta-card__index { color: var(--color-offwhite-55); }
+.acessos-grid .porta-card__title { color: var(--color-offwhite); }
+.acessos-grid .porta-card__desc { color: var(--color-offwhite-80); }
+.acessos-grid .porta-card:hover,
+.acessos-grid .porta-card:focus-visible { border-top-color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   21. RESPONSIVO — SOBRE NÓS — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .perfil,
+  .perfil--reverse { grid-template-columns: 1fr; }
+  .perfil--reverse .perfil__figure,
+  .perfil__figure { order: -1; }
+  .perfil--reverse .perfil__body,
+  .perfil__body { order: 2; }
+
+  .fechamento__detalhe { grid-template-columns: repeat(2, 1fr); }
+  .acessos-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   22. RESPONSIVO — SOBRE NÓS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .principio { grid-template-columns: 1fr; gap: var(--space-2xs); }
+  .fechamento__detalhe { grid-template-columns: 1fr; }
+  .acessos-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+  .destaque-linhas p { font-size: 1.15rem; }
+  .manifesto__lead { font-size: var(--fs-h3); }
+  .manifesto__signature { font-size: var(--fs-h3); }
+}
+
+/* ==========================================================================
+   PÁGINA: PARA MOTORISTAS
+   Componentes exclusivos desta página — extensão do design system da Home
+   e do Sobre Nós, sem alterar nenhuma regra existente acima. A seção de
+   "soluções" (.perfil, já usado nos perfis de Giovana/Vitor) é reaproveitada
+   como bloco modular: cada solução futura (além de Match Automotivo e
+   GI Conecta) pode usar a mesma estrutura eyebrow → título → texto →
+   destaque → CTA/status, sem precisar de novos componentes.
+   WordPress: template page-para-motoristas.php / CPT "solucoes"
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   23. NAVEGAÇÃO INTERNA — CONHEÇA NOSSAS SOLUÇÕES
+   Lista de âncoras reutilizável: novas soluções futuras só precisam de um
+   novo <a class="btn-bracket"> apontando para o id da nova seção.
+   -------------------------------------------------------------------------- */
+.solucoes-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+/* --------------------------------------------------------------------------
+   24. BLOCO — DESTAQUE NUMÉRICO (usado no MATCH AUTOMOTIVO: 35 variáveis / 3 opções)
+   Componente genérico: qualquer solução futura pode reutilizá-lo para
+   destacar números-chave da sua proposta.
+   -------------------------------------------------------------------------- */
+.stat-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.stat-destaque__numero {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h1);
+  line-height: 1;
+  color: var(--color-orange);
+}
+.stat-destaque__label {
+  display: block;
+  margin-top: var(--space-2xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-70);
+  max-width: 18ch;
+}
+
+/* --------------------------------------------------------------------------
+   25. BLOCO — ASSINATURA DE SOLUÇÃO
+   Linha de fechamento em destaque para uma solução (ex.: "O carro certo,
+   para seu estilo de vida."). Reutilizável por futuras soluções.
+   -------------------------------------------------------------------------- */
+.solucao__assinatura {
+  margin-top: var(--space-lg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--ls-heading);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+.solucao__assinatura span { color: var(--color-orange); }
+
+.solucao__cta { margin-top: var(--space-lg); }
+
+/* --------------------------------------------------------------------------
+   26. BLOCO — SELO "EM DESENVOLVIMENTO"
+   Identificação discreta para soluções futuras do portal que já são
+   apresentadas, mas ainda não estão implementadas (ex.: GI Conecta).
+   -------------------------------------------------------------------------- */
+.badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-lg);
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-offwhite-25);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+.badge-tag--on-light { border-color: var(--color-graphite-15); }
+
+/* --------------------------------------------------------------------------
+   27. RESPONSIVO — PARA MOTORISTAS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .stat-grupo { gap: var(--space-lg); }
+  .stat-destaque__numero { font-size: var(--fs-h2); }
+}
+
+/* ==========================================================================
+   PÁGINA: PARA OFICINAS
+   Componentes exclusivos desta página — extensão do design system da Home,
+   do Sobre Nós e do Para Motoristas, sem alterar nenhuma regra existente
+   acima. Vários blocos reaproveitam .perfil, .bloco-texto__col,
+   .destaque-linhas, .btn-bracket, .badge-tag e .ad-slot já construídos.
+   WordPress: template page-para-oficinas.php / CPTs "formacoes" e "parceiros"
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   28. COMPONENTE — JORNADA (etapas com setas)
+   Reutilizado em dois lugares: a jornada completa do atendimento ao
+   pós-venda (N.01) e a jornada interna do método T3V (modificador
+   --compacta). Novas etapas futuras só precisam de um novo
+   .jornada__etapa + separador.
+   -------------------------------------------------------------------------- */
+.jornada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.jornada__etapa {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xs);
+}
+.jornada__indice {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+}
+.jornada__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+}
+.jornada__seta {
+  color: var(--color-graphite-45);
+  font-family: var(--font-display);
+}
+.jornada__seta--intervencao { color: var(--color-orange); }
+
+.jornada--compacta {
+  margin-top: var(--space-md);
+  padding-top: 0;
+  border-top: 0;
+  gap: var(--space-xs) var(--space-sm);
+}
+.jornada--compacta .jornada__label { font-size: var(--fs-small); }
+
+/* --------------------------------------------------------------------------
+   29. BLOCO N.02 — FORMAÇÃO
+   Cada treinamento é um bloco editorial completo (não um card comercial),
+   empilhado verticalmente e separado por uma linha fina. Reaproveita
+   .bloco-texto__col para os parágrafos e .perfil__name/.perfil__role para
+   título e etiqueta. Novos treinamentos futuros seguem a mesma estrutura:
+   .formacao-item com cabeçalho, texto, destaque opcional e CTA.
+   -------------------------------------------------------------------------- */
+.formacao {
+  display: flex;
+  flex-direction: column;
+}
+.formacao-item {
+  padding-top: var(--space-2xl);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.formacao-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.formacao-item__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+.formacao-item__indice {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  color: var(--color-orange);
+}
+.formacao-item__jornada-tag {
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-graphite-15);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+
+.formacao-item__conceito {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+  max-width: 48ch;
+}
+
+/* --------------------------------------------------------------------------
+   30. BLOCO N.03 — FERRAMENTAS PARA A ROTINA (Pack de Papelaria)
+   Lista de etiquetas — "produto vivo": novos materiais futuros só
+   precisam de um novo .pack-tags__item, sem reconstruir a seção.
+   -------------------------------------------------------------------------- */
+.pack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+.pack-tags__item {
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) dashed var(--color-offwhite-25);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-offwhite-80);
+}
+.pack-tags__item--on-light {
+  border-color: var(--color-graphite-15);
+  color: var(--color-graphite-70);
+}
+
+/* --------------------------------------------------------------------------
+   31. COMPONENTE — NOTA DISCRETA
+   Aviso/disclaimer de baixo impacto visual, mas sempre legível — usado
+   para deixar claro o que é parceria externa e o que está sujeito a
+   critérios de curadoria.
+   -------------------------------------------------------------------------- */
+.nota-discreta {
+  margin-top: var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-orange);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 58ch;
+}
+.nota-discreta--on-dark { color: var(--color-offwhite-80); }
+
+/* --------------------------------------------------------------------------
+   32. BLOCO N.05 — PARCEIROS EM QUE ACREDITAMOS
+   QR Car reaproveita .perfil (mesmo bloco de Giovana/Vitor/soluções).
+   Os três acessos do Mecânico Que Lucra usam uma grade de peso igual —
+   sem imagem, sem hierarquia entre eles. Novo parceiro futuro pode
+   reaproveitar .perfil; novo acesso da mesma marca pode reaproveitar
+   .avancar-item.
+   -------------------------------------------------------------------------- */
+.avancar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.avancar-item {
+  border-top: var(--border-width) solid var(--color-graphite-15);
+  padding-top: var(--space-xs);
+}
+.avancar-item__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-graphite-45);
+}
+.avancar-item__title {
+  margin-top: var(--space-2xs);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+}
+.avancar-item__desc {
+  margin-top: var(--space-2xs);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  max-width: 30ch;
+}
+.avancar-item__cta { margin-top: var(--space-sm); }
+
+/* Espaçamento entre blocos .perfil empilhados na mesma seção (ex.: dois
+   parceiros em sequência em N.05) — evita repetir margin-top inline. */
+.perfil--espacado { margin-top: var(--space-2xl); }
+
+/* --------------------------------------------------------------------------
+   33. RESPONSIVO — PARA OFICINAS — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .avancar-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+}
+
+/* --------------------------------------------------------------------------
+   34. RESPONSIVO — PARA OFICINAS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .jornada { gap: var(--space-xs) var(--space-sm); }
+  .jornada__label { font-size: 0.875rem; }
+  .formacao-item__head { flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); }
+  .formacao-item { padding-top: var(--space-xl); }
+}
+
+/* ==========================================================================
+   PÁGINA: PALESTRAS & WORKSHOPS
+   Componentes exclusivos desta página — extensão do design system existente,
+   sem alterar nenhuma regra acima. A maior parte da página reaproveita
+   componentes já construídos (.perfil, .principios-list, .destaque-linhas,
+   .manifesto, .fechamento__detalhe, .btn-bracket, .figure-caption).
+   WordPress: template page-palestras-workshops.php
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   35. BLOCO N.01 — FORMATOS
+   Lista editorial (não cards): numeração + linha fina por item. Um novo
+   formato futuro é só mais um .formato-item.
+   -------------------------------------------------------------------------- */
+.formatos-grid {
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 var(--space-xl);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.formato-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+}
+.formato-item__indice {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  color: var(--color-orange);
+  flex-shrink: 0;
+}
+.formato-item__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-heading);
+}
+
+/* --------------------------------------------------------------------------
+   36. COMPONENTE — GALERIA EDITORIAL
+   Reutilizada na galeria DOMINIUM (3 fotos) e em "Já estivemos por aqui"
+   (4 fotos). A contagem de colunas se ajusta sozinha ao número de itens
+   (auto-fit) — novos registros futuros só precisam de um novo .galeria__item,
+   sem reconstruir a seção.
+   -------------------------------------------------------------------------- */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.galeria__item { position: relative; }
+.galeria__image {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.galeria__image--paisagem { aspect-ratio: 4 / 3; }
+
+/* --------------------------------------------------------------------------
+   37. RESPONSIVO — PALESTRAS & WORKSHOPS — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .formatos-grid { grid-template-columns: 1fr; }
+  .galeria { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   ÁREA: EM FOCO
+   Capa editorial + template de editoria + template de matéria individual.
+   Reaproveita amplamente .emfoco-card, .emfoco-grid, .video-card e
+   .youtube-grid já construídos na Home, além de .ad-slot, .btn-bracket,
+   .figure-caption e .section-index. Extensões abaixo são sempre aditivas —
+   nenhuma regra das Blocos 3/9 (Home) é alterada.
+   WordPress: template page-em-foco.php, template-editoria.php (arquivo de
+   taxonomia "editoria"), single-materia.php (CPT "materias")
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   38. N.00 — ABERTURA COMPACTA + NAVEGAÇÃO DE EDITORIAS
+   Mais curta que a abertura institucional das outras páginas — sem imagem,
+   sem grid 3fr/2fr. Reutilizada também no topo do template de editoria.
+   -------------------------------------------------------------------------- */
+.emfoco-hero {
+  padding-top: var(--space-lg);
+}
+.emfoco-hero__assinatura {
+  margin-top: var(--space-sm);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  letter-spacing: var(--ls-heading);
+  text-transform: uppercase;
+  color: var(--color-offwhite);
+}
+.emfoco-hero__paragrafo {
+  margin-top: var(--space-md);
+  font-size: var(--fs-lead);
+  color: var(--color-offwhite-80);
+  max-width: 60ch;
+}
+.emfoco-hero .editorias-nav { margin-top: var(--space-lg); }
+
+.editorias-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+}
+
+/* --------------------------------------------------------------------------
+   39. EXTENSÕES — DATA EM CARDS
+   .emfoco-card e .video-card (Home) não têm campo de data — adicionado
+   aqui como extensão aditiva, com variante para uso sobre fundo escuro.
+   -------------------------------------------------------------------------- */
+.emfoco-card__date,
+.video-card__date {
+  display: block;
+  margin-top: var(--space-2xs);
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+.emfoco-card__date--on-dark,
+.video-card__date--on-dark { color: var(--color-offwhite-55); }
+
+/* --------------------------------------------------------------------------
+   40. N.01 — DESTAQUES (capa editorial: 1 principal + 2 secundários)
+   -------------------------------------------------------------------------- */
+.destaques-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--grid-gap);
+}
+.emfoco-card--principal .emfoco-card__media { aspect-ratio: 16 / 10; }
+.emfoco-card--principal .emfoco-card__title {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+}
+.destaques-secundarios {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+/* --------------------------------------------------------------------------
+   41. N.02 — ÚLTIMAS PUBLICAÇÕES
+   Composição dinâmica: o primeiro item ocupa duas colunas (ritmo
+   editorial), os demais seguem o card padrão.
+   -------------------------------------------------------------------------- */
+.ultimas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.emfoco-card--wide { grid-column: span 2; }
+.emfoco-card--wide .emfoco-card__media { aspect-ratio: 21 / 9; }
+
+/* --------------------------------------------------------------------------
+   42. N.03 — EDITORIAS
+   Bloco reutilizável por editoria, com modificadores de layout e proporção
+   de imagem para criar ritmo entre as cinco sem sair do mesmo sistema.
+   -------------------------------------------------------------------------- */
+.editoria-cabecalho { max-width: 60ch; }
+.editoria-materias {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+  margin-top: var(--space-xl);
+}
+.editoria-materias--retrato .emfoco-card__media { aspect-ratio: 3 / 4; }
+.editoria-materias--paisagem .emfoco-card__media { aspect-ratio: 16 / 9; }
+.editoria-cta { margin-top: var(--space-lg); }
+
+.editoria-layout--lateral {
+  display: grid;
+  grid-template-columns: 0.9fr 1.5fr;
+  gap: var(--space-2xl);
+  align-items: start;
+}
+.editoria-layout--lateral .editoria-materias { grid-template-columns: 1fr; margin-top: 0; }
+.editoria-layout--lateral .editoria-bloco-texto { order: 1; }
+.editoria-layout--lateral .editoria-bloco-materias { order: 2; }
+.editoria-layout--lateral-reversa .editoria-bloco-texto { order: 2; }
+.editoria-layout--lateral-reversa .editoria-bloco-materias { order: 1; }
+
+/* --------------------------------------------------------------------------
+   43. COMPONENTE — BREADCRUMB
+   Reutilizado no template de editoria e no template de matéria.
+   -------------------------------------------------------------------------- */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-lg);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-45);
+}
+.breadcrumb a { color: var(--color-graphite-70); transition: color var(--transition-base); }
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible { color: var(--color-orange); }
+.breadcrumb__sep { color: var(--color-graphite-15); }
+.breadcrumb--on-dark { color: var(--color-offwhite-55); }
+.breadcrumb--on-dark a { color: var(--color-offwhite-80); }
+.breadcrumb--on-dark .breadcrumb__sep { color: var(--color-offwhite-25); }
+
+/* --------------------------------------------------------------------------
+   44. COMPONENTE — TAGS
+   Preparado para a estrutura de categorias (editorias) + tags livres.
+   -------------------------------------------------------------------------- */
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.tag-chip {
+  padding: var(--space-2xs) var(--space-sm);
+  border: var(--border-width) solid var(--color-graphite-15);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-70);
+  transition: border-color var(--transition-base), color var(--transition-base);
+}
+.tag-chip:hover,
+.tag-chip:focus-visible { border-color: var(--color-orange); color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   45. TEMPLATE — MATÉRIA INDIVIDUAL
+   Preparado para receber conteúdo dinâmico do WordPress (CPT "materias"):
+   editoria, título, autor, datas, corpo rico, parceria, tags,
+   compartilhamento e relacionados.
+   -------------------------------------------------------------------------- */
+.materia-header { max-width: 78ch; }
+.materia-editoria {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+.materia-titulo {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+}
+.materia-subtitulo {
+  margin-top: var(--space-md);
+  font-size: var(--fs-lead);
+  color: var(--color-graphite-70);
+  max-width: 62ch;
+}
+
+.materia-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+}
+.materia-meta strong { color: var(--color-graphite); font-weight: 700; }
+
+/* Identificação de conteúdo em parceria comercial — sempre visível,
+   nunca escondida no fim do texto. */
+.materia-parceria {
+  margin-top: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  border: var(--border-width) solid var(--color-orange);
+  background-color: rgba(198, 90, 50, 0.06);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--color-graphite);
+  max-width: 78ch;
+}
+
+.materia-imagem-principal {
+  position: relative;
+  margin-top: var(--space-xl);
+}
+.materia-imagem-principal img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* Corpo da matéria — largura editorial de leitura, tipografia completa */
+.materia-corpo {
+  max-width: 68ch;
+  margin-top: var(--space-2xl);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+.materia-corpo > * + * { margin-top: var(--space-md); }
+.materia-corpo h2 {
+  margin-top: var(--space-2xl);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+}
+.materia-corpo h3 {
+  margin-top: var(--space-xl);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-heading);
+}
+.materia-corpo ul,
+.materia-corpo ol {
+  padding-left: 1.25em;
+}
+.materia-corpo ul { list-style: disc; }
+.materia-corpo ol { list-style: decimal; }
+.materia-corpo li + li { margin-top: var(--space-2xs); }
+.materia-corpo blockquote {
+  margin-top: var(--space-lg);
+  padding-left: var(--space-md);
+  border-left: 3px solid var(--color-orange);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-heading);
+  color: var(--color-graphite-70);
+}
+.materia-corpo figure { margin-top: var(--space-lg); }
+.materia-corpo figure img { width: 100%; }
+.materia-corpo figure .figure-caption { margin-top: var(--space-2xs); }
+.materia-corpo table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+.materia-corpo th,
+.materia-corpo td {
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: var(--border-width) solid var(--color-graphite-15);
+  text-align: left;
+}
+.materia-corpo th {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-45);
+}
+.materia-corpo a {
+  color: var(--color-graphite);
+  text-decoration: underline;
+  text-decoration-color: var(--color-orange);
+  text-underline-offset: 3px;
+}
+.materia-corpo a:hover,
+.materia-corpo a:focus-visible { color: var(--color-orange); }
+
+/* Box informativo / destaque técnico dentro do corpo */
+.materia-box {
+  padding: var(--space-md);
+  border: var(--border-width) solid var(--color-graphite-15);
+  border-left: 3px solid var(--color-orange);
+  background-color: var(--color-graphite-08);
+}
+.materia-box__titulo {
+  display: block;
+  margin-bottom: var(--space-2xs);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+
+/* Vídeo incorporado — placeholder de proporção, sem player real agora */
+.materia-video-embed {
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-graphite-08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.materia-creditos {
+  max-width: 68ch;
+  font-size: var(--fs-small);
+  color: var(--color-graphite-45);
+}
+
+.materia-rodape {
+  max-width: 68ch;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+
+.materia-compartilhar { margin-top: var(--space-lg); }
+
+.compartilhar-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+.compartilhar-lista a {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  letter-spacing: var(--ls-button);
+  text-transform: uppercase;
+  transition: color var(--transition-base);
+}
+.compartilhar-lista a:hover,
+.compartilhar-lista a:focus-visible { color: var(--color-orange); }
+
+/* --------------------------------------------------------------------------
+   46. RESPONSIVO — EM FOCO — TABLET (≤ 1024px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .destaques-grid { grid-template-columns: 1fr; }
+  .destaques-secundarios { flex-direction: row; }
+  .ultimas-grid { grid-template-columns: repeat(2, 1fr); }
+  .emfoco-card--wide { grid-column: span 2; }
+  .editoria-materias { grid-template-columns: repeat(2, 1fr); }
+  .editoria-layout--lateral { grid-template-columns: 1fr; }
+  .editoria-layout--lateral .editoria-materias { grid-template-columns: repeat(2, 1fr); }
+  .editoria-layout--lateral .editoria-bloco-texto,
+  .editoria-layout--lateral-reversa .editoria-bloco-texto,
+  .editoria-layout--lateral .editoria-bloco-materias,
+  .editoria-layout--lateral-reversa .editoria-bloco-materias { order: initial; }
+}
+
+/* --------------------------------------------------------------------------
+   47. RESPONSIVO — EM FOCO — MOBILE (≤ 720px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .destaques-secundarios { flex-direction: column; }
+  .ultimas-grid { grid-template-columns: 1fr; }
+  .emfoco-card--wide { grid-column: span 1; }
+  .emfoco-card--wide .emfoco-card__media { aspect-ratio: 4 / 3; }
+  .editoria-materias,
+  .editoria-materias--retrato,
+  .editoria-materias--paisagem { grid-template-columns: 1fr; }
+  .emfoco-card--principal .emfoco-card__title { font-size: var(--fs-h2); }
+  .materia-titulo { font-size: var(--fs-h2); }
+  .materia-corpo { max-width: none; }
+}
