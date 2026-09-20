@@ -94,6 +94,46 @@ function dc_repeater( $key, $post_id = null ) {
 }
 
 /**
+ * Lê um campo de LEGENDA DE IMAGEM. Diferente de dc_field(), distingue um
+ * campo que nunca foi salvo (usa o texto padrão da V1) de um campo que o
+ * administrador esvaziou de propósito (metadata_exists() continua
+ * verdadeiro — a linha existe no banco com valor '' — e a ausência de
+ * legenda passa a ser permanente, sem o padrão reaparecer).
+ * Ver inc/meta-boxes.php: os campos de legenda são sempre gravados no
+ * save, mesmo vazios, em vez de apagados — é isso que preserva o registro
+ * de "esvaziado intencionalmente".
+ */
+function dc_caption( $key, $default = '', $post_id = null ) {
+	$post_id = $post_id ? $post_id : get_the_ID();
+	if ( ! metadata_exists( 'post', $post_id, $key ) ) {
+		return $default;
+	}
+	return get_post_meta( $post_id, $key, true );
+}
+
+/**
+ * Imprime a tag da legenda apenas quando há texto a exibir. Quando o campo
+ * foi esvaziado intencionalmente (ou uma legenda de repetidor está vazia),
+ * nada é impresso — nem a tag/o espaço reservado.
+ */
+function dc_caption_html( $key, $default = '', $class = 'figure-caption', $post_id = null ) {
+	$value = dc_caption( $key, $default, $post_id );
+	if ( $value === '' ) {
+		return;
+	}
+	echo '<p class="' . esc_attr( $class ) . '">' . esc_html( $value ) . '</p>';
+}
+
+/** Mesma regra "vazio = nada" para a legenda de um item de repetidor (galerias). */
+function dc_caption_html_raw( $value, $class = 'figure-caption' ) {
+	$value = trim( (string) $value );
+	if ( $value === '' ) {
+		return;
+	}
+	echo '<p class="' . esc_attr( $class ) . '">' . esc_html( $value ) . '</p>';
+}
+
+/**
  * CONFIGURAÇÕES GLOBAIS — lê um valor da página de opções "Configurações
  * Descomplicarro" (option_name: dc_options). Ver inc/options-page.php.
  */

@@ -74,6 +74,19 @@ function dc_save_meta_boxes( $post_id ) {
 		}
 	}
 
+	// Legendas de imagem: SEMPRE gravadas, mesmo em branco — nunca apagadas
+	// com delete_post_meta(). É essa linha (mesmo com valor '') que registra
+	// "o administrador esvaziou este campo de propósito" e impede que o
+	// texto padrão da V1 volte a aparecer. Ver dc_caption() em inc/helpers.php.
+	$caption_keys = isset( $_POST['dc_caption_keys'] ) ? array_map( 'sanitize_key', explode( ',', $_POST['dc_caption_keys'] ) ) : array();
+	foreach ( $caption_keys as $key ) {
+		if ( ! isset( $_POST[ $key ] ) ) {
+			continue;
+		}
+		$value = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+		update_post_meta( $post_id, $key, $value );
+	}
+
 	$url_keys = isset( $_POST['dc_url_keys'] ) ? array_map( 'sanitize_key', explode( ',', $_POST['dc_url_keys'] ) ) : array();
 	foreach ( $url_keys as $key ) {
 		if ( ! isset( $_POST[ $key ] ) ) {
@@ -112,13 +125,19 @@ function dc_save_meta_boxes( $post_id ) {
 }
 
 /** Imprime os campos ocultos que dizem ao save_post quais chaves processar de cada tipo. */
-function dc_meta_box_footer( $text = array(), $url = array(), $image = array(), $checkbox = array(), $repeater = array() ) {
+function dc_meta_box_footer( $text = array(), $url = array(), $image = array(), $checkbox = array(), $repeater = array(), $caption = array() ) {
 	wp_nonce_field( 'dc_save_meta', 'dc_meta_nonce' );
 	printf( '<input type="hidden" name="dc_text_keys" value="%s">', esc_attr( implode( ',', $text ) ) );
 	printf( '<input type="hidden" name="dc_url_keys" value="%s">', esc_attr( implode( ',', $url ) ) );
 	printf( '<input type="hidden" name="dc_image_keys" value="%s">', esc_attr( implode( ',', $image ) ) );
 	printf( '<input type="hidden" name="dc_checkbox_keys" value="%s">', esc_attr( implode( ',', $checkbox ) ) );
 	printf( '<input type="hidden" name="dc_repeater_keys" value="%s">', esc_attr( implode( ',', $repeater ) ) );
+	printf( '<input type="hidden" name="dc_caption_keys" value="%s">', esc_attr( implode( ',', $caption ) ) );
+}
+
+/** Campo de legenda no admin — mesmo input de texto simples, com nota sobre o comportamento "vazio = sem legenda, permanente". */
+function dc_admin_caption( $post, $key, $label ) {
+	dc_admin_text( $post, $key, $label, 'Deixe em branco para não exibir nenhuma legenda — a ausência de legenda é salva e não volta a mostrar um texto padrão depois.' );
 }
 
 /* ==========================================================================
@@ -202,7 +221,7 @@ function dc_render_meta_box_sobre( $post ) {
 	dc_admin_textarea( $post, 'dc_sobre_abertura_paragrafos', 'Parágrafos (um por linha)', 'Um parágrafo por linha em branco.', 5 );
 	dc_admin_textarea( $post, 'dc_sobre_abertura_forte', 'Parágrafo de destaque (negrito)', '', 2 );
 	dc_admin_image( $post, 'dc_sobre_abertura_imagem', 'Foto — Giovana + Vitor' );
-	dc_admin_text( $post, 'dc_sobre_abertura_imagem_legenda', 'Legenda da imagem' );
+	dc_admin_caption( $post, 'dc_sobre_abertura_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'N.01 — O Encontro que virou Descomplicarro' );
 	dc_admin_text( $post, 'dc_sobre_encontro_heading', 'Título da seção' );
@@ -217,12 +236,14 @@ function dc_render_meta_box_sobre( $post ) {
 	dc_admin_text( $post, 'dc_sobre_giovana_nome', 'Nome' );
 	dc_admin_textarea( $post, 'dc_sobre_giovana_texto', 'Texto', '', 4 );
 	dc_admin_image( $post, 'dc_sobre_giovana_imagem', 'Foto' );
+	dc_admin_caption( $post, 'dc_sobre_giovana_imagem_legenda', 'Legenda da foto' );
 
 	dc_admin_section_title( 'N.03 — Vitor Lima' );
 	dc_admin_text( $post, 'dc_sobre_vitor_role', 'Papel/eyebrow' );
 	dc_admin_text( $post, 'dc_sobre_vitor_nome', 'Nome' );
 	dc_admin_textarea( $post, 'dc_sobre_vitor_texto', 'Texto', '', 4 );
 	dc_admin_image( $post, 'dc_sobre_vitor_imagem', 'Foto' );
+	dc_admin_caption( $post, 'dc_sobre_vitor_imagem_legenda', 'Legenda da foto' );
 
 	dc_admin_section_title( 'N.04 — Manifesto' );
 	dc_admin_text( $post, 'dc_sobre_manifesto_lead', 'Frase de abertura' );
@@ -250,7 +271,7 @@ function dc_render_meta_box_sobre( $post ) {
 
 	dc_meta_box_footer(
 		array(
-			'dc_sobre_abertura_titulo', 'dc_sobre_abertura_paragrafos', 'dc_sobre_abertura_forte', 'dc_sobre_abertura_imagem_legenda',
+			'dc_sobre_abertura_titulo', 'dc_sobre_abertura_paragrafos', 'dc_sobre_abertura_forte',
 			'dc_sobre_encontro_heading', 'dc_sobre_encontro_lead', 'dc_sobre_encontro_corpo1', 'dc_sobre_encontro_destaque1', 'dc_sobre_encontro_destaque2', 'dc_sobre_encontro_corpo2',
 			'dc_sobre_giovana_role', 'dc_sobre_giovana_nome', 'dc_sobre_giovana_texto',
 			'dc_sobre_vitor_role', 'dc_sobre_vitor_nome', 'dc_sobre_vitor_texto',
@@ -261,7 +282,8 @@ function dc_render_meta_box_sobre( $post ) {
 		array(),
 		array( 'dc_sobre_abertura_imagem', 'dc_sobre_giovana_imagem', 'dc_sobre_vitor_imagem' ),
 		array(),
-		array( 'dc_sobre_valores' )
+		array( 'dc_sobre_valores' ),
+		array( 'dc_sobre_abertura_imagem_legenda', 'dc_sobre_giovana_imagem_legenda', 'dc_sobre_vitor_imagem_legenda' )
 	);
 }
 
@@ -274,7 +296,7 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_textarea( $post, 'dc_motoristas_paragrafos', 'Parágrafos', '', 4 );
 	dc_admin_textarea( $post, 'dc_motoristas_forte', 'Parágrafo de destaque', '', 2 );
 	dc_admin_image( $post, 'dc_motoristas_imagem', 'Imagem de abertura' );
-	dc_admin_text( $post, 'dc_motoristas_imagem_legenda', 'Legenda da imagem' );
+	dc_admin_caption( $post, 'dc_motoristas_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'N.02 — Match Automotivo' );
 	dc_admin_text( $post, 'dc_match_role', 'Eyebrow' );
@@ -289,6 +311,7 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_text( $post, 'dc_match_botao_label', 'Texto do botão (Hotmart)' );
 	dc_admin_url( $post, 'dc_match_botao_url', 'URL de compra (Hotmart)' );
 	dc_admin_image( $post, 'dc_match_imagem', 'Identidade visual' );
+	dc_admin_caption( $post, 'dc_match_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'N.03 — GI Conecta' );
 	dc_admin_text( $post, 'dc_gi_role', 'Eyebrow' );
@@ -296,6 +319,7 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_textarea( $post, 'dc_gi_texto', 'Parágrafos', '', 6 );
 	dc_admin_textarea( $post, 'dc_gi_destaque', 'Linhas de destaque (uma por linha)', '', 3 );
 	dc_admin_image( $post, 'dc_gi_imagem', 'Identidade visual' );
+	dc_admin_caption( $post, 'dc_gi_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'Espaços publicitários' );
 	dc_admin_checkbox( $post, 'dc_motoristas_ad1_ativo', 'Exibir espaço publicitário 1 (antes do Match Automotivo)' );
@@ -306,13 +330,15 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_image( $post, 'dc_motoristas_ad2_imagem', 'Imagem/banner 2' );
 
 	dc_meta_box_footer(
-		array( 'dc_motoristas_titulo', 'dc_motoristas_paragrafos', 'dc_motoristas_forte', 'dc_motoristas_imagem_legenda',
+		array( 'dc_motoristas_titulo', 'dc_motoristas_paragrafos', 'dc_motoristas_forte',
 			'dc_match_role', 'dc_match_nome', 'dc_match_texto', 'dc_match_stat1_numero', 'dc_match_stat1_label', 'dc_match_stat2_numero', 'dc_match_stat2_label', 'dc_match_assinatura_parte1', 'dc_match_assinatura_parte2', 'dc_match_botao_label',
 			'dc_gi_role', 'dc_gi_nome', 'dc_gi_texto', 'dc_gi_destaque',
 		),
 		array( 'dc_match_botao_url', 'dc_motoristas_ad1_url', 'dc_motoristas_ad2_url' ),
 		array( 'dc_motoristas_imagem', 'dc_match_imagem', 'dc_gi_imagem', 'dc_motoristas_ad1_imagem', 'dc_motoristas_ad2_imagem' ),
-		array( 'dc_motoristas_ad1_ativo', 'dc_motoristas_ad2_ativo' )
+		array( 'dc_motoristas_ad1_ativo', 'dc_motoristas_ad2_ativo' ),
+		array(),
+		array( 'dc_motoristas_imagem_legenda', 'dc_match_imagem_legenda', 'dc_gi_imagem_legenda' )
 	);
 }
 
@@ -325,6 +351,7 @@ function dc_render_meta_box_oficinas( $post ) {
 	dc_admin_textarea( $post, 'dc_oficinas_paragrafos', 'Parágrafos', '', 4 );
 	dc_admin_textarea( $post, 'dc_oficinas_forte', 'Parágrafo de destaque', '', 2 );
 	dc_admin_image( $post, 'dc_oficinas_imagem', 'Imagem de abertura' );
+	dc_admin_caption( $post, 'dc_oficinas_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'N.01 — Da Entrada ao Pós-venda' );
 	dc_admin_text( $post, 'dc_oficinas_jornada_heading', 'Título da seção' );
@@ -364,7 +391,9 @@ function dc_render_meta_box_oficinas( $post ) {
 	dc_admin_text( $post, 'dc_qrcar_texto', 'QR Car — descrição oficial' );
 	dc_admin_url( $post, 'dc_qrcar_url', 'QR Car — URL comercial' );
 	dc_admin_image( $post, 'dc_qrcar_imagem', 'QR Car — logo' );
+	dc_admin_caption( $post, 'dc_qrcar_imagem_legenda', 'QR Car — legenda da imagem' );
 	dc_admin_image( $post, 'dc_ml_imagem', 'Mecânico Que Lucra — logo' );
+	dc_admin_caption( $post, 'dc_ml_imagem_legenda', 'Mecânico Que Lucra — legenda da imagem' );
 	dc_admin_repeater( $post, 'dc_ml_acessos', 'Mecânico Que Lucra — acessos (ML Repertório, ML Tração, ML Comando)', array(
 		'titulo'    => array( 'label' => 'Título', 'type' => 'text' ),
 		'desc'      => array( 'label' => 'Descrição', 'type' => 'textarea' ),
@@ -386,7 +415,8 @@ function dc_render_meta_box_oficinas( $post ) {
 		array( 'dc_pack_botao_url', 'dc_oficinas_gi_botao_url', 'dc_qrcar_url', 'dc_oficinas_ad_url' ),
 		array( 'dc_oficinas_imagem', 'dc_qrcar_imagem', 'dc_ml_imagem', 'dc_oficinas_ad_imagem' ),
 		array( 'dc_parceiros_ativo', 'dc_oficinas_ad_ativo' ),
-		array( 'dc_oficinas_formacao', 'dc_ml_acessos' )
+		array( 'dc_oficinas_formacao', 'dc_ml_acessos' ),
+		array( 'dc_oficinas_imagem_legenda', 'dc_qrcar_imagem_legenda', 'dc_ml_imagem_legenda' )
 	);
 }
 
@@ -399,6 +429,7 @@ function dc_render_meta_box_palestras( $post ) {
 	dc_admin_textarea( $post, 'dc_palestras_paragrafos', 'Parágrafos', '', 4 );
 	dc_admin_textarea( $post, 'dc_palestras_forte', 'Parágrafo de destaque', '', 2 );
 	dc_admin_image( $post, 'dc_palestras_imagem', 'Imagem de abertura' );
+	dc_admin_caption( $post, 'dc_palestras_imagem_legenda', 'Legenda da imagem' );
 
 	dc_admin_section_title( 'N.01 — Formatos' );
 	dc_admin_text( $post, 'dc_formatos_heading', 'Título da seção' );
@@ -436,9 +467,11 @@ function dc_render_meta_box_palestras( $post ) {
 	dc_admin_text( $post, 'dc_equipe_giovana_role', 'Giovana — papel' );
 	dc_admin_textarea( $post, 'dc_equipe_giovana_texto', 'Giovana — texto', '', 3 );
 	dc_admin_image( $post, 'dc_equipe_giovana_imagem', 'Giovana — foto' );
+	dc_admin_caption( $post, 'dc_equipe_giovana_imagem_legenda', 'Giovana — legenda da foto' );
 	dc_admin_text( $post, 'dc_equipe_vitor_role', 'Vitor — papel' );
 	dc_admin_textarea( $post, 'dc_equipe_vitor_texto', 'Vitor — texto', '', 3 );
 	dc_admin_image( $post, 'dc_equipe_vitor_imagem', 'Vitor — foto' );
+	dc_admin_caption( $post, 'dc_equipe_vitor_imagem_legenda', 'Vitor — legenda da foto' );
 
 	dc_admin_section_title( 'N.05 — Já estivemos por aqui' );
 	dc_admin_checkbox( $post, 'dc_experiencias_ativo', 'Exibir esta galeria' );
@@ -463,6 +496,7 @@ function dc_render_meta_box_palestras( $post ) {
 		array(),
 		array( 'dc_palestras_imagem', 'dc_equipe_giovana_imagem', 'dc_equipe_vitor_imagem' ),
 		array( 'dc_experiencias_ativo' ),
-		array( 'dc_formatos_lista', 'dc_temas_lista', 'dc_dominium_galeria', 'dc_experiencias_galeria' )
+		array( 'dc_formatos_lista', 'dc_temas_lista', 'dc_dominium_galeria', 'dc_experiencias_galeria' ),
+		array( 'dc_palestras_imagem_legenda', 'dc_equipe_giovana_imagem_legenda', 'dc_equipe_vitor_imagem_legenda' )
 	);
 }

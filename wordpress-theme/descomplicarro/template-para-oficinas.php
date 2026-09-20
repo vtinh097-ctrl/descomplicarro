@@ -55,7 +55,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
         <img src="<?php echo esc_url( dc_image_url( 'dc_oficinas_imagem' ) ); ?>" alt="Fotografia editorial de ambiente de oficina — imagem oficial a ser adicionada posteriormente" class="abertura__image">
         <span class="abertura__frame-mark abertura__frame-mark--tl"></span>
         <span class="abertura__frame-mark abertura__frame-mark--br"></span>
-        <p class="figure-caption figure-caption--on-dark">Foto — ambiente de oficina</p>
+        <?php dc_caption_html( 'dc_oficinas_imagem_legenda', 'Foto — ambiente de oficina', 'figure-caption figure-caption--on-dark' ); ?>
       </div>
     </div>
   </section>
@@ -247,7 +247,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
           <img src="<?php echo esc_url( dc_image_url( 'dc_qrcar_imagem' ) ); ?>" alt="Logo do QR Car — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Logo — QR Car</p>
+          <?php dc_caption_html( 'dc_qrcar_imagem_legenda', 'Logo — QR Car' ); ?>
         </div>
         <div class="perfil__body">
           <span class="badge-tag badge-tag--on-light">Parceiro Descomplicarro</span>
@@ -266,7 +266,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
           <img src="<?php echo esc_url( dc_image_url( 'dc_ml_imagem' ) ); ?>" alt="Logo do Mecânico Que Lucra — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Logo — Mecânico Que Lucra</p>
+          <?php dc_caption_html( 'dc_ml_imagem_legenda', 'Logo — Mecânico Que Lucra' ); ?>
         </div>
         <div class="perfil__body">
           <span class="badge-tag badge-tag--on-light">Parceiro Descomplicarro</span>

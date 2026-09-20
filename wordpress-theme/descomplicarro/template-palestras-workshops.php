@@ -66,7 +66,7 @@ function dc_repeater_image_url( $item, $fallback = 'placeholder-photo.svg' ) {
         <img src="<?php echo esc_url( dc_image_url( 'dc_palestras_imagem' ) ); ?>" alt="Fotografia editorial de evento/palco — imagem oficial a ser adicionada posteriormente" class="abertura__image">
         <span class="abertura__frame-mark abertura__frame-mark--tl"></span>
         <span class="abertura__frame-mark abertura__frame-mark--br"></span>
-        <p class="figure-caption figure-caption--on-dark">Foto — evento / palco</p>
+        <?php dc_caption_html( 'dc_palestras_imagem_legenda', 'Foto — evento / palco', 'figure-caption figure-caption--on-dark' ); ?>
       </div>
     </div>
   </section>
@@ -165,7 +165,7 @@ function dc_repeater_image_url( $item, $fallback = 'placeholder-photo.svg' ) {
             <img src="<?php echo esc_url( dc_repeater_image_url( $item ) ); ?>" alt="Registro do workshop DOMINIUM — imagem oficial a ser adicionada posteriormente" class="galeria__image">
             <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
             <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-            <p class="figure-caption figure-caption--on-dark"><?php echo esc_html( $item['legenda'] ); ?></p>
+            <?php dc_caption_html_raw( $item['legenda'] ?? '', 'figure-caption figure-caption--on-dark' ); ?>
           </div>
           <?php endforeach; ?>
         </div>
@@ -192,7 +192,7 @@ function dc_repeater_image_url( $item, $fallback = 'placeholder-photo.svg' ) {
           <img src="<?php echo esc_url( dc_image_url( 'dc_equipe_giovana_imagem' ) ); ?>" alt="Foto de Giovana Toso — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Foto — Giovana Toso</p>
+          <?php dc_caption_html( 'dc_equipe_giovana_imagem_legenda', 'Foto — Giovana Toso' ); ?>
         </div>
         <div class="perfil__body">
           <span class="perfil__role"><?php dc_text( 'dc_equipe_giovana_role', 'Palestras · Workshops · Treinamentos' ); ?></span>
@@ -206,7 +206,7 @@ function dc_repeater_image_url( $item, $fallback = 'placeholder-photo.svg' ) {
           <img src="<?php echo esc_url( dc_image_url( 'dc_equipe_vitor_imagem' ) ); ?>" alt="Foto de Vitor Lima — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Foto — Vitor Lima</p>
+          <?php dc_caption_html( 'dc_equipe_vitor_imagem_legenda', 'Foto — Vitor Lima' ); ?>
         </div>
         <div class="perfil__body">
           <span class="perfil__role"><?php dc_text( 'dc_equipe_vitor_role', 'Mediação · Apresentação · Cerimonial · Condução de debates' ); ?></span>
@@ -234,7 +234,7 @@ function dc_repeater_image_url( $item, $fallback = 'placeholder-photo.svg' ) {
           <img src="<?php echo esc_url( dc_repeater_image_url( $item ) ); ?>" alt="Registro de evento — imagem oficial a ser adicionada posteriormente" class="galeria__image galeria__image--paisagem">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption"><?php echo esc_html( $item['legenda'] ); ?></p>
+          <?php dc_caption_html_raw( $item['legenda'] ?? '' ); ?>
         </div>
         <?php endforeach; ?>
       </div>

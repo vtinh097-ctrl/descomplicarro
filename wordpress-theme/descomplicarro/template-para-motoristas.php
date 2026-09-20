@@ -24,7 +24,7 @@ get_header();
         <img src="<?php echo esc_url( dc_image_url( 'dc_motoristas_imagem' ) ); ?>" alt="Fotografia editorial de um motorista — imagem oficial a ser adicionada posteriormente" class="abertura__image">
         <span class="abertura__frame-mark abertura__frame-mark--tl"></span>
         <span class="abertura__frame-mark abertura__frame-mark--br"></span>
-        <p class="figure-caption figure-caption--on-dark"><?php dc_text( 'dc_motoristas_imagem_legenda', 'Foto — experiência do motorista' ); ?></p>
+        <?php dc_caption_html( 'dc_motoristas_imagem_legenda', 'Foto — experiência do motorista', 'figure-caption figure-caption--on-dark' ); ?>
       </div>
     </div>
   </section>
@@ -73,7 +73,7 @@ get_header();
           <img src="<?php echo esc_url( dc_image_url( 'dc_match_imagem' ) ); ?>" alt="Identidade visual do MATCH Automotivo — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Identidade — Match Automotivo</p>
+          <?php dc_caption_html( 'dc_match_imagem_legenda', 'Identidade — Match Automotivo' ); ?>
         </div>
         <div class="perfil__body">
           <span class="perfil__role"><?php dc_text( 'dc_match_role', 'Consultoria' ); ?></span>
@@ -125,7 +125,7 @@ get_header();
           <img src="<?php echo esc_url( dc_image_url( 'dc_gi_imagem' ) ); ?>" alt="Identidade visual do GI Conecta — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption figure-caption--on-dark">Identidade — GI Conecta</p>
+          <?php dc_caption_html( 'dc_gi_imagem_legenda', 'Identidade — GI Conecta', 'figure-caption figure-caption--on-dark' ); ?>
         </div>
         <div class="perfil__body">
           <span class="perfil__role"><?php dc_text( 'dc_gi_role', 'Curadoria de oficinas' ); ?></span>

@@ -30,7 +30,7 @@ get_header();
         <img src="<?php echo esc_url( dc_image_url( 'dc_sobre_abertura_imagem' ) ); ?>" alt="Foto de Giovana Toso e Vitor Lima juntos — imagem oficial a ser adicionada posteriormente" class="abertura__image">
         <span class="abertura__frame-mark abertura__frame-mark--tl"></span>
         <span class="abertura__frame-mark abertura__frame-mark--br"></span>
-        <p class="figure-caption figure-caption--on-dark"><?php dc_text( 'dc_sobre_abertura_imagem_legenda', 'Foto — Giovana + Vitor' ); ?></p>
+        <?php dc_caption_html( 'dc_sobre_abertura_imagem_legenda', 'Foto — Giovana + Vitor', 'figure-caption figure-caption--on-dark' ); ?>
       </div>
 
     </div>
@@ -101,7 +101,7 @@ get_header();
           <img src="<?php echo esc_url( dc_image_url( 'dc_sobre_giovana_imagem' ) ); ?>" alt="Foto de Giovana Toso — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Foto — Giovana Toso</p>
+          <?php dc_caption_html( 'dc_sobre_giovana_imagem_legenda', 'Foto — Giovana Toso' ); ?>
         </div>
 
         <div class="perfil__body">
@@ -129,7 +129,7 @@ get_header();
           <img src="<?php echo esc_url( dc_image_url( 'dc_sobre_vitor_imagem' ) ); ?>" alt="Foto de Vitor Lima — imagem oficial a ser adicionada posteriormente" class="perfil__image">
           <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
           <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <p class="figure-caption">Foto — Vitor</p>
+          <?php dc_caption_html( 'dc_sobre_vitor_imagem_legenda', 'Foto — Vitor' ); ?>
         </div>
 
         <div class="perfil__body">
