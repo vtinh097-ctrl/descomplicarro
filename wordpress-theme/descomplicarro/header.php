@@ -5,7 +5,16 @@
  * O menu vem de wp_nav_menu() (Aparência → Menus, local "Navegação Principal"),
  * então alterações no menu, no logotipo ou em links globais refletem
  * automaticamente em todas as páginas sem editar código.
+ *
+ * Logotipo: lido exclusivamente de Configurações Descomplicarro → Identidade
+ * visual → Logotipo principal (dc_option('logo_principal'), um ID de anexo da
+ * Biblioteca de Mídia). Não usa o "Logo" nativo do Personalizar do WordPress
+ * — são mecanismos diferentes; o campo do painel do DESCOMPLICARRO é o único
+ * caminho de substituição. Sem logotipo cadastrado, mantém o monograma +
+ * wordmark de texto aprovados na V1.
  */
+$dc_logo_id  = (int) dc_option( 'logo_principal', 0 );
+$dc_logo_src = $dc_logo_id ? wp_get_attachment_image_src( $dc_logo_id, 'full' ) : false;
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -21,14 +30,23 @@
 <header class="site-header" id="topo">
   <div class="container site-header__inner">
 
-    <?php if ( has_custom_logo() ) : ?>
-      <div class="site-logo-wp"><?php the_custom_logo(); ?></div>
+    <?php if ( $dc_logo_src ) : ?>
+      <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo site-logo--custom" aria-label="<?php bloginfo( 'name' ); ?> — página inicial">
+        <img
+          src="<?php echo esc_url( $dc_logo_src[0] ); ?>"
+          alt="<?php bloginfo( 'name' ); ?>"
+          class="site-logo__custom-image"
+          <?php if ( $dc_logo_src[1] && $dc_logo_src[2] ) : ?>
+          width="<?php echo esc_attr( $dc_logo_src[1] ); ?>"
+          height="<?php echo esc_attr( $dc_logo_src[2] ); ?>"
+          <?php endif; ?>
+        >
+      </a>
     <?php else : ?>
       <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo" aria-label="<?php bloginfo( 'name' ); ?> — página inicial">
         <!-- LOGO OFICIAL: enviar em Configurações Descomplicarro → Identidade
-             visual, ou em Personalizar → Identidade do site. Enquanto
-             nenhum logotipo for enviado, mantém-se o monograma/wordmark de
-             texto aprovado na V1. -->
+             visual → Logotipo principal. Enquanto nenhum logotipo for
+             enviado, mantém-se o monograma/wordmark de texto aprovado na V1. -->
         <span class="site-logo__mark" aria-hidden="true"></span>
         <span class="site-logo__text">
           <span class="site-logo__word"><?php bloginfo( 'name' ); ?></span>

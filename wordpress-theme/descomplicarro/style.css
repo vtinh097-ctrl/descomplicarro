@@ -338,6 +338,24 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
+/* --------------------------------------------------------------------------
+   WORDPRESS — Logotipo principal cadastrado em Configurações Descomplicarro.
+   Regra exclusiva do tema (não existe na V1 estática, que não tem upload de
+   logotipo pelo painel). Mantém a altura visual do cabeçalho e a proporção
+   original da imagem enviada — nunca deforma, corta ou recorta o arquivo.
+   -------------------------------------------------------------------------- */
+.site-logo--custom {
+  min-height: 2rem;
+}
+
+.site-logo__custom-image {
+  display: block;
+  height: auto;
+  width: auto;
+  max-height: 2.75rem;
+  max-width: 240px;
+}
+
 .site-nav__list {
   display: flex;
   align-items: center;
