@@ -24,6 +24,20 @@ function dc_theme_setup() {
 	) );
 }
 
+/**
+ * Páginas de editoria (category.php) exibem 1 matéria em destaque + 3 na
+ * grade "Últimas" por página (4 no total) — este filtro ajusta a consulta
+ * principal do arquivo de categoria para respeitar esse layout, para que a
+ * paginação nativa do WordPress ("CARREGAR MAIS") avance corretamente de
+ * 4 em 4 matérias em vez do padrão do site inteiro.
+ */
+add_action( 'pre_get_posts', 'dc_ajustar_consulta_categoria' );
+function dc_ajustar_consulta_categoria( $query ) {
+	if ( ! is_admin() && $query->is_main_query() && is_category() ) {
+		$query->set( 'posts_per_page', 4 );
+	}
+}
+
 add_action( 'wp_enqueue_scripts', 'dc_enqueue_front_assets' );
 function dc_enqueue_front_assets() {
 	wp_enqueue_style(

@@ -214,3 +214,48 @@ function dc_option_or_pending( $key, $label_pendente ) {
 	$value = dc_option( $key, '' );
 	return $value !== '' ? $value : $label_pendente;
 }
+
+/**
+ * INTEGRAÇÃO EDITORIAL — as cinco editorias oficiais do Em Foco (slug da
+ * categoria nativa do WordPress => rótulo/assinatura exibidos no site).
+ * Ponto único de referência usado por template-em-foco.php e category.php,
+ * para nunca haver divergência entre o texto exibido em cada lugar.
+ */
+function dc_emfoco_categorias() {
+	return array(
+		'noticias'   => array( 'label' => 'Notícias', 'assinatura' => 'O que está acontecendo.' ),
+		'reviews'    => array( 'label' => 'Reviews', 'assinatura' => 'O que testamos e analisamos.' ),
+		'guias'      => array( 'label' => 'Guias', 'assinatura' => 'O que você precisa entender para decidir.' ),
+		'tecnica'    => array( 'label' => 'Técnica', 'assinatura' => 'Como funciona, como diagnosticar e como reparar.' ),
+		'bastidores' => array( 'label' => 'Bastidores', 'assinatura' => 'Quem, como e onde o setor acontece.' ),
+	);
+}
+
+/**
+ * Imprime um cartão .emfoco-card para uma publicação real do WordPress —
+ * usado na capa do Em Foco, nas páginas de editoria e nos "Conteúdos
+ * relacionados" da matéria individual, para nunca duplicar o HTML do
+ * cartão em cada template.
+ */
+function dc_emfoco_card( $post, $extra_class = '', $on_dark = false ) {
+	$categorias = get_the_category( $post->ID );
+	$categoria  = ! empty( $categorias ) ? $categorias[0]->name : '';
+	$thumb      = get_the_post_thumbnail_url( $post, 'large' );
+	if ( ! $thumb ) {
+		$thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
+	}
+	$classes      = 'emfoco-card' . ( $extra_class ? ' ' . $extra_class : '' );
+	$date_classes = 'emfoco-card__date' . ( $on_dark ? ' emfoco-card__date--on-dark' : '' );
+	?>
+	<a href="<?php echo esc_url( get_permalink( $post ) ); ?>" class="<?php echo esc_attr( $classes ); ?>">
+		<div class="emfoco-card__media">
+			<img src="<?php echo esc_url( $thumb ); ?>" alt="" class="emfoco-card__image">
+		</div>
+		<?php if ( $categoria ) : ?>
+			<span class="emfoco-card__category"><?php echo esc_html( $categoria ); ?></span>
+		<?php endif; ?>
+		<h3 class="emfoco-card__title"><?php echo esc_html( get_the_title( $post ) ); ?></h3>
+		<span class="<?php echo esc_attr( $date_classes ); ?>"><?php echo esc_html( get_the_date( '', $post ) ); ?></span>
+	</a>
+	<?php
+}

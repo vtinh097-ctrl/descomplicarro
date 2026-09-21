@@ -58,12 +58,36 @@ function dc_provision_site() {
 	// Permalinks amigáveis — necessário para que /sobre-nos/, /para-motoristas/ etc. funcionem.
 	global $wp_rewrite;
 	update_option( 'permalink_structure', '/%postname%/' );
+	update_option( 'category_base', 'em-foco' );
 	if ( $wp_rewrite instanceof WP_Rewrite ) {
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 		$wp_rewrite->flush_rules();
 	}
 
 	dc_provision_menu( $ids );
+}
+
+/**
+ * AUTOCORREÇÃO — garante que o prefixo das categorias seja "em-foco" mesmo em
+ * sites onde o tema já estava ativo antes desta correção (nesses casos,
+ * after_switch_theme não roda de novo sozinho). Sem isso, os botões
+ * editoriais da página Em Foco (que já apontam para /em-foco/<categoria>/)
+ * continuariam levando a um endereço inexistente, porque o arquivo de
+ * categoria do WordPress ficaria em /category/<categoria>/ por padrão.
+ * Roda uma única vez por instalação (grava a opção dc_category_base_fixed)
+ * e libera novamente as regras de rewrite.
+ */
+add_action( 'init', 'dc_ensure_category_base', 20 );
+function dc_ensure_category_base() {
+	if ( get_option( 'category_base' ) === 'em-foco' ) {
+		return;
+	}
+	update_option( 'category_base', 'em-foco' );
+	global $wp_rewrite;
+	if ( $wp_rewrite instanceof WP_Rewrite ) {
+		$wp_rewrite->init();
+		flush_rewrite_rules();
+	}
 }
 
 function dc_provision_menu( $ids ) {

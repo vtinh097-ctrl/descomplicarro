@@ -2,16 +2,45 @@
 /**
  * Template Name: Em Foco
  *
- * Reproduz a capa do Em Foco exatamente como aprovada na V1. Por decisão
- * explícita desta etapa da migração, esta página permanece estática (sem
- * metabox de conteúdo) — o sistema editorial dinâmico (matérias, editorias,
- * destaques administráveis) será implementado em etapa futura. Trocar aqui
- * é só uma questão de, na etapa seguinte, passar a alimentar estes mesmos
- * blocos a partir de consultas reais (WP_Query) em vez de conteúdo fixo.
+ * Reproduz a capa do Em Foco exatamente como aprovada na V1. O layout/HTML
+ * permanece fixo (igual à V1) — os blocos N.01 DESTAQUES, N.02 ÚLTIMAS e
+ * N.03 EDITORIAS são alimentados por publicações reais do WordPress
+ * (WP_Query, post type "post", status "publish"), para que uma nova
+ * publicação apareça aqui automaticamente, sem editar este arquivo.
  */
 get_header();
-$img = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
-$vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
+$vid       = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
+$editorias = dc_emfoco_categorias();
+
+// N.01 DESTAQUES + N.02 ÚLTIMAS — cinco matérias mais recentes de todo o site.
+$recentes_query = new WP_Query( array(
+	'posts_per_page'      => 5,
+	'ignore_sticky_posts'  => true,
+) );
+$recentes = $recentes_query->posts;
+wp_reset_postdata();
+
+$destaque_principal   = isset( $recentes[0] ) ? $recentes[0] : null;
+$destaques_secundarios = array_slice( $recentes, 1, 2 );
+
+// N.03 EDITORIAS — duas matérias mais recentes de cada categoria (só consulta
+// categorias que já existem no WordPress; editorias ainda não cadastradas
+// simplesmente não têm matérias, sem gerar erro).
+$editoria_posts = array();
+foreach ( $editorias as $slug => $info ) {
+	$termo = get_category_by_slug( $slug );
+	if ( ! $termo ) {
+		$editoria_posts[ $slug ] = array();
+		continue;
+	}
+	$editoria_query = new WP_Query( array(
+		'cat'                 => $termo->term_id,
+		'posts_per_page'      => 2,
+		'ignore_sticky_posts'  => true,
+	) );
+	$editoria_posts[ $slug ] = $editoria_query->posts;
+	wp_reset_postdata();
+}
 ?>
 
   <section class="section section--emfoco-hero section--graphite emfoco-hero" aria-labelledby="emfoco-heading">
@@ -22,43 +51,31 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
       <p class="emfoco-hero__paragrafo">Notícias, reviews, guias, conteúdo técnico e bastidores para entender o que acontece no setor automotivo — e o que isso significa na prática.</p>
 
       <nav class="editorias-nav" aria-label="Editorias do Em Foco">
-        <?php foreach ( array( 'noticias' => 'NOTÍCIAS', 'reviews' => 'REVIEWS', 'guias' => 'GUIAS', 'tecnica' => 'TÉCNICA', 'bastidores' => 'BASTIDORES' ) as $slug => $label ) : ?>
+        <?php foreach ( $editorias as $slug => $info ) : ?>
         <a href="<?php echo esc_url( home_url( '/em-foco/' . $slug ) ); ?>" class="btn-bracket btn-bracket--on-dark">
-          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label"><?php echo esc_html( $label ); ?></span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label"><?php echo esc_html( mb_strtoupper( $info['label'], 'UTF-8' ) ); ?></span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
         </a>
         <?php endforeach; ?>
       </nav>
     </div>
   </section>
 
+  <?php if ( $destaque_principal ) : ?>
   <section class="section section--destaques-emfoco section--offwhite" aria-labelledby="destaques-heading">
     <div class="container">
       <div class="section-index"><span>N.01</span><span class="section-index__line"></span><span>DESTAQUES</span></div>
       <h2 id="destaques-heading" class="visually-hidden">Destaques</h2>
       <div class="destaques-grid">
-        <a href="<?php echo esc_url( home_url( '/em-foco/noticias/materia-modelo' ) ); ?>" class="emfoco-card emfoco-card--principal">
-          <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-          <span class="emfoco-card__category">Notícias</span>
-          <h3 class="emfoco-card__title">[ Título da matéria principal ]</h3>
-          <span class="emfoco-card__date">[ Data ]</span>
-        </a>
+        <?php dc_emfoco_card( $destaque_principal, 'emfoco-card--principal' ); ?>
+        <?php if ( $destaques_secundarios ) : ?>
         <div class="destaques-secundarios">
-          <a href="<?php echo esc_url( home_url( '/em-foco/reviews/materia-modelo' ) ); ?>" class="emfoco-card">
-            <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-            <span class="emfoco-card__category">Reviews</span>
-            <h3 class="emfoco-card__title">[ Título da matéria secundária 01 ]</h3>
-            <span class="emfoco-card__date">[ Data ]</span>
-          </a>
-          <a href="<?php echo esc_url( home_url( '/em-foco/tecnica/materia-modelo' ) ); ?>" class="emfoco-card">
-            <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-            <span class="emfoco-card__category">Técnica</span>
-            <h3 class="emfoco-card__title">[ Título da matéria secundária 02 ]</h3>
-            <span class="emfoco-card__date">[ Data ]</span>
-          </a>
+          <?php foreach ( $destaques_secundarios as $post_item ) : dc_emfoco_card( $post_item ); endforeach; ?>
         </div>
+        <?php endif; ?>
       </div>
     </div>
   </section>
+  <?php endif; ?>
 
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-destaques-ultimas">
     <div class="container">
@@ -75,30 +92,15 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
     <div class="container">
       <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>ÚLTIMAS PUBLICAÇÕES</span></div>
       <div class="section-heading-row"><h2 id="ultimas-heading" class="section-heading">ÚLTIMAS</h2></div>
+      <?php if ( $recentes ) : ?>
       <div class="ultimas-grid">
-        <?php
-        $ultimas = array(
-          array( 'cat' => 'Guias', 'titulo' => '[ Título da publicação 01 ]', 'wide' => true, 'url' => '/em-foco/guias/materia-modelo' ),
-          array( 'cat' => 'Notícias', 'titulo' => '[ Título da publicação 02 ]', 'wide' => false, 'url' => '/em-foco/noticias/materia-modelo' ),
-          array( 'cat' => 'Bastidores', 'titulo' => '[ Título da publicação 03 ]', 'wide' => false, 'url' => '/em-foco/bastidores/materia-modelo' ),
-          array( 'cat' => 'Reviews', 'titulo' => '[ Título da publicação 04 ]', 'wide' => false, 'url' => '/em-foco/reviews/materia-modelo' ),
-          array( 'cat' => 'Técnica', 'titulo' => '[ Título da publicação 05 ]', 'wide' => false, 'url' => '/em-foco/tecnica/materia-modelo' ),
-        );
-        foreach ( $ultimas as $u ) :
-          ?>
-          <a href="<?php echo esc_url( home_url( $u['url'] ) ); ?>" class="emfoco-card<?php echo $u['wide'] ? ' emfoco-card--wide' : ''; ?>">
-            <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-            <span class="emfoco-card__category"><?php echo esc_html( $u['cat'] ); ?></span>
-            <h3 class="emfoco-card__title"><?php echo esc_html( $u['titulo'] ); ?></h3>
-            <span class="emfoco-card__date">[ Data ]</span>
-          </a>
+        <?php foreach ( $recentes as $i => $post_item ) : ?>
+          <?php dc_emfoco_card( $post_item, ( 0 === $i ) ? 'emfoco-card--wide' : '' ); ?>
         <?php endforeach; ?>
       </div>
-      <div class="section-cta">
-        <button type="button" class="btn-bracket" data-action="carregar-mais" data-pagina-atual="1">
-          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">CARREGAR MAIS</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
-        </button>
-      </div>
+      <?php else : ?>
+      <p class="perfil__text">Ainda não há matérias publicadas. Assim que uma publicação for criada no WordPress, ela aparecerá aqui automaticamente.</p>
+      <?php endif; ?>
     </div>
   </section>
 
@@ -111,14 +113,11 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
         <p class="solucao__assinatura">O que está acontecendo.</p>
       </div>
       <div class="editoria-materias">
-        <?php for ( $i = 1; $i <= 2; $i++ ) : ?>
-        <a href="<?php echo esc_url( home_url( '/em-foco/noticias/materia-modelo' ) ); ?>" class="emfoco-card">
-          <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-          <span class="emfoco-card__category">Notícias</span>
-          <h3 class="emfoco-card__title">[ Título da matéria 0<?php echo (int) $i; ?> ]</h3>
-          <span class="emfoco-card__date">[ Data ]</span>
-        </a>
-        <?php endfor; ?>
+        <?php if ( $editoria_posts['noticias'] ) : ?>
+          <?php foreach ( $editoria_posts['noticias'] as $post_item ) : dc_emfoco_card( $post_item ); endforeach; ?>
+        <?php else : ?>
+          <p class="perfil__text">Em breve, novas matérias em Notícias.</p>
+        <?php endif; ?>
       </div>
       <div class="editoria-cta">
         <a href="<?php echo esc_url( home_url( '/em-foco/noticias' ) ); ?>" class="btn-bracket">
@@ -141,14 +140,11 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
         <p class="solucao__assinatura">O que testamos e analisamos.</p>
       </div>
       <div class="editoria-materias editoria-materias--retrato">
-        <?php for ( $i = 1; $i <= 2; $i++ ) : ?>
-        <a href="<?php echo esc_url( home_url( '/em-foco/reviews/materia-modelo' ) ); ?>" class="emfoco-card">
-          <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-          <span class="emfoco-card__category">Reviews</span>
-          <h3 class="emfoco-card__title">[ Título da matéria 0<?php echo (int) $i; ?> ]</h3>
-          <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
-        </a>
-        <?php endfor; ?>
+        <?php if ( $editoria_posts['reviews'] ) : ?>
+          <?php foreach ( $editoria_posts['reviews'] as $post_item ) : dc_emfoco_card( $post_item, '', true ); endforeach; ?>
+        <?php else : ?>
+          <p class="perfil__text">Em breve, novas matérias em Reviews.</p>
+        <?php endif; ?>
       </div>
       <div class="editoria-cta">
         <a href="<?php echo esc_url( home_url( '/em-foco/reviews' ) ); ?>" class="btn-bracket btn-bracket--on-dark">
@@ -174,14 +170,11 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
       </div>
       <div class="editoria-bloco-materias">
         <div class="editoria-materias">
-          <?php for ( $i = 1; $i <= 2; $i++ ) : ?>
-          <a href="<?php echo esc_url( home_url( '/em-foco/guias/materia-modelo' ) ); ?>" class="emfoco-card">
-            <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-            <span class="emfoco-card__category">Guias</span>
-            <h3 class="emfoco-card__title">[ Título da matéria 0<?php echo (int) $i; ?> ]</h3>
-            <span class="emfoco-card__date">[ Data ]</span>
-          </a>
-          <?php endfor; ?>
+          <?php if ( $editoria_posts['guias'] ) : ?>
+            <?php foreach ( $editoria_posts['guias'] as $post_item ) : dc_emfoco_card( $post_item ); endforeach; ?>
+          <?php else : ?>
+            <p class="perfil__text">Em breve, novas matérias em Guias.</p>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -203,14 +196,11 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
       </div>
       <div class="editoria-bloco-materias">
         <div class="editoria-materias">
-          <?php for ( $i = 1; $i <= 2; $i++ ) : ?>
-          <a href="<?php echo esc_url( home_url( '/em-foco/tecnica/materia-modelo' ) ); ?>" class="emfoco-card">
-            <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-            <span class="emfoco-card__category">Técnica</span>
-            <h3 class="emfoco-card__title">[ Título da matéria 0<?php echo (int) $i; ?> ]</h3>
-            <span class="emfoco-card__date emfoco-card__date--on-dark">[ Data ]</span>
-          </a>
-          <?php endfor; ?>
+          <?php if ( $editoria_posts['tecnica'] ) : ?>
+            <?php foreach ( $editoria_posts['tecnica'] as $post_item ) : dc_emfoco_card( $post_item, '', true ); endforeach; ?>
+          <?php else : ?>
+            <p class="perfil__text">Em breve, novas matérias em Técnica.</p>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -229,14 +219,11 @@ $vid = get_template_directory_uri() . '/assets/images/placeholder-video.svg';
         <p class="solucao__assinatura">Quem, como <span>e onde o setor acontece.</span></p>
       </div>
       <div class="editoria-materias editoria-materias--paisagem">
-        <?php for ( $i = 1; $i <= 2; $i++ ) : ?>
-        <a href="<?php echo esc_url( home_url( '/em-foco/bastidores/materia-modelo' ) ); ?>" class="emfoco-card">
-          <div class="emfoco-card__media"><img src="<?php echo esc_url( $img ); ?>" alt="" class="emfoco-card__image"></div>
-          <span class="emfoco-card__category">Bastidores</span>
-          <h3 class="emfoco-card__title">[ Título da matéria 0<?php echo (int) $i; ?> ]</h3>
-          <span class="emfoco-card__date">[ Data ]</span>
-        </a>
-        <?php endfor; ?>
+        <?php if ( $editoria_posts['bastidores'] ) : ?>
+          <?php foreach ( $editoria_posts['bastidores'] as $post_item ) : dc_emfoco_card( $post_item ); endforeach; ?>
+        <?php else : ?>
+          <p class="perfil__text">Em breve, novas matérias em Bastidores.</p>
+        <?php endif; ?>
       </div>
       <div class="editoria-cta">
         <a href="<?php echo esc_url( home_url( '/em-foco/bastidores' ) ); ?>" class="btn-bracket">
