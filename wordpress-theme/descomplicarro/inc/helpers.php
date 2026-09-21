@@ -76,6 +76,49 @@ function dc_image_url( $key, $post_id = null, $fallback_file = 'placeholder-phot
 	return get_template_directory_uri() . '/assets/images/' . $fallback_file;
 }
 
+/**
+ * Imprime o conteúdo completo de um espaço publicitário — o
+ * <a class="ad-slot__unit">, com tudo dentro. Ponto único usado por TODOS
+ * os espaços publicitários do tema (atuais e futuros): qualquer novo
+ * .ad-slot deve chamar esta função em vez de repetir o HTML do
+ * placeholder, para herdar a mesma lógica de exibição.
+ *
+ * $key_prefix identifica o par de campos daquele espaço:
+ * "{$key_prefix}_imagem" (ID de anexo) e "{$key_prefix}_url" (link do
+ * anunciante) — ex.: dc_ad_slot_unit('dc_home_ad1').
+ *
+ * Regras:
+ * - Imagem cadastrada → exibe a imagem (proporção original preservada,
+ *   sem corte) no lugar do texto placeholder; a etiqueta "Publicidade"
+ *   permanece visível sobre a imagem.
+ * - Sem imagem → mantém o placeholder original ("PUBLICIDADE — ESPAÇO
+ *   RESERVADO"), exatamente como sempre foi.
+ * - Link do anunciante vazio → usa "#" (mesmo placeholder de link já
+ *   usado no restante do projeto), nunca uma URL inventada.
+ */
+function dc_ad_slot_unit( $key_prefix ) {
+	$post_id   = get_the_ID();
+	$image_id  = (int) get_post_meta( $post_id, "{$key_prefix}_imagem", true );
+	$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : false;
+	$href      = dc_field( "{$key_prefix}_url", '#', $post_id );
+	$href      = $href ? $href : '#';
+
+	$classes = 'ad-slot__unit' . ( $image_url ? ' ad-slot__unit--filled' : '' );
+	echo '<a href="' . esc_url( $href ) . '" class="' . esc_attr( $classes ) . '">';
+
+	if ( $image_url ) {
+		echo '<span class="ad-slot__eyebrow">Publicidade</span>';
+		echo '<img src="' . esc_url( $image_url ) . '" alt="Publicidade" class="ad-slot__image">';
+	} else {
+		echo '<span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>';
+		echo '<span class="ad-slot__eyebrow">Publicidade</span>';
+		echo '<span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>';
+		echo '<span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>';
+	}
+
+	echo '</a>';
+}
+
 /** Verifica se uma seção opcional está ativa (padrão: ativa, quando o campo nunca foi salvo). */
 function dc_section_active( $key, $post_id = null ) {
 	$post_id = $post_id ? $post_id : get_the_ID();

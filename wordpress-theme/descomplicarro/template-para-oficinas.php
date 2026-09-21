@@ -148,12 +148,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
   <?php if ( dc_section_active( 'dc_oficinas_ad_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="oficinas-formacao">
     <div class="container">
-      <a href="<?php dc_url( 'dc_oficinas_ad_url' ); ?>" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_oficinas_ad' ); ?>
     </div>
   </section>
   <?php endif; ?>

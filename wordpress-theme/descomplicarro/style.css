@@ -2042,3 +2042,42 @@ button:focus-visible {
   .materia-titulo { font-size: var(--fs-h2); }
   .materia-corpo { max-width: none; }
 }
+
+/* --------------------------------------------------------------------------
+   48. WORDPRESS — ESPAÇO PUBLICITÁRIO COM IMAGEM CADASTRADA
+   Regra exclusiva do tema (a V1 estática não tem upload de banner pelo
+   painel — lá o espaço é sempre placeholder). Ativa apenas quando existe
+   uma imagem cadastrada em Configurações/metabox (ver dc_ad_slot_unit()
+   em inc/helpers.php); sem imagem, o placeholder original permanece
+   inalterado. Mantém a mesma caixa/posicionamento do .ad-slot__unit já
+   aprovado — só troca o conteúdo interno, sem redesenhar o componente.
+   Colocado ao final do arquivo de propósito, para vencer a regra
+   responsiva do bloco 14 (mesma especificidade, esta vem depois).
+   -------------------------------------------------------------------------- */
+.ad-slot__unit--filled {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--space-2xs);
+  border-style: solid;
+}
+
+/* Etiqueta "Publicidade" fica ACIMA da imagem, nunca sobreposta a ela —
+   o banner do anunciante precisa ficar inteiramente visível. */
+.ad-slot__unit--filled .ad-slot__eyebrow {
+  flex-shrink: 0;
+}
+
+.ad-slot__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  background-color: var(--color-offwhite);
+}
+
+@media (max-width: 720px) {
+  .ad-slot__unit--filled { padding: var(--space-sm); }
+  .ad-slot__image { max-height: 200px; }
+}

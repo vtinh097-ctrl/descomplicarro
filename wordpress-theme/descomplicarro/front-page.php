@@ -72,12 +72,7 @@ get_header();
   <!-- ESPAÇO PUBLICITÁRIO 01 -->
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="home-portas-emfoco">
     <div class="container">
-      <a href="<?php dc_url( 'dc_home_ad1_url' ); ?>" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_home_ad1' ); ?>
     </div>
   </section>
   <?php endif; ?>
@@ -133,12 +128,7 @@ get_header();
   <!-- ESPAÇO PUBLICITÁRIO 02 -->
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="home-emfoco-youtube">
     <div class="container">
-      <a href="<?php dc_url( 'dc_home_ad2_url' ); ?>" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_home_ad2' ); ?>
     </div>
   </section>
   <?php endif; ?>
