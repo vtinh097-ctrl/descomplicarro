@@ -28,6 +28,7 @@ function dc_register_meta_boxes() {
 		'template-para-motoristas.php'    => array( 'dc_motoristas_conteudo', 'Conteúdo — Para Motoristas' ),
 		'template-para-oficinas.php'      => array( 'dc_oficinas_conteudo', 'Conteúdo — Para Oficinas' ),
 		'template-palestras-workshops.php' => array( 'dc_palestras_conteudo', 'Conteúdo — Palestras & Workshops' ),
+		'template-em-foco.php'            => array( 'dc_emfoco_conteudo', 'Conteúdo — Em Foco (Espaços Publicitários)' ),
 	);
 
 	// front-page.php é detectado via is_front_page atribuída à página, não via "modelo" —
@@ -498,5 +499,32 @@ function dc_render_meta_box_palestras( $post ) {
 		array( 'dc_experiencias_ativo' ),
 		array( 'dc_formatos_lista', 'dc_temas_lista', 'dc_dominium_galeria', 'dc_experiencias_galeria' ),
 		array( 'dc_palestras_imagem_legenda', 'dc_equipe_giovana_imagem_legenda', 'dc_equipe_vitor_imagem_legenda' )
+	);
+}
+
+/* ==========================================================================
+   EM FOCO
+   O layout/HTML da capa do Em Foco permanece fixo (ver template-em-foco.php)
+   — as matérias exibidas vêm de publicações reais do WordPress, não deste
+   metabox. Os únicos campos administráveis aqui são os dois espaços
+   publicitários da página, com a mesma lógica usada em Home, Para
+   Motoristas e Para Oficinas.
+   ========================================================================== */
+function dc_render_meta_box_emfoco( $post ) {
+	dc_admin_section_title( 'Espaço publicitário 1 (entre Destaques e Últimas)' );
+	dc_admin_checkbox( $post, 'dc_emfoco_ad1_ativo', 'Exibir este espaço publicitário' );
+	dc_admin_url( $post, 'dc_emfoco_ad1_url', 'Link do anunciante' );
+	dc_admin_image( $post, 'dc_emfoco_ad1_imagem', 'Imagem/banner' );
+
+	dc_admin_section_title( 'Espaço publicitário 2 (entre Editorias e No YouTube)' );
+	dc_admin_checkbox( $post, 'dc_emfoco_ad2_ativo', 'Exibir este espaço publicitário' );
+	dc_admin_url( $post, 'dc_emfoco_ad2_url', 'Link do anunciante' );
+	dc_admin_image( $post, 'dc_emfoco_ad2_imagem', 'Imagem/banner' );
+
+	dc_meta_box_footer(
+		array(),
+		array( 'dc_emfoco_ad1_url', 'dc_emfoco_ad2_url' ),
+		array( 'dc_emfoco_ad1_imagem', 'dc_emfoco_ad2_imagem' ),
+		array( 'dc_emfoco_ad1_ativo', 'dc_emfoco_ad2_ativo' )
 	);
 }

@@ -77,16 +77,13 @@ foreach ( $editorias as $slug => $info ) {
   </section>
   <?php endif; ?>
 
+  <?php if ( dc_section_active( 'dc_emfoco_ad1_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-destaques-ultimas">
     <div class="container">
-      <a href="#" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_emfoco_ad1' ); ?>
     </div>
   </section>
+  <?php endif; ?>
 
   <section class="section section--ultimas section--offwhite" aria-labelledby="ultimas-heading">
     <div class="container">
@@ -233,16 +230,13 @@ foreach ( $editorias as $slug => $info ) {
     </div>
   </section>
 
+  <?php if ( dc_section_active( 'dc_emfoco_ad2_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-editorias-youtube">
     <div class="container">
-      <a href="#" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_emfoco_ad2' ); ?>
     </div>
   </section>
+  <?php endif; ?>
 
   <section class="section section--youtube section--graphite" aria-labelledby="emfoco-youtube-heading">
     <div class="container">
