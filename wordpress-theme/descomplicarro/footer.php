@@ -52,10 +52,9 @@
     <div class="site-footer__col">
       <h2 class="site-footer__heading">Institucional</h2>
       <ul class="site-footer__list">
-        <!-- PÁGINAS LEGAIS: substituir "#" pelas páginas definitivas quando criadas -->
-        <li><a href="#">Política de Privacidade</a></li>
-        <li><a href="#">Termos de Uso</a></li>
-        <li><a href="#">Cookies</a></li>
+        <li><a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>">Política de Privacidade</a></li>
+        <li><a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>">Termos de Uso</a></li>
+        <li><a href="<?php echo esc_url( home_url( '/politica-de-cookies/' ) ); ?>">Cookies</a></li>
       </ul>
     </div>
 
