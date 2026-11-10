@@ -77,6 +77,36 @@ function dc_image_url( $key, $post_id = null, $fallback_file = 'placeholder-phot
 }
 
 /**
+ * Resolve a URL de um anexo (ID da Biblioteca de Mídia) a partir do tamanho
+ * pedido, com uma cadeia de alternativas antes de desistir: tamanho pedido →
+ * "full" → URL bruta do arquivo original. Isso cobre o caso em que o
+ * WordPress não conseguiu gerar as variações de tamanho de uma imagem (ex.:
+ * certos formatos/perfis de cor podem falhar na geração de miniaturas,
+ * deixando o anexo salvo mas sem metadados de tamanho) — sem essa cadeia,
+ * `wp_get_attachment_image_url()` pode devolver vazio mesmo com um anexo
+ * válido e corretamente salvo no campo. Usada pelo perfil e pela listagem de
+ * oficinas do GI CONECTA (logotipo e galeria de fotos).
+ */
+function dc_attachment_image_url( $attachment_id, $size = 'large' ) {
+	$attachment_id = (int) $attachment_id;
+	if ( ! $attachment_id ) {
+		return '';
+	}
+	$url = wp_get_attachment_image_url( $attachment_id, $size );
+	if ( $url ) {
+		return $url;
+	}
+	if ( $size !== 'full' ) {
+		$url = wp_get_attachment_image_url( $attachment_id, 'full' );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	$url = wp_get_attachment_url( $attachment_id );
+	return $url ? $url : '';
+}
+
+/**
  * Imprime o conteúdo completo de um espaço publicitário — o
  * <a class="ad-slot__unit">, com tudo dentro. Ponto único usado por TODOS
  * os espaços publicitários do tema (atuais e futuros): qualquer novo

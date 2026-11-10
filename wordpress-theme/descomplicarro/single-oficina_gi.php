@@ -23,7 +23,7 @@ while ( have_posts() ) :
 	$instagram      = dc_field( 'dc_oficina_instagram' );
 	$maps           = dc_field( 'dc_oficina_maps' );
 	$galeria        = dc_repeater( 'dc_oficina_galeria' );
-	$thumb          = get_the_post_thumbnail_url( get_the_ID(), 'large' );
+	$thumb          = dc_attachment_image_url( get_post_thumbnail_id(), 'large' );
 	if ( ! $thumb ) {
 		$thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
 	}
@@ -111,7 +111,7 @@ while ( have_posts() ) :
 				<div class="oficina-galeria">
 					<?php foreach ( $galeria as $item ) :
 						$img_id = isset( $item['imagem'] ) ? (int) $item['imagem'] : 0;
-						$img_url = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+						$img_url = $img_id ? dc_attachment_image_url( $img_id, 'large' ) : '';
 						if ( ! $img_url ) {
 							continue;
 						}
