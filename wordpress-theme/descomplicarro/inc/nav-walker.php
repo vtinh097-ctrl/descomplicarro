@@ -58,12 +58,16 @@ function dc_fallback_menu() {
 	$items = array(
 		array( 'label' => 'HOME', 'url' => home_url( '/' ) ),
 		array( 'label' => 'PARA MOTORISTAS', 'url' => $motoristas_page ? get_permalink( $motoristas_page ) : home_url( '/para-motoristas' ) ),
-		array( 'label' => 'PARA OFICINAS', 'url' => $oficinas_page ? get_permalink( $oficinas_page ) : home_url( '/para-oficinas' ) ),
 		array( 'label' => 'PALESTRAS & WORKSHOPS', 'url' => $palestras_page ? get_permalink( $palestras_page ) : home_url( '/palestras-workshops' ) ),
 		array( 'label' => 'EM FOCO', 'url' => $emfoco_page ? get_permalink( $emfoco_page ) : home_url( '/em-foco' ) ),
 		array( 'label' => 'SOBRE NÓS', 'url' => $sobre_page ? get_permalink( $sobre_page ) : home_url( '/sobre-nos' ) ),
 		array( 'label' => 'CONTATO', 'url' => home_url( '/#contato' ) ),
 	);
+	// PARA OFICINAS só entra no fallback enquanto a página estiver ativa
+	// (ver Configurações Descomplicarro → GI CONECTA).
+	if ( dc_oficinas_pagina_ativa() ) {
+		array_splice( $items, 2, 0, array( array( 'label' => 'PARA OFICINAS', 'url' => $oficinas_page ? get_permalink( $oficinas_page ) : home_url( '/para-oficinas' ) ) ) );
+	}
 
 	echo '<ul class="site-nav__list">';
 	foreach ( $items as $item ) {

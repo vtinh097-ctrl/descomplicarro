@@ -38,6 +38,26 @@ function dc_ajustar_consulta_categoria( $query ) {
 	}
 }
 
+/**
+ * Enquanto a página Para Oficinas estiver temporariamente fora do ar (ver
+ * Configurações Descomplicarro → GI CONECTA), seu item some do menu
+ * principal — sem remover o item de verdade: ele volta sozinho assim que a
+ * página for reativada, sem precisar editar o menu de novo.
+ */
+add_filter( 'wp_nav_menu_objects', 'dc_ocultar_item_oficinas_no_menu' );
+function dc_ocultar_item_oficinas_no_menu( $items ) {
+	if ( dc_oficinas_pagina_ativa() ) {
+		return $items;
+	}
+	$pagina_oficinas = get_page_by_path( 'para-oficinas' );
+	if ( ! $pagina_oficinas ) {
+		return $items;
+	}
+	return array_values( array_filter( $items, function ( $item ) use ( $pagina_oficinas ) {
+		return ! ( (int) $item->object_id === $pagina_oficinas->ID && $item->object === 'page' );
+	} ) );
+}
+
 add_action( 'wp_enqueue_scripts', 'dc_enqueue_front_assets' );
 function dc_enqueue_front_assets() {
 	wp_enqueue_style(

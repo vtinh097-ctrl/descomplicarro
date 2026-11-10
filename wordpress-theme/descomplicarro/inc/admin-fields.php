@@ -97,6 +97,24 @@ function dc_admin_image( $post, $key, $label, $desc = '' ) {
 	dc_admin_field_wrap_end();
 }
 
+/** Campo de seleção (dropdown nativo) a partir de uma lista fixa de opções ($options = array( valor => rótulo )). */
+function dc_admin_select( $post, $key, $label, $options, $desc = '' ) {
+	$value = get_post_meta( $post->ID, $key, true );
+	dc_admin_field_wrap_start( $label, $desc );
+	echo '<select class="widefat" name="' . esc_attr( $key ) . '">';
+	echo '<option value="">— Selecione —</option>';
+	foreach ( $options as $opt_value => $opt_label ) {
+		printf(
+			'<option value="%1$s"%2$s>%3$s</option>',
+			esc_attr( $opt_value ),
+			selected( $value, $opt_value, false ),
+			esc_html( $opt_label )
+		);
+	}
+	echo '</select>';
+	dc_admin_field_wrap_end();
+}
+
 function dc_admin_section_title( $title ) {
 	echo '<h4 style="margin:22px 0 8px;padding-top:16px;border-top:1px solid #dcdcde;">' . esc_html( $title ) . '</h4>';
 }

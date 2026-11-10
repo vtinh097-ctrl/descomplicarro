@@ -215,6 +215,57 @@ function dc_option_or_pending( $key, $label_pendente ) {
 	return $value !== '' ? $value : $label_pendente;
 }
 
+/** As 27 UFs — lista fixa usada no filtro público do GI CONECTA e no cadastro de oficinas no admin. */
+function dc_uf_list() {
+	return array(
+		'AC' => 'Acre', 'AL' => 'Alagoas', 'AP' => 'Amapá', 'AM' => 'Amazonas', 'BA' => 'Bahia',
+		'CE' => 'Ceará', 'DF' => 'Distrito Federal', 'ES' => 'Espírito Santo', 'GO' => 'Goiás',
+		'MA' => 'Maranhão', 'MT' => 'Mato Grosso', 'MS' => 'Mato Grosso do Sul', 'MG' => 'Minas Gerais',
+		'PA' => 'Pará', 'PB' => 'Paraíba', 'PR' => 'Paraná', 'PE' => 'Pernambuco', 'PI' => 'Piauí',
+		'RJ' => 'Rio de Janeiro', 'RN' => 'Rio Grande do Norte', 'RS' => 'Rio Grande do Sul',
+		'RO' => 'Rondônia', 'RR' => 'Roraima', 'SC' => 'Santa Catarina', 'SP' => 'São Paulo',
+		'SE' => 'Sergipe', 'TO' => 'Tocantins',
+	);
+}
+
+/**
+ * GI CONECTA — URL do formulário de credenciamento de oficinas. Fonte única
+ * usada tanto pelo botão em Para Motoristas quanto pelo botão do rodapé, para
+ * nunca haver dois links divergentes. Enquanto não houver valor cadastrado em
+ * Configurações Descomplicarro, usa o formulário oficial já fornecido.
+ */
+function dc_oficinas_credenciamento_url() {
+	return dc_option( 'oficinas_credenciamento_url', 'https://docs.google.com/forms/d/e/1FAIpQLSc04iO7lDkTZ5SHdMk4xUrM5P6-tRbeY2TUxggV_waTUWVtLQ/viewform' );
+}
+
+/**
+ * GI CONECTA — a página Para Oficinas está temporariamente fora do ar
+ * (reformulação) enquanto este valor não for marcado em Configurações
+ * Descomplicarro. Nada é apagado: reativar é só marcar a caixa e salvar,
+ * sem editar nenhum arquivo.
+ */
+function dc_oficinas_pagina_ativa() {
+	return (int) dc_option( 'oficinas_pagina_ativa', 0 ) === 1;
+}
+
+/** Imprime uma lista <ul><li> a partir de um campo de texto com uma linha por item (serviços, especialidades). */
+function dc_list_lines( $key, $post_id = null, $class = '' ) {
+	$raw   = dc_field_raw( $key, '', $post_id );
+	$lines = $raw !== '' ? preg_split( '/\r\n|\r|\n/', trim( $raw ) ) : array();
+	if ( ! $lines ) {
+		return;
+	}
+	echo '<ul class="' . esc_attr( $class ) . '">';
+	foreach ( $lines as $line ) {
+		$line = trim( $line );
+		if ( $line === '' ) {
+			continue;
+		}
+		echo '<li>' . esc_html( $line ) . '</li>';
+	}
+	echo '</ul>';
+}
+
 /**
  * INTEGRAÇÃO EDITORIAL — as cinco editorias oficiais do Em Foco (slug da
  * categoria nativa do WordPress => rótulo/assinatura exibidos no site).

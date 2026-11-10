@@ -2081,3 +2081,73 @@ button:focus-visible {
   .ad-slot__unit--filled { padding: var(--space-sm); }
   .ad-slot__image { max-height: 200px; }
 }
+
+/* --------------------------------------------------------------------------
+   49. GI CONECTA — filtro de oficinas, galeria de fotos, grupo de botões
+   Reaproveita .emfoco-grid/.emfoco-card, .perfil, .tag-chips e .btn-bracket
+   já aprovados; estas regras cobrem só os elementos novos (formulário de
+   filtro e grade de fotos) que esses componentes não tinham.
+   -------------------------------------------------------------------------- */
+.oficinas-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+.oficinas-filtro__campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.oficinas-filtro__campo label {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-graphite-70);
+}
+.oficinas-filtro select,
+.oficinas-filtro input[type="text"] {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-graphite);
+  background-color: var(--color-offwhite);
+  border: 1px solid var(--color-graphite-15);
+  border-radius: 4px;
+  padding: var(--space-2xs) var(--space-xs);
+  min-width: 220px;
+}
+.oficinas-filtro__limpar {
+  align-self: center;
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  text-decoration: underline;
+}
+.oficinas-filtro__limpar:hover,
+.oficinas-filtro__limpar:focus-visible { color: var(--color-orange); }
+
+.oficina-galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--grid-gap);
+}
+.oficina-galeria__item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.solucao__cta--multi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+@media (max-width: 720px) {
+  .oficinas-filtro { flex-direction: column; align-items: stretch; }
+  .oficinas-filtro select,
+  .oficinas-filtro input[type="text"] { min-width: 0; width: 100%; }
+}

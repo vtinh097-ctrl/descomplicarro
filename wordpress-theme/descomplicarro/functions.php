@@ -17,4 +17,5 @@ require_once get_template_directory() . '/inc/nav-walker.php';
 require_once get_template_directory() . '/inc/setup.php';
 require_once get_template_directory() . '/inc/options-page.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
+require_once get_template_directory() . '/inc/cpt-oficinas.php';
 require_once get_template_directory() . '/inc/activation.php';

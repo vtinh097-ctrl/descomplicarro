@@ -2,7 +2,33 @@
 /**
  * Template Name: Para Oficinas
  * Reproduz fielmente a página Para Oficinas aprovada da V1.
+ *
+ * Página temporariamente fora do ar para reformulação (ver Configurações
+ * Descomplicarro → GI CONECTA → "Página Para Oficinas"). Nada do conteúdo
+ * abaixo foi apagado ou alterado — reativar é só marcar a caixa e salvar.
+ * Administradores logados continuam vendo a página normalmente, para poder
+ * revisar o conteúdo antes de reativá-la ao público.
  */
+if ( ! dc_oficinas_pagina_ativa() && ! current_user_can( 'edit_pages' ) ) {
+	global $wp_query;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+	get_header();
+	?>
+	<section class="section section--offwhite">
+		<div class="container">
+			<div class="bloco-texto__col">
+				<h1>Página não encontrada</h1>
+				<p>O endereço acessado não está disponível no momento.</p>
+			</div>
+		</div>
+	</section>
+	<?php
+	get_footer();
+	return;
+}
+
 get_header();
 
 $formacao_padrao = array(

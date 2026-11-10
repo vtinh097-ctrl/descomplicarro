@@ -35,6 +35,10 @@ function dc_sanitize_options( $input ) {
 	foreach ( $text_fields as $f ) {
 		$clean[ $f ] = isset( $input[ $f ] ) ? sanitize_text_field( wp_unslash( $input[ $f ] ) ) : '';
 	}
+
+	// GI CONECTA.
+	$clean['oficinas_credenciamento_url'] = isset( $input['oficinas_credenciamento_url'] ) ? esc_url_raw( wp_unslash( $input['oficinas_credenciamento_url'] ) ) : '';
+	$clean['oficinas_pagina_ativa']       = isset( $input['oficinas_pagina_ativa'] ) ? 1 : 0;
 	// E-mail: só grava se for um endereço válido (ou vazio — fica "pendente").
 	if ( $clean['email'] !== '' && ! is_email( $clean['email'] ) ) {
 		add_settings_error( 'dc_options', 'email_invalido', 'E-mail informado não é válido — não foi salvo.' );
@@ -92,6 +96,24 @@ function dc_render_options_page() {
 				<tr><th><label for="dc_youtube_channel_id">Identificador do canal do YouTube</label></th><td><input type="text" id="dc_youtube_channel_id" name="dc_options[youtube_channel_id]" value="<?php echo esc_attr( $get( 'youtube_channel_id' ) ); ?>" class="regular-text" placeholder="UCxxxxxxxxxxxxxxxxxxxxxx" /><p class="description">Usado futuramente para integração automática com o YouTube (etapa posterior — não implementada ainda).</p></td></tr>
 				<tr><th><label for="dc_linkedin">LinkedIn</label></th><td><input type="url" id="dc_linkedin" name="dc_options[linkedin]" value="<?php echo esc_attr( $get( 'linkedin' ) ); ?>" class="regular-text" placeholder="https://linkedin.com/company/..." /></td></tr>
 				<tr><th><label for="dc_tiktok">TikTok</label></th><td><input type="url" id="dc_tiktok" name="dc_options[tiktok]" value="<?php echo esc_attr( $get( 'tiktok' ) ); ?>" class="regular-text" placeholder="https://tiktok.com/@..." /></td></tr>
+			</table>
+
+			<h2>GI CONECTA</h2>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><label for="dc_oficinas_credenciamento_url">URL do formulário de credenciamento de oficinas</label></th>
+					<td>
+						<input type="url" id="dc_oficinas_credenciamento_url" name="dc_options[oficinas_credenciamento_url]" value="<?php echo esc_attr( $get( 'oficinas_credenciamento_url' ) ); ?>" class="regular-text" placeholder="https://docs.google.com/forms/..." />
+						<p class="description">Usada pelo botão "QUERO CREDENCIAR MINHA OFICINA" em Para Motoristas e no rodapé do site. Em branco, usa o formulário oficial já configurado.</p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="dc_oficinas_pagina_ativa">Página Para Oficinas</label></th>
+					<td>
+						<label><input type="checkbox" id="dc_oficinas_pagina_ativa" name="dc_options[oficinas_pagina_ativa]" value="1" <?php checked( $get( 'oficinas_pagina_ativa' ), 1 ); ?> /> Página ativa e visível publicamente</label>
+						<p class="description">Desmarcada: a página fica temporariamente fora do ar (reformulação) — o conteúdo é preservado, some do menu e dos links da Home, e o endereço direto retorna "página não encontrada". Marque e salve para reativá-la, sem precisar editar nenhum arquivo.</p>
+					</td>
+				</tr>
 			</table>
 
 			<h2>Identidade visual</h2>

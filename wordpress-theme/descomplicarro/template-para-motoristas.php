@@ -136,7 +136,18 @@ get_header();
           <div class="destaque-linhas destaque-linhas--on-dark">
             <?php dc_paragraphs_lines( 'dc_gi_destaque', array( 'CURADORIA.', 'INFORMAÇÃO.', 'CONFIANÇA PARA ESCOLHER.' ) ); ?>
           </div>
-          <span class="badge-tag">Em desenvolvimento</span>
+          <div class="solucao__cta solucao__cta--multi">
+            <a href="<?php echo esc_url( get_post_type_archive_link( 'oficina_gi' ) ); ?>" class="btn-bracket btn-bracket--on-dark">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">ENCONTRE UMA OFICINA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+            <a href="<?php echo esc_url( dc_oficinas_credenciamento_url() ); ?>" class="btn-bracket btn-bracket--on-dark" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label">QUERO CREDENCIAR MINHA OFICINA</span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

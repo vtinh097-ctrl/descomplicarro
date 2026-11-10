@@ -50,6 +50,12 @@ get_header();
           3 => array( 'url' => home_url( '/palestras-workshops' ), 'titulo' => 'PALESTRAS E WORKSHOPS', 'desc' => 'Conhecimento que se transforma em experiência, treinamento e transformação.' ),
           4 => array( 'url' => home_url( '/em-foco' ), 'titulo' => 'EM FOCO', 'desc' => 'Notícias, reviews, dicas e análises para entender o que acontece no universo automotivo.' ),
         );
+        // Para Oficinas temporariamente fora do ar (reformulação) — o card some
+        // da Home sem apagar seu conteúdo/campos; reaparece ao reativar a
+        // página em Configurações Descomplicarro.
+        if ( ! dc_oficinas_pagina_ativa() ) {
+          unset( $portas_padrao[2] );
+        }
         foreach ( $portas_padrao as $i => $padrao ) :
           ?>
           <a href="<?php echo esc_url( $padrao['url'] ); ?>" class="porta-card">
