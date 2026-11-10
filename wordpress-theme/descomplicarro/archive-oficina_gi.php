@@ -81,7 +81,7 @@ if ( ! array_key_exists( $estado_atual, $uf_lista ) ) {
             <?php
             $cidade = get_post_meta( get_the_ID(), 'dc_oficina_cidade', true );
             $uf     = get_post_meta( get_the_ID(), 'dc_oficina_estado', true );
-            $thumb  = dc_attachment_image_url( get_post_thumbnail_id(), 'large' );
+            $thumb  = dc_oficina_capa_url( get_the_ID() );
             if ( ! $thumb ) {
               $thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
             }

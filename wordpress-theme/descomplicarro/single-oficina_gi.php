@@ -23,7 +23,7 @@ while ( have_posts() ) :
 	$instagram      = dc_field( 'dc_oficina_instagram' );
 	$maps           = dc_field( 'dc_oficina_maps' );
 	$galeria        = dc_repeater( 'dc_oficina_galeria' );
-	$thumb          = dc_attachment_image_url( get_post_thumbnail_id(), 'large' );
+	$thumb          = dc_oficina_capa_url( get_the_ID() );
 	if ( ! $thumb ) {
 		$thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
 	}

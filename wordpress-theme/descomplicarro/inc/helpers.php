@@ -278,6 +278,32 @@ function dc_oficinas_pagina_ativa() {
 	return (int) dc_option( 'oficinas_pagina_ativa', 0 ) === 1;
 }
 
+/**
+ * GI CONECTA — resolve a imagem de capa de uma oficina (usada no card da
+ * listagem e no perfil individual): Imagem Destacada (logotipo) quando
+ * cadastrada; se não houver, a primeira foto da Galeria de fotos — muitas
+ * oficinas são cadastradas só com fotos da galeria, sem logotipo próprio
+ * definido, e a capa não deve ficar em branco nesse caso; sem nenhuma das
+ * duas, string vazia (quem chama decide o placeholder).
+ */
+function dc_oficina_capa_url( $post_id, $size = 'large' ) {
+	$thumb_id = get_post_thumbnail_id( $post_id );
+	if ( $thumb_id ) {
+		$url = dc_attachment_image_url( $thumb_id, $size );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	$galeria = dc_repeater( 'dc_oficina_galeria', $post_id );
+	if ( ! empty( $galeria[0]['imagem'] ) ) {
+		$url = dc_attachment_image_url( $galeria[0]['imagem'], $size );
+		if ( $url ) {
+			return $url;
+		}
+	}
+	return '';
+}
+
 /** Imprime uma lista <ul><li> a partir de um campo de texto com uma linha por item (serviços, especialidades). */
 function dc_list_lines( $key, $post_id = null, $class = '' ) {
 	$raw   = dc_field_raw( $key, '', $post_id );
