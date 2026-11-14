@@ -299,7 +299,18 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_image( $post, 'dc_motoristas_imagem', 'Imagem de abertura' );
 	dc_admin_caption( $post, 'dc_motoristas_imagem_legenda', 'Legenda da imagem' );
 
-	dc_admin_section_title( 'N.02 — Match Automotivo' );
+	dc_admin_section_title( 'N.02 — Nossas modalidades (cabeçalho da seção)' );
+	dc_admin_text( $post, 'dc_modalidades_heading', 'Título da seção' );
+	dc_admin_textarea( $post, 'dc_modalidades_intro', 'Introdução (opcional)', '', 2 );
+
+	dc_admin_section_title( 'N.02 — Modalidade 1: Checklist Gratuito' );
+	dc_admin_text( $post, 'dc_checklist_titulo', 'Nome do material' );
+	dc_admin_textarea( $post, 'dc_checklist_desc', 'Descrição (parágrafos, um por linha)', '', 4 );
+	dc_admin_file( $post, 'dc_checklist_pdf', 'Arquivo PDF', 'Selecione o PDF na Biblioteca de Mídia (envie o arquivo lá se ainda não estiver cadastrado).' );
+	dc_admin_text( $post, 'dc_checklist_botao_label', 'Texto do botão' );
+
+	dc_admin_section_title( 'N.02 — Modalidade 2: Match Automotivo' );
+	dc_admin_text( $post, 'dc_match_preco', 'Preço (texto, ex.: "R$ 187,00")' );
 	dc_admin_text( $post, 'dc_match_role', 'Eyebrow' );
 	dc_admin_text( $post, 'dc_match_nome', 'Título' );
 	dc_admin_textarea( $post, 'dc_match_texto', 'Parágrafos', '', 6 );
@@ -310,9 +321,24 @@ function dc_render_meta_box_motoristas( $post ) {
 	dc_admin_text( $post, 'dc_match_assinatura_parte1', 'Assinatura da solução — parte 1, texto normal' );
 	dc_admin_text( $post, 'dc_match_assinatura_parte2', 'Assinatura da solução — parte 2, em destaque laranja' );
 	dc_admin_text( $post, 'dc_match_botao_label', 'Texto do botão (Hotmart)' );
-	dc_admin_url( $post, 'dc_match_botao_url', 'URL de compra (Hotmart)' );
+	dc_admin_url( $post, 'dc_match_botao_url', 'URL de compra (Hotmart) — NÃO alterar sem necessidade' );
 	dc_admin_image( $post, 'dc_match_imagem', 'Identidade visual' );
 	dc_admin_caption( $post, 'dc_match_imagem_legenda', 'Legenda da imagem' );
+
+	dc_admin_section_title( 'N.02 — Modalidade 3: Match Pró' );
+	dc_admin_text( $post, 'dc_matchpro_preco', 'Preço (texto, ex.: "R$ 387,00")' );
+	dc_admin_textarea( $post, 'dc_matchpro_desc', 'Descrição (parágrafos, um por linha)', '', 5 );
+	dc_admin_textarea( $post, 'dc_matchpro_beneficios', 'O que inclui (um item por linha)', '', 4 );
+	dc_admin_text( $post, 'dc_matchpro_botao_label', 'Texto do botão' );
+	dc_admin_textarea( $post, 'dc_matchpro_whatsapp_mensagem', 'Mensagem pré-preenchida do WhatsApp', '', 3 );
+
+	dc_admin_section_title( 'N.02 — Modalidade 4: Match Exclusive' );
+	dc_admin_text( $post, 'dc_matchexclusive_preco', 'Preço (texto, ex.: "SOB ORÇAMENTO")' );
+	dc_admin_textarea( $post, 'dc_matchexclusive_desc', 'Descrição (parágrafos, um por linha)', '', 5 );
+	dc_admin_textarea( $post, 'dc_matchexclusive_beneficios', 'O que inclui (um item por linha)', '', 6 );
+	dc_admin_textarea( $post, 'dc_matchexclusive_info', 'Informações comerciais importantes (um item por linha, exibidas abaixo dos cartões)', '', 6 );
+	dc_admin_text( $post, 'dc_matchexclusive_botao_label', 'Texto do botão' );
+	dc_admin_textarea( $post, 'dc_matchexclusive_whatsapp_mensagem', 'Mensagem pré-preenchida do WhatsApp', '', 3 );
 
 	dc_admin_section_title( 'N.03 — GI Conecta' );
 	dc_admin_text( $post, 'dc_gi_role', 'Eyebrow' );
@@ -332,11 +358,15 @@ function dc_render_meta_box_motoristas( $post ) {
 
 	dc_meta_box_footer(
 		array( 'dc_motoristas_titulo', 'dc_motoristas_paragrafos', 'dc_motoristas_forte',
-			'dc_match_role', 'dc_match_nome', 'dc_match_texto', 'dc_match_stat1_numero', 'dc_match_stat1_label', 'dc_match_stat2_numero', 'dc_match_stat2_label', 'dc_match_assinatura_parte1', 'dc_match_assinatura_parte2', 'dc_match_botao_label',
+			'dc_modalidades_heading', 'dc_modalidades_intro',
+			'dc_checklist_titulo', 'dc_checklist_desc', 'dc_checklist_botao_label',
+			'dc_match_preco', 'dc_match_role', 'dc_match_nome', 'dc_match_texto', 'dc_match_stat1_numero', 'dc_match_stat1_label', 'dc_match_stat2_numero', 'dc_match_stat2_label', 'dc_match_assinatura_parte1', 'dc_match_assinatura_parte2', 'dc_match_botao_label',
+			'dc_matchpro_preco', 'dc_matchpro_desc', 'dc_matchpro_beneficios', 'dc_matchpro_botao_label', 'dc_matchpro_whatsapp_mensagem',
+			'dc_matchexclusive_preco', 'dc_matchexclusive_desc', 'dc_matchexclusive_beneficios', 'dc_matchexclusive_info', 'dc_matchexclusive_botao_label', 'dc_matchexclusive_whatsapp_mensagem',
 			'dc_gi_role', 'dc_gi_nome', 'dc_gi_texto', 'dc_gi_destaque',
 		),
 		array( 'dc_match_botao_url', 'dc_motoristas_ad1_url', 'dc_motoristas_ad2_url' ),
-		array( 'dc_motoristas_imagem', 'dc_match_imagem', 'dc_gi_imagem', 'dc_motoristas_ad1_imagem', 'dc_motoristas_ad2_imagem' ),
+		array( 'dc_motoristas_imagem', 'dc_match_imagem', 'dc_gi_imagem', 'dc_motoristas_ad1_imagem', 'dc_motoristas_ad2_imagem', 'dc_checklist_pdf' ),
 		array( 'dc_motoristas_ad1_ativo', 'dc_motoristas_ad2_ativo' ),
 		array(),
 		array( 'dc_motoristas_imagem_legenda', 'dc_match_imagem_legenda', 'dc_gi_imagem_legenda' )

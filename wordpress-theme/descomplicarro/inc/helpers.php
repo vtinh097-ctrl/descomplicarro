@@ -304,10 +304,21 @@ function dc_oficina_capa_url( $post_id, $size = 'large' ) {
 	return '';
 }
 
-/** Imprime uma lista <ul><li> a partir de um campo de texto com uma linha por item (serviços, especialidades). */
-function dc_list_lines( $key, $post_id = null, $class = '' ) {
-	$raw   = dc_field_raw( $key, '', $post_id );
-	$lines = $raw !== '' ? preg_split( '/\r\n|\r|\n/', trim( $raw ) ) : array();
+/**
+ * Imprime uma lista <ul><li> a partir de um campo de texto com uma linha por
+ * item (serviços, especialidades, benefícios). $default_lines aceita uma
+ * string com quebras de linha (\n) ou um array — usado enquanto o campo
+ * nunca foi editado no admin, mesmo padrão de dc_paragraphs_lines().
+ */
+function dc_list_lines( $key, $default_lines = '', $post_id = null, $class = '' ) {
+	$raw = dc_field_raw( $key, '', $post_id );
+	if ( $raw !== '' ) {
+		$lines = preg_split( '/\r\n|\r|\n/', trim( $raw ) );
+	} elseif ( is_array( $default_lines ) ) {
+		$lines = $default_lines;
+	} else {
+		$lines = $default_lines !== '' ? preg_split( '/\r\n|\r|\n/', trim( $default_lines ) ) : array();
+	}
 	if ( ! $lines ) {
 		return;
 	}

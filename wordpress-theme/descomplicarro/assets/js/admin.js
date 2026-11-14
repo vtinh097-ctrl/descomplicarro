@@ -41,6 +41,39 @@
     });
   }
 
+  function bindFileField(scope) {
+    scope.querySelectorAll('.dc-file-select').forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var field = btn.closest('.dc-file-field');
+        var input = field.querySelector('.dc-file-id');
+        var preview = field.querySelector('.dc-file-preview');
+        var frame = wp.media({
+          title: 'Selecionar arquivo',
+          multiple: false,
+        });
+        frame.on('select', function () {
+          var attachment = frame.state().get('selection').first().toJSON();
+          input.value = attachment.id;
+          preview.textContent = attachment.filename || attachment.title || ('Arquivo #' + attachment.id);
+        });
+        frame.open();
+      });
+    });
+    scope.querySelectorAll('.dc-file-remove').forEach(function (btn) {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var field = btn.closest('.dc-file-field');
+        field.querySelector('.dc-file-id').value = '0';
+        field.querySelector('.dc-file-preview').textContent = '';
+      });
+    });
+  }
+
   function bindRepeater(repeater) {
     if (repeater.dataset.bound) return;
     repeater.dataset.bound = '1';
@@ -73,6 +106,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     bindImageField(document);
+    bindFileField(document);
     document.querySelectorAll('.dc-repeater').forEach(bindRepeater);
   });
 })();

@@ -2151,3 +2151,122 @@ button:focus-visible {
   .oficinas-filtro select,
   .oficinas-filtro input[type="text"] { min-width: 0; width: 100%; }
 }
+
+/* --------------------------------------------------------------------------
+   50. PARA MOTORISTAS — CARTÕES DE MODALIDADE
+   As quatro modalidades (Checklist Gratuito, Match Automotivo, Match Pró,
+   Match Exclusive) em formato de cartão comercial comparativo — reaproveita
+   .stat-grupo, .solucao__assinatura e .btn-bracket já aprovados; estas
+   regras cobrem só a grade e o cartão em si, novos nesta seção.
+   -------------------------------------------------------------------------- */
+.modalidades-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--grid-gap);
+  margin-top: var(--space-lg);
+}
+.modalidade-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  border: var(--border-width) solid var(--color-graphite-15);
+  border-radius: 4px;
+  background-color: var(--color-offwhite);
+  position: relative;
+}
+.modalidade-card--destaque {
+  border: var(--border-width) solid var(--color-orange);
+  padding-top: calc(var(--space-md) + var(--space-sm));
+}
+.modalidade-card__selo {
+  position: absolute;
+  top: 0;
+  left: var(--space-md);
+  transform: translateY(-50%);
+  background-color: var(--color-orange);
+  color: var(--color-offwhite);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  padding: var(--space-2xs) var(--space-sm);
+  border-radius: 999px;
+}
+.modalidade-card__header { margin-bottom: var(--space-sm); }
+.modalidade-card__preco {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-orange);
+  margin-bottom: var(--space-2xs);
+}
+.modalidade-card__preco--gratuito,
+.modalidade-card__preco--orcamento { text-transform: uppercase; }
+.modalidade-card__nome {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-h3);
+  color: var(--color-graphite);
+  text-transform: none;
+}
+.modalidade-card__desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-graphite-70);
+  margin-top: var(--space-sm);
+}
+.modalidade-card__beneficios {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.modalidade-card__beneficios li {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-graphite);
+  padding-left: var(--space-sm);
+  position: relative;
+}
+.modalidade-card__beneficios li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--color-orange);
+}
+.solucao__assinatura--card { font-size: var(--fs-small); margin-top: var(--space-sm); }
+.modalidade-card__cta { margin-top: var(--space-lg); padding-top: 0; }
+.modalidade-card .stat-grupo { gap: var(--space-lg); }
+.modalidade-card .stat-destaque__numero { font-size: var(--fs-h2); }
+
+.modalidades-complementar {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: var(--border-width) solid var(--color-graphite-15);
+}
+.modalidades-complementar__lista {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.modalidades-complementar__lista li {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--color-graphite-70);
+  padding-left: var(--space-sm);
+  position: relative;
+}
+.modalidades-complementar__lista li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--color-graphite-15);
+}
+
+@media (max-width: 900px) {
+  .modalidades-grid { grid-template-columns: 1fr; }
+}

@@ -115,6 +115,24 @@ function dc_admin_select( $post, $key, $label, $options, $desc = '' ) {
 	dc_admin_field_wrap_end();
 }
 
+/** Campo de arquivo (PDF, etc.): botão para abrir a Biblioteca de Mídia (wp.media) sem restringir a imagens, guarda o ID do anexo. */
+function dc_admin_file( $post, $key, $label, $desc = '' ) {
+	$attachment_id = (int) get_post_meta( $post->ID, $key, true );
+	$filename      = $attachment_id ? basename( get_attached_file( $attachment_id ) ) : '';
+	dc_admin_field_wrap_start( $label, $desc );
+	echo '<div class="dc-file-field" data-key="' . esc_attr( $key ) . '">';
+	echo '<span class="dc-file-preview" style="display:block;margin-bottom:6px;font-style:italic;">' . esc_html( $filename ) . '</span>';
+	printf(
+		'<input type="hidden" class="dc-file-id" name="%1$s" value="%2$d" />',
+		esc_attr( $key ),
+		$attachment_id
+	);
+	echo '<button type="button" class="button dc-file-select">Selecionar arquivo</button> ';
+	echo '<button type="button" class="button dc-file-remove">Remover</button>';
+	echo '</div>';
+	dc_admin_field_wrap_end();
+}
+
 function dc_admin_section_title( $title ) {
 	echo '<h4 style="margin:22px 0 8px;padding-top:16px;border-top:1px solid #dcdcde;">' . esc_html( $title ) . '</h4>';
 }

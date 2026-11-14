@@ -90,6 +90,31 @@ function dc_ensure_category_base() {
 	}
 }
 
+/**
+ * LANÇAMENTO — a seção "Já estivemos por aqui" (Palestras & Workshops) já
+ * tinha um interruptor próprio no admin (dc_experiencias_ativo, ver
+ * dc_section_active() em inc/helpers.php e o checkbox "Exibir esta galeria"
+ * no metabox da página) — por padrão ele vem ligado. Para o lançamento, a
+ * seção deve começar OCULTA, sem precisar que o administrador entre e
+ * desmarque a caixa manualmente. Isso roda uma única vez, e só grava o
+ * valor se o campo nunca tiver sido definido antes — se alguém já marcou
+ * ou desmarcou essa caixa manualmente, a escolha deles é respeitada e nunca
+ * sobrescrita por este código. Reativar a seção é só marcar "Exibir esta
+ * galeria" em Palestras & Workshops e salvar — nenhum arquivo/imagem/texto
+ * é apagado enquanto a seção está oculta.
+ */
+add_action( 'init', 'dc_ensure_experiencias_oculta_por_padrao', 20 );
+function dc_ensure_experiencias_oculta_por_padrao() {
+	if ( get_option( 'dc_experiencias_oculta_v1' ) ) {
+		return;
+	}
+	$pagina = get_page_by_path( 'palestras-workshops' );
+	if ( $pagina && ! metadata_exists( 'post', $pagina->ID, 'dc_experiencias_ativo' ) ) {
+		update_post_meta( $pagina->ID, 'dc_experiencias_ativo', 0 );
+	}
+	update_option( 'dc_experiencias_oculta_v1', 1 );
+}
+
 function dc_provision_menu( $ids ) {
 	$menu_name = 'Navegação Principal';
 	$menu_id   = 0;

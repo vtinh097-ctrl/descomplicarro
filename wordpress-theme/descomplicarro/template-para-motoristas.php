@@ -53,8 +53,8 @@ get_header();
   </section>
   <?php endif; ?>
 
-  <!-- BLOCO N.02 — MATCH AUTOMOTIVO -->
-  <section id="match-automotivo" class="section section--match section--offwhite" aria-labelledby="match-heading">
+  <!-- BLOCO N.02 — NOSSAS MODALIDADES (Checklist Gratuito, Match Automotivo, Match Pró, Match Exclusive) -->
+  <section id="match-automotivo" class="section section--modalidades section--offwhite" aria-labelledby="modalidades-heading">
     <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
       <line x1="0" y1="120" x2="1200" y2="120" stroke="#252525" stroke-width="1" opacity="0.06"></line>
       <line x1="1040" y1="0" x2="1040" y2="900" stroke="#252525" stroke-width="1" opacity="0.06"></line>
@@ -62,25 +62,54 @@ get_header();
       <circle cx="60" cy="820" r="220" fill="none" stroke="#252525" stroke-width="1" opacity="0.07"></circle>
     </svg>
     <div class="container">
-      <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>MATCH AUTOMOTIVO</span></div>
-      <div class="perfil">
-        <div class="perfil__figure">
-          <img src="<?php echo esc_url( dc_image_url( 'dc_match_imagem' ) ); ?>" alt="Identidade visual do MATCH Automotivo — imagem oficial a ser adicionada posteriormente" class="perfil__image">
-          <span class="perfil__frame-mark perfil__frame-mark--tl" aria-hidden="true"></span>
-          <span class="perfil__frame-mark perfil__frame-mark--br" aria-hidden="true"></span>
-          <?php dc_caption_html( 'dc_match_imagem_legenda', 'Identidade — Match Automotivo' ); ?>
+      <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>NOSSAS MODALIDADES</span></div>
+      <div class="section-heading-row">
+        <h2 id="modalidades-heading" class="section-heading"><?php dc_text( 'dc_modalidades_heading', 'ESCOLHA O FORMATO IDEAL PARA VOCÊ' ); ?></h2>
+      </div>
+      <?php $modalidades_intro = dc_field_raw( 'dc_modalidades_intro', 'Do material gratuito ao acompanhamento presencial: encontre o nível de orientação mais adequado para a sua decisão.' ); ?>
+      <?php if ( $modalidades_intro ) : ?>
+        <div class="bloco-texto__col"><p><?php echo esc_html( $modalidades_intro ); ?></p></div>
+      <?php endif; ?>
+
+      <div class="modalidades-grid">
+
+        <!-- MODALIDADE 1 — CHECKLIST GRATUITO -->
+        <div class="modalidade-card">
+          <div class="modalidade-card__header">
+            <span class="modalidade-card__preco modalidade-card__preco--gratuito">GRATUITO</span>
+            <h3 class="modalidade-card__nome"><?php dc_text( 'dc_checklist_titulo', 'Checklist Antes de Comprar um Carro Usado' ); ?></h3>
+          </div>
+          <?php
+          dc_paragraphs_lines( 'dc_checklist_desc', array(
+            'Vai comprar um carro usado? Antes de fechar negócio, saiba o que observar.',
+            'Um checklist prático para conferir documentos, identificar sinais de problemas, avaliar condições básicas do veículo e reconhecer situações que merecem atenção — antes, durante e depois da visita ao veículo.',
+          ), null, 'modalidade-card__desc' );
+          ?>
+          <div class="modalidade-card__cta">
+            <?php
+            $checklist_pdf_id  = (int) dc_field_raw( 'dc_checklist_pdf', 0 );
+            $checklist_pdf_url = $checklist_pdf_id ? wp_get_attachment_url( $checklist_pdf_id ) : '';
+            ?>
+            <a href="<?php echo $checklist_pdf_url ? esc_url( $checklist_pdf_url ) : '#'; ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label"><?php dc_text( 'dc_checklist_botao_label', 'ACESSAR CHECKLIST GRATUITO' ); ?></span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
         </div>
-        <div class="perfil__body">
-          <span class="perfil__role"><?php dc_text( 'dc_match_role', 'Consultoria' ); ?></span>
-          <h2 id="match-heading" class="perfil__name"><?php dc_text( 'dc_match_nome', 'Match Automotivo' ); ?></h2>
+
+        <!-- MODALIDADE 2 — MATCH AUTOMOTIVO -->
+        <div class="modalidade-card">
+          <div class="modalidade-card__header">
+            <span class="modalidade-card__preco"><?php dc_text( 'dc_match_preco', 'R$ 187,00' ); ?></span>
+            <span class="perfil__role"><?php dc_text( 'dc_match_role', 'Consultoria' ); ?></span>
+            <h3 id="match-heading" class="modalidade-card__nome"><?php dc_text( 'dc_match_nome', 'Match Automotivo' ); ?></h3>
+          </div>
           <?php
           dc_paragraphs_lines( 'dc_match_texto', array(
             'O MATCH Automotivo é uma consultoria criada para ajudar o motorista a descobrir quais carros realmente combinam com sua vida.',
-            'A análise considera 35 variáveis relacionadas ao perfil, rotina, necessidades, preferências e orçamento do cliente.',
-            'A partir dessas informações, são indicadas 3 opções de veículos que melhor se encaixam naquele perfil.',
-            'A ideia não é simplesmente responder “qual é o melhor carro?”, porque não existe um carro que seja o melhor para todo mundo.',
-            'Existe o carro que faz mais sentido para cada estilo de vida.',
-          ), null, 'perfil__text' );
+            'A análise considera 35 variáveis relacionadas ao perfil, rotina, necessidades, preferências e orçamento do cliente, indicando 3 opções de veículos que melhor se encaixam naquele perfil.',
+          ), null, 'modalidade-card__desc' );
           ?>
           <div class="stat-grupo">
             <div class="stat-destaque">
@@ -92,8 +121,8 @@ get_header();
               <span class="stat-destaque__label"><?php dc_text( 'dc_match_stat2_label', 'Opções indicadas' ); ?></span>
             </div>
           </div>
-          <p class="solucao__assinatura"><?php dc_text( 'dc_match_assinatura_parte1', 'O carro certo,' ); ?> <span><?php dc_text( 'dc_match_assinatura_parte2', 'para seu estilo de vida.' ); ?></span></p>
-          <div class="solucao__cta">
+          <p class="solucao__assinatura solucao__assinatura--card"><?php dc_text( 'dc_match_assinatura_parte1', 'O carro certo,' ); ?> <span><?php dc_text( 'dc_match_assinatura_parte2', 'para seu estilo de vida.' ); ?></span></p>
+          <div class="modalidade-card__cta">
             <a href="<?php dc_url( 'dc_match_botao_url' ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
               <span class="btn-bracket__bracket" aria-hidden="true">[</span>
               <span class="btn-bracket__label"><?php dc_text( 'dc_match_botao_label', 'QUERO ENCONTRAR MEU MATCH' ); ?></span>
@@ -101,6 +130,67 @@ get_header();
             </a>
           </div>
         </div>
+
+        <!-- MODALIDADE 3 — MATCH PRÓ -->
+        <div class="modalidade-card modalidade-card--destaque">
+          <span class="modalidade-card__selo">Atendimento personalizado</span>
+          <div class="modalidade-card__header">
+            <span class="modalidade-card__preco"><?php dc_text( 'dc_matchpro_preco', 'R$ 387,00' ); ?></span>
+            <h3 class="modalidade-card__nome">Match Pró</h3>
+          </div>
+          <?php
+          dc_paragraphs_lines( 'dc_matchpro_desc', array(
+            'A escolha do seu próximo carro com orientação técnica personalizada.',
+            'Você participa de uma consultoria individual por videochamada com Giovana Toso: preenchemos juntos o formulário de perfil, conversamos sobre suas necessidades e avaliamos as possibilidades mais adequadas à sua realidade, podendo ajustar as opções durante o atendimento.',
+            'Depois da consultoria, você recebe os relatórios personalizados do MATCH Automotivo.',
+          ), null, 'modalidade-card__desc' );
+          ?>
+          <?php dc_list_lines( 'dc_matchpro_beneficios', "Consultoria individual por videochamada.\nPreenchimento acompanhado do formulário.\nDiscussão e ajuste das recomendações.\nEntrega posterior dos relatórios do MATCH.", null, 'modalidade-card__beneficios' ); ?>
+          <div class="modalidade-card__cta">
+            <?php
+            $matchpro_msg = dc_field_raw( 'dc_matchpro_whatsapp_mensagem', 'Olá! Tenho interesse no MATCH Pró, no valor de R$ 387,00. Gostaria de agendar minha consultoria e receber as orientações para pagamento.' );
+            ?>
+            <a href="<?php echo esc_url( dc_whatsapp_link( $matchpro_msg ) ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label"><?php dc_text( 'dc_matchpro_botao_label', 'AGENDAR MEU MATCH PRÓ' ); ?></span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- MODALIDADE 4 — MATCH EXCLUSIVE -->
+        <div class="modalidade-card">
+          <div class="modalidade-card__header">
+            <span class="modalidade-card__preco modalidade-card__preco--orcamento"><?php dc_text( 'dc_matchexclusive_preco', 'SOB ORÇAMENTO' ); ?></span>
+            <h3 class="modalidade-card__nome">Match Exclusive</h3>
+          </div>
+          <?php
+          dc_paragraphs_lines( 'dc_matchexclusive_desc', array(
+            'Da escolha do modelo à avaliação presencial: acompanhamento técnico para uma compra mais segura e consciente.',
+            'Reúne a consultoria personalizada do MATCH Pró com o acompanhamento presencial de Giovana Toso na avaliação dos veículos selecionados por você, incluindo comparação técnica das condições avaliadas, recomendação fundamentada e apoio na negociação.',
+          ), null, 'modalidade-card__desc' );
+          ?>
+          <?php dc_list_lines( 'dc_matchexclusive_beneficios', "Todos os serviços do MATCH Pró.\nPlanejamento das avaliações presenciais.\nAvaliação de até quatro veículos, conforme disponibilidade e viabilidade logística.\nComparação técnica das opções avaliadas.\nRecomendação do veículo mais viável, quando houver.\nApoio na negociação do valor de compra.", null, 'modalidade-card__beneficios' ); ?>
+          <div class="modalidade-card__cta">
+            <?php
+            $matchexclusive_msg = dc_field_raw( 'dc_matchexclusive_whatsapp_mensagem', 'Olá! Tenho interesse no MATCH Exclusive. Gostaria de receber informações e solicitar um orçamento para acompanhamento na compra de um veículo.' );
+            ?>
+            <a href="<?php echo esc_url( dc_whatsapp_link( $matchexclusive_msg ) ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+              <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+              <span class="btn-bracket__label"><?php dc_text( 'dc_matchexclusive_botao_label', 'SOLICITAR ORÇAMENTO' ); ?></span>
+              <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- INFORMAÇÕES COMPLEMENTARES — MATCH EXCLUSIVE -->
+      <div class="modalidades-complementar">
+        <p class="principios-list__eyebrow">Informações importantes — Match Exclusive</p>
+        <?php
+        dc_list_lines( 'dc_matchexclusive_info', "Serviço mediante orçamento personalizado.\nDeslocamento com saída de Curitiba/PR.\nPassagens aéreas, hospedagem, alimentação, transporte local e demais despesas necessárias serão consideradas no orçamento.\nA realização de até quatro avaliações no mesmo dia depende da localização e disponibilidade dos veículos.\nO serviço não garante aprovação de nenhum veículo nem obtenção de descontos na negociação.\nCaso nenhum veículo apresente condições satisfatórias, a recomendação poderá ser não realizar a compra.", null, 'modalidades-complementar__lista' );
+        ?>
       </div>
     </div>
   </section>
