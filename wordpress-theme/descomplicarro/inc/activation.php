@@ -96,23 +96,30 @@ function dc_ensure_category_base() {
  * dc_section_active() em inc/helpers.php e o checkbox "Exibir esta galeria"
  * no metabox da página) — por padrão ele vem ligado. Para o lançamento, a
  * seção deve começar OCULTA, sem precisar que o administrador entre e
- * desmarque a caixa manualmente. Isso roda uma única vez, e só grava o
- * valor se o campo nunca tiver sido definido antes — se alguém já marcou
- * ou desmarcou essa caixa manualmente, a escolha deles é respeitada e nunca
- * sobrescrita por este código. Reativar a seção é só marcar "Exibir esta
+ * desmarque a caixa manualmente.
+ *
+ * Esta rotina roda uma única vez (controlada pela opção abaixo) e força o
+ * valor para "oculto". Ela NÃO verifica se o campo já tinha um valor
+ * salvo — o checkbox "Exibir esta galeria" é gravado a cada vez que a
+ * página é atualizada no admin, esteja ele marcado ou não (é assim que
+ * todo campo do tipo checkbox deste tema funciona), então qualquer edição
+ * anterior da página (enviar fotos, ajustar texto etc.) já deixava
+ * dc_experiencias_ativo = 1 salvo no banco, mesmo sem ninguém ter decidido
+ * nada sobre a visibilidade da galeria — por isso checar "só se nunca foi
+ * definido" não bastava. Reativar a seção é só marcar "Exibir esta
  * galeria" em Palestras & Workshops e salvar — nenhum arquivo/imagem/texto
  * é apagado enquanto a seção está oculta.
  */
 add_action( 'init', 'dc_ensure_experiencias_oculta_por_padrao', 20 );
 function dc_ensure_experiencias_oculta_por_padrao() {
-	if ( get_option( 'dc_experiencias_oculta_v1' ) ) {
+	if ( get_option( 'dc_experiencias_oculta_v2' ) ) {
 		return;
 	}
 	$pagina = get_page_by_path( 'palestras-workshops' );
-	if ( $pagina && ! metadata_exists( 'post', $pagina->ID, 'dc_experiencias_ativo' ) ) {
+	if ( $pagina ) {
 		update_post_meta( $pagina->ID, 'dc_experiencias_ativo', 0 );
 	}
-	update_option( 'dc_experiencias_oculta_v1', 1 );
+	update_option( 'dc_experiencias_oculta_v2', 1 );
 }
 
 function dc_provision_menu( $ids ) {
