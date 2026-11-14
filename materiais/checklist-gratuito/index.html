@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Checklist Antes de Comprar um Carro Usado — DESCOMPLICARRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grafite:#252525;
+    --offwhite:#F4F1EA;
+    --laranja:#C65A32;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'DM Sans',Arial,sans-serif;
+    color:var(--grafite);
+    background:#ccc;
+  }
+
+  @page{ size:A4; margin:0; }
+
+  .page{
+    width:210mm;
+    height:297mm;
+    position:relative;
+    overflow:hidden;
+    background:var(--offwhite);
+    page-break-after:always;
+    margin:0 auto 6mm auto;
+  }
+  .page:last-child{ page-break-after:auto; }
+  @media print{
+    body{background:none;}
+    .page{margin:0;}
+  }
+
+  .page-inner{
+    position:relative;
+    z-index:2;
+    width:100%;
+    height:100%;
+    padding:20mm 18mm 16mm 18mm;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- grid técnico (textura de fundo, muito discreta) ---------- */
+  .grid-textura{
+    position:absolute; inset:0; z-index:1;
+    background-image:
+      repeating-linear-gradient(to right, rgba(37,37,37,0.055) 0 1px, transparent 1px 12mm),
+      repeating-linear-gradient(to bottom, rgba(37,37,37,0.055) 0 1px, transparent 1px 12mm);
+  }
+
+  /* ---------- cantos técnicos (molduras incompletas) ---------- */
+  .canto{ position:absolute; width:9mm; height:9mm; z-index:3; }
+  .canto--tl{ top:10mm; left:10mm; border-top:1.4pt solid var(--laranja); border-left:1.4pt solid var(--laranja); }
+  .canto--br{ bottom:10mm; right:10mm; border-bottom:1.4pt solid var(--laranja); border-right:1.4pt solid var(--laranja); }
+
+  /* ---------- eyebrow / selo ---------- */
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:10pt;
+    letter-spacing:0.08em;
+    color:var(--laranja);
+    border:1pt solid var(--laranja);
+    border-radius:999px;
+    padding:3mm 6mm;
+    width:fit-content;
+    margin-bottom:8mm;
+  }
+  .eyebrow::before{ content:"—"; }
+
+  h1.titulo{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:25pt;
+    line-height:1.12;
+    margin:0 0 6mm 0;
+    text-transform:uppercase;
+  }
+  h1.titulo .destaque{ color:var(--laranja); }
+
+  p.texto{
+    font-size:11pt;
+    line-height:1.55;
+    margin:0 0 4.5mm 0;
+  }
+  p.texto b{ font-weight:700; color:var(--grafite); }
+
+  .assinatura{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:12pt;
+    letter-spacing:0.02em;
+  }
+  .assinatura .c{ color:var(--laranja); }
+  .tagline{
+    font-family:'DM Sans',sans-serif;
+    font-weight:500;
+    font-size:8.5pt;
+    letter-spacing:0.14em;
+    color:#6b6b6b;
+    margin-top:1.5mm;
+  }
+
+  /* ---------- rodapé interno ---------- */
+  .rodape{
+    margin-top:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:6mm;
+    border-top:0.75pt solid rgba(37,37,37,0.18);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:8pt;
+    letter-spacing:0.08em;
+    color:var(--grafite);
+  }
+  .rodape .marca{ color:var(--grafite); }
+  .rodape .marca .c{ color:var(--laranja); }
+
+  /* ---------- checklist ---------- */
+  .item{
+    display:flex;
+    align-items:flex-start;
+    gap:4.5mm;
+    margin-bottom:6mm;
+  }
+  .check{
+    flex:0 0 auto;
+    width:5mm; height:5mm;
+    margin-top:0.8mm;
+    border:1.4pt solid var(--grafite);
+    border-radius:1.2mm;
+  }
+  .item p{ margin:0; font-size:11pt; line-height:1.48; }
+  .item p b{ font-weight:700; }
+
+  /* ---------- caixas ---------- */
+  .caixa{
+    border-radius:2mm;
+    padding:7mm 8mm;
+    margin-bottom:6mm;
+  }
+  .caixa--contorno{
+    background:transparent;
+    border:1pt solid rgba(37,37,37,0.35);
+  }
+  .caixa--escura{
+    background:var(--grafite);
+    color:var(--offwhite);
+    position:relative;
+  }
+  .caixa--escura .eyebrow{ color:var(--laranja); border-color:var(--laranja); margin-bottom:4mm; }
+  .caixa h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:11pt;
+    letter-spacing:0.06em;
+    margin:0 0 3mm 0;
+    color:var(--laranja);
+  }
+  .caixa p{ margin:0; font-size:10.5pt; line-height:1.52; }
+  .caixa--escura p{ color:var(--offwhite); }
+
+  .linha-medida{
+    display:flex; align-items:center; gap:6px;
+    width:28mm; height:2pt; background:var(--laranja);
+    margin-bottom:6mm;
+  }
+
+  .etapas-lista{ font-size:10.5pt; line-height:1.7; }
+  .etapas-lista b{ color:var(--grafite); }
+
+  .tripe-linha{
+    font-size:9pt;
+    color:#6b6b6b;
+    line-height:1.55;
+    margin-top:5mm;
+  }
+  .tripe-linha b{ color:var(--laranja); font-weight:700; }
+
+  /* ---------- capa ---------- */
+  .capa{ justify-content:space-between; align-items:flex-start; }
+  .capa-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:'Space Grotesk',sans-serif; font-weight:600;
+    font-size:9.5pt; letter-spacing:0.08em;
+    color:var(--offwhite); background:var(--grafite);
+    border-radius:999px; padding:3mm 6mm;
+  }
+  .capa-titulo{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:38pt;
+    line-height:1.08;
+    margin:10mm 0 6mm 0;
+    text-transform:uppercase;
+  }
+  .capa-subtitulo{
+    font-size:13pt;
+    line-height:1.5;
+    max-width:130mm;
+    color:#454545;
+  }
+  .capa-logo{ width:95mm; height:auto; display:block; }
+  .capa-rodape{
+    display:flex; flex-direction:column; align-items:flex-start; gap:8mm;
+  }
+
+  /* ---------- fechamento ---------- */
+  .cta-box{
+    background:var(--grafite);
+    color:var(--offwhite);
+    border-radius:2mm;
+    padding:8mm;
+    position:relative;
+  }
+  .cta-box h3{ color:var(--laranja); }
+  .cta-botao{
+    display:inline-block;
+    margin-top:5mm;
+    background:var(--laranja);
+    color:var(--offwhite);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:10pt;
+    letter-spacing:0.05em;
+    text-decoration:none;
+    padding:4mm 8mm;
+    border-radius:999px;
+  }
+  .credito{
+    font-size:8pt;
+    color:#6b6b6b;
+    margin-top:4mm;
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= PÁGINA 1 — CAPA ======================= -->
+<section class="page">
+  <div class="grid-textura"></div>
+  <div class="canto canto--tl"></div>
+  <div class="canto canto--br"></div>
+  <div class="page-inner capa">
+    <div>
+      <span class="capa-badge">— MATERIAL GRATUITO</span>
+      <h1 class="capa-titulo">Checklist antes de<br>comprar um carro<br>usado</h1>
+      <div class="linha-medida"></div>
+      <p class="capa-subtitulo">O que conferir antes, durante e depois de ver o carro, para você não comprar o problema de outra pessoa.</p>
+    </div>
+    <div class="capa-rodape">
+      <img class="capa-logo" src="assets/images/logo-lockup.png" alt="DESCOMPLICARRO — Entenda. Questione. Decida." />
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 2 — ANTES DE COMEÇAR ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ANTES DE COMEÇAR</span>
+    <h1 class="titulo">Carro usado <span class="destaque">fala</span>. Você só precisa saber ouvir.</h1>
+    <p class="texto">Todo carro usado tem uma história. Parte dela está no documento, parte na lataria, parte no barulho que ele faz quando liga frio. Este checklist ajuda você a ler essa história antes de pagar por ela.</p>
+    <p class="texto">Ele não substitui a avaliação de um mecânico de confiança. Ele serve para você chegar preparado, fazer as perguntas certas e saber a hora de desistir.</p>
+
+    <div class="caixa caixa--escura">
+      <span class="eyebrow">COMO USAR</span>
+      <p>Leve este checklist (no celular ou impresso) e vá marcando cada item. Se vários itens não baterem, não é azar: é o carro te avisando.</p>
+    </div>
+
+    <div class="caixa caixa--contorno">
+      <h3>AS 5 ETAPAS</h3>
+      <p class="etapas-lista"><b>1.</b> Pesquisa e documentos &nbsp;·&nbsp; <b>2.</b> Por fora &nbsp;·&nbsp; <b>3.</b> Motor frio &nbsp;·&nbsp; <b>4.</b> Por dentro e test-drive &nbsp;·&nbsp; <b>5.</b> Antes de fechar</p>
+      <p class="tripe-linha">Etapas 1 e 2: <b>ENTENDA</b> o que está diante de você. Etapas 3 e 4: <b>QUESTIONE</b> o que você está vendo e ouvindo. Etapa 5: <b>DECIDA</b> com critério — ou saiba a hora de desistir.</p>
+    </div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>2 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 3 — ETAPA 1 ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ETAPA 1</span>
+    <h1 class="titulo">Pesquisa e <span class="destaque">documentos</span></h1>
+    <p class="texto">Antes de ir ver o carro, pela internet.</p>
+
+    <div class="item"><div class="check"></div><p>Defini quanto posso gastar <b>por mês</b> com o carro (seguro, IPVA, revisão, peças), não só o valor da compra.</p></div>
+    <div class="item"><div class="check"></div><p>Comparei o preço com a <b>tabela FIPE</b>. Muito abaixo do mercado pede explicação.</p></div>
+    <div class="item"><div class="check"></div><p>Consultei a placa no <b>Detran do estado</b>: multas, IPVA, licenciamento e restrições (financiamento ou alienação).</p></div>
+    <div class="item"><div class="check"></div><p>Fiz uma <b>consulta de histórico</b> do veículo (sinistro, leilão, roubo e furto).</p></div>
+    <div class="item"><div class="check"></div><p>Conferi se o modelo tem <b>recall</b> e se ele foi feito (site do fabricante).</p></div>
+    <div class="item"><div class="check"></div><p>O documento (CRLV) está <b>no nome de quem está vendendo</b>.</p></div>
+    <div class="item"><div class="check"></div><p>O número do <b>chassi</b> do documento é o mesmo gravado no carro e nos vidros.</p></div>
+    <div class="item"><div class="check"></div><p>Pedi o <b>manual</b> e as <b>notas das revisões</b> (troca de óleo, correia, fluidos).</p></div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>3 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 4 — ETAPA 2 ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ETAPA 2</span>
+    <h1 class="titulo">Por <span class="destaque">fora</span></h1>
+    <p class="texto">Veja o carro de dia, com luz natural e o carro seco. Chuva e noite escondem defeito.</p>
+
+    <div class="item"><div class="check"></div><p>A <b>cor da pintura</b> é igual em todas as peças, olhando de lado e contra a luz.</p></div>
+    <div class="item"><div class="check"></div><p>As <b>folgas</b> entre portas, capô e porta-malas são iguais dos dois lados.</p></div>
+    <div class="item"><div class="check"></div><p>Os <b>parafusos</b> do capô e dos para-lamas não têm marca de ferramenta (sinal de peça tirada).</p></div>
+    <div class="item"><div class="check"></div><p>Não há <b>ferrugem</b>, bolhas na pintura ou sinais de solda, inclusive embaixo do carro.</p></div>
+    <div class="item"><div class="check"></div><p>Os <b>pneus</b> gastam por igual. Desgaste só de um lado pode indicar problema de alinhamento ou suspensão.</p></div>
+    <div class="item"><div class="check"></div><p>Os pneus têm <b>sulco</b> acima do indicador de desgaste (TWI) e não estão ressecados ou rachados.</p></div>
+    <div class="item"><div class="check"></div><p>Conferi a <b>data de fabricação (DOT)</b> na lateral dos pneus: os 4 últimos números são a semana e o ano (ex.: 2321 = semana 23 de 2021). Pneu velho endurece e perde aderência, mesmo com sulco bom.</p></div>
+    <div class="item"><div class="check"></div><p>Faróis e lanternas acendem, sem água ou embaçado por dentro.</p></div>
+    <div class="item"><div class="check"></div><p>O para-brisa não tem trinca nem pedrada no campo de visão.</p></div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>4 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 5 — ETAPA 3 ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ETAPA 3</span>
+    <h1 class="titulo">Motor <span class="destaque">frio</span></h1>
+    <p class="texto">Peça ao vendedor para não ligar o carro antes de você chegar. A partida a frio mostra o que o motor quente esconde.</p>
+
+    <div class="item"><div class="check"></div><p>Quando cheguei, o <b>motor estava frio</b> (capô frio ao toque).</p></div>
+    <div class="item"><div class="check"></div><p>O carro <b>pegou de primeira</b>, sem engasgar nem fazer barulho metálico nos primeiros segundos.</p></div>
+    <div class="item"><div class="check"></div><p>Não há <b>vazamento</b> de óleo ou de líquido embaixo do carro nem no motor.</p></div>
+    <div class="item"><div class="check"></div><p>O <b>óleo</b> está no nível certo e sem borra (aquela pasta escura e grossa).</p></div>
+    <div class="item"><div class="check"></div><p>O <b>líquido de arrefecimento</b> está no nível, limpo, sem óleo boiando.</p></div>
+    <div class="item"><div class="check"></div><p>Sem <b>fumaça</b> que continua depois de aquecer: azulada (queima de óleo), branca e constante (pode ser água) ou preta.</p></div>
+
+    <div class="caixa caixa--escura">
+      <span class="eyebrow">FICA DE OLHO</span>
+      <p>Carro já ligado e quente quando você chega pode ser só gentileza. Mas também pode ser para esconder uma partida ruim. Se for o caso, volte em outro dia.</p>
+    </div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>5 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 6 — ETAPA 4 ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ETAPA 4</span>
+    <h1 class="titulo">Por dentro e <span class="destaque">test-drive</span></h1>
+
+    <div class="item"><div class="check"></div><p>Ao ligar, <b>todas as luzes do painel acendem e depois apagam</b>. Luz que nem acende pode ter sido desligada.</p></div>
+    <div class="item"><div class="check"></div><p>O <b>desgaste</b> do volante, dos pedais e do banco combina com a quilometragem.</p></div>
+    <div class="item"><div class="check"></div><p>Sem <b>cheiro de mofo</b>, umidade ou barro embaixo dos tapetes (sinais de enchente).</p></div>
+    <div class="item"><div class="check"></div><p>Ar-condicionado gela, vidros, travas, retrovisores e cintos funcionam.</p></div>
+    <div class="item"><div class="check"></div><p>O <b>câmbio</b> troca sem tranco, sem patinar e sem demora. No manual, a embreagem não pega lá no alto.</p></div>
+    <div class="item"><div class="check"></div><p>O carro <b>não puxa</b> para um lado em reta nem na frenagem, e o freio não trepida.</p></div>
+    <div class="item"><div class="check"></div><p>Sem <b>barulho</b> de suspensão em lombada e buraco, nem ronco que aumenta com a velocidade.</p></div>
+    <div class="item"><div class="check"></div><p>Nenhuma luz de alerta acendeu durante o teste.</p></div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>6 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 7 — ETAPA 5 ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">ETAPA 5</span>
+    <h1 class="titulo">Antes de <span class="destaque">fechar</span></h1>
+
+    <div class="item"><div class="check"></div><p>Levei o carro a um <b>mecânico de confiança</b> para uma avaliação, de preferência com scanner.</p></div>
+    <div class="item"><div class="check"></div><p>Fiz a <b>vistoria cautelar</b> em uma empresa credenciada (ela confere se o carro tem histórico de batida grave, adulteração ou leilão).</p></div>
+    <div class="item"><div class="check"></div><p>Não paguei <b>sinal</b> nem transferi dinheiro antes de conferir tudo.</p></div>
+    <div class="item"><div class="check"></div><p>A transferência é feita com a <b>autorização de transferência (ATPV-e)</b>, pelo Detran.</p></div>
+    <div class="item"><div class="check"></div><p>Tudo o que foi combinado (o que será consertado, o que acompanha o carro) está <b>por escrito</b>.</p></div>
+
+    <div class="caixa caixa--escura">
+      <span class="eyebrow">HORA DE DESISTIR</span>
+      <p>O vendedor tem pressa, não deixa levar ao mecânico, o documento não está no nome dele ou o preço está bom demais. Qualquer um desses já basta para ir embora.</p>
+    </div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>7 / 8</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PÁGINA 8 — E AGORA? ======================= -->
+<section class="page">
+  <div class="page-inner">
+    <span class="eyebrow">E AGORA?</span>
+    <h1 class="titulo">O checklist diz se o carro está bom. <span class="destaque">Mas ele é o carro certo para você?</span></h1>
+    <p class="texto">Muita gente faz tudo certo na vistoria e mesmo assim se arrepende, porque escolheu o modelo errado para a própria rotina, o próprio bolso ou a própria família.</p>
+
+    <div class="item"><div class="check"></div><p>Você responde um questionário com <b>35 pontos</b>: orçamento, trajetos, família, espaço, custo de manutenção e o que você espera do carro.</p></div>
+    <div class="item"><div class="check"></div><p>A equipe analisa e entrega um relatório com <b>3 opções de carro</b> compatíveis com o seu perfil, pensando em compra, uso e manutenção.</p></div>
+    <div class="item"><div class="check"></div><p>Para a melhor das três, você recebe um <b>checklist de verificação específico</b> daquele modelo, incluindo os defeitos crônicos dele, para levar ao seu mecânico de confiança.</p></div>
+    <div class="item"><div class="check"></div><p>Você decide com <b>critério técnico</b>, sem depender de opinião, tendência ou publicidade.</p></div>
+
+    <div class="cta-box">
+      <span class="eyebrow">MATCH AUTOMOTIVO</span>
+      <p>Informação é o primeiro passo para uma boa escolha. Este checklist ajuda você a observar pontos importantes antes de comprar um carro usado. Mas uma avaliação visual não substitui uma inspeção técnica profissional.</p>
+      <p style="margin-top:4mm;">Quer mais orientação para escolher seu próximo veículo? Conheça o MATCH Automotivo e suas modalidades.</p>
+      <a class="cta-botao" href="https://descomplicarro.com.br/para-motoristas">ACESSE O SITE DO DESCOMPLICARRO →</a>
+      <p class="credito">descomplicarro.com.br/para-motoristas &nbsp;·&nbsp; Conteúdo técnico: Giovana Toso</p>
+    </div>
+
+    <div class="rodape">
+      <span class="marca">DESCOMPLI<span class="c">C</span>ARRO</span>
+      <span>8 / 8</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
