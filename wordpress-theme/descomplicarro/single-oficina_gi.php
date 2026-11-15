@@ -78,7 +78,11 @@ while ( have_posts() ) :
 
 						<div class="solucao__cta oficina-contatos">
 							<?php if ( $whatsapp ) : ?>
-								<a href="<?php echo esc_url( 'https://wa.me/55' . $whatsapp ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+								<?php
+								$oficina_whatsapp_mensagem = sprintf( 'Olá! Encontrei a %s no site do DESCOMPLICARRO e gostaria de mais informações.', get_the_title() );
+								$oficina_whatsapp_url       = 'https://wa.me/55' . $whatsapp . '?text=' . rawurlencode( $oficina_whatsapp_mensagem );
+								?>
+								<a href="<?php echo esc_url( $oficina_whatsapp_url ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
 									<span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">WHATSAPP</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
 								</a>
 							<?php endif; ?>
