@@ -48,9 +48,14 @@ function dc_sanitize_options( $input ) {
 	if ( $clean['whatsapp'] !== '' ) {
 		$clean['whatsapp'] = preg_replace( '/[^0-9]/', '', $clean['whatsapp'] );
 	}
-	foreach ( array( 'logo_principal', 'logo_alternativo', 'favicon' ) as $img_field ) {
+	foreach ( array( 'logo_principal', 'logo_alternativo', 'favicon', 'banner_institucional_imagem' ) as $img_field ) {
 		$clean[ $img_field ] = isset( $input[ $img_field ] ) ? (int) $input[ $img_field ] : 0;
 	}
+
+	// Publicidade — banner institucional padrão.
+	$clean['banner_institucional_url'] = isset( $input['banner_institucional_url'] ) ? esc_url_raw( wp_unslash( $input['banner_institucional_url'] ) ) : '';
+	$clean['banner_institucional_alt'] = isset( $input['banner_institucional_alt'] ) ? sanitize_text_field( wp_unslash( $input['banner_institucional_alt'] ) ) : '';
+
 	return $clean;
 }
 
@@ -132,6 +137,27 @@ function dc_render_options_page() {
 				</tr>
 			</table>
 			<p class="description">Enquanto nenhum logotipo for enviado, o site continua usando o monograma/wordmark de texto atual (idêntico ao aprovado na V1) — nada é substituído automaticamente por um espaço vazio.</p>
+
+			<h2>Publicidade — banner institucional padrão</h2>
+			<p class="description">Exibido automaticamente em qualquer espaço publicitário sempre que não houver campanha ativa cadastrada em "Publicidade" para aquela posição (ver menu Publicidade). Quando uma campanha termina, o site volta a mostrar este banner sozinho — não precisa fazer nada.</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th>Imagem do banner institucional</th>
+					<td><?php dc_options_image_field( 'banner_institucional_imagem', $get( 'banner_institucional_imagem' ) ); ?></td>
+				</tr>
+				<tr>
+					<th><label for="dc_banner_institucional_url">URL de destino</label></th>
+					<td>
+						<input type="url" id="dc_banner_institucional_url" name="dc_options[banner_institucional_url]" value="<?php echo esc_attr( $get( 'banner_institucional_url' ) ); ?>" class="regular-text" placeholder="https://wa.me/..." />
+						<p class="description">Em branco, usa automaticamente o WhatsApp oficial cadastrado acima, com a mensagem "Olá! Quero anunciar no DESCOMPLICARRO.".</p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="dc_banner_institucional_alt">Texto alternativo da imagem</label></th>
+					<td><input type="text" id="dc_banner_institucional_alt" name="dc_options[banner_institucional_alt]" value="<?php echo esc_attr( $get( 'banner_institucional_alt' ) ); ?>" class="regular-text" placeholder="Divulgue sua marca aqui" /></td>
+				</tr>
+			</table>
+			<p class="description">Enquanto nenhuma imagem for enviada aqui, os espaços sem campanha ativa mostram o placeholder "PUBLICIDADE — ESPAÇO RESERVADO", como sempre mostraram.</p>
 
 			<?php submit_button( 'Salvar configurações' ); ?>
 		</form>

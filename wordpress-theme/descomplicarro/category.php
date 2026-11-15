@@ -105,14 +105,9 @@ foreach ( array_filter( array_merge( array( $destaque ), $ultimas ) ) as $p ) {
     </div>
   </section>
 
-  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-editoria-<?php echo esc_attr( $termo->slug ); ?>">
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="editoria-rodape-<?php echo esc_attr( $termo->slug ); ?>">
     <div class="container">
-      <a href="#" class="ad-slot__unit">
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-        <span class="ad-slot__eyebrow">Publicidade</span>
-        <span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-        <span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-      </a>
+      <?php dc_ad_slot_unit( 'dc_editoria_ad', 'editoria-rodape', array( $termo->term_id ) ); ?>
     </div>
   </section>
 

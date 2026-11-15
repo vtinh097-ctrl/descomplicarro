@@ -174,7 +174,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
   <?php if ( dc_section_active( 'dc_oficinas_ad_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="oficinas-formacao">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_oficinas_ad' ); ?>
+      <?php dc_ad_slot_unit( 'dc_oficinas_ad', 'oficinas-formacao' ); ?>
     </div>
   </section>
   <?php endif; ?>

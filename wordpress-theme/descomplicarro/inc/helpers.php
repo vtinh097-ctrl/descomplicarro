@@ -113,32 +113,54 @@ function dc_attachment_image_url( $attachment_id, $size = 'large' ) {
  * .ad-slot deve chamar esta função em vez de repetir o HTML do
  * placeholder, para herdar a mesma lógica de exibição.
  *
- * $key_prefix identifica o par de campos daquele espaço:
+ * $key_prefix identifica o par de campos legados daquele espaço:
  * "{$key_prefix}_imagem" (ID de anexo) e "{$key_prefix}_url" (link do
- * anunciante) — ex.: dc_ad_slot_unit('dc_home_ad1').
+ * anunciante), cadastrados direto na página — ex.: dc_ad_slot_unit('dc_home_ad1').
  *
- * Regras:
- * - Imagem cadastrada → exibe a imagem (proporção original preservada,
- *   sem corte) no lugar do texto placeholder; a etiqueta "Publicidade"
- *   permanece visível sobre a imagem.
- * - Sem imagem → mantém o placeholder original ("PUBLICIDADE — ESPAÇO
- *   RESERVADO"), exatamente como sempre foi.
- * - Link do anunciante vazio → usa "#" (mesmo placeholder de link já
- *   usado no restante do projeto), nunca uma URL inventada.
+ * $posicao (opcional) ativa o Gerenciador de Publicidade (ver
+ * inc/cpt-campanhas.php) para este espaço. $categoria_ids só é usado
+ * quando a posição é segmentada por editoria (matéria/página de editoria).
+ *
+ * Ordem de exibição:
+ * 1. Campanha ativa elegível em "Publicidade" para $posicao.
+ * 2. Imagem/link cadastrados manualmente nesta página ($key_prefix) —
+ *    comportamento já existente antes do Gerenciador de Publicidade.
+ * 3. Banner institucional padrão (Configurações Descomplicarro).
+ * 4. Placeholder original ("PUBLICIDADE — ESPAÇO RESERVADO").
+ *
+ * Em qualquer um dos três primeiros casos, a imagem é exibida em proporção
+ * original, sem corte (ver .ad-slot__image no CSS) — nenhuma dimensão do
+ * espaço é alterada entre os casos.
  */
-function dc_ad_slot_unit( $key_prefix ) {
-	$post_id   = get_the_ID();
-	$image_id  = (int) get_post_meta( $post_id, "{$key_prefix}_imagem", true );
-	$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : false;
-	$href      = dc_field( "{$key_prefix}_url", '#', $post_id );
-	$href      = $href ? $href : '#';
+function dc_ad_slot_unit( $key_prefix, $posicao = null, $categoria_ids = array() ) {
+	$anuncio = $posicao ? dc_resolver_anuncio( $posicao, $categoria_ids ) : null;
 
-	$classes = 'ad-slot__unit' . ( $image_url ? ' ad-slot__unit--filled' : '' );
-	echo '<a href="' . esc_url( $href ) . '" class="' . esc_attr( $classes ) . '">';
+	if ( ! $anuncio ) {
+		$post_id   = get_the_ID();
+		$image_id  = (int) get_post_meta( $post_id, "{$key_prefix}_imagem", true );
+		$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : false;
+		if ( $image_url ) {
+			$anuncio = array(
+				'imagem_url' => $image_url,
+				'href'       => dc_field_raw( "{$key_prefix}_url", '#', $post_id ) ?: '#',
+				'alt'        => 'Publicidade',
+				'nova_aba'   => false,
+			);
+		}
+	}
 
-	if ( $image_url ) {
+	if ( ! $anuncio ) {
+		$anuncio = dc_banner_institucional();
+	}
+
+	$href      = $anuncio ? ( $anuncio['href'] ?: '#' ) : '#';
+	$classes   = 'ad-slot__unit' . ( $anuncio ? ' ad-slot__unit--filled' : '' );
+	$target    = ( $anuncio && ! empty( $anuncio['nova_aba'] ) ) ? ' target="_blank" rel="noopener noreferrer"' : '';
+	echo '<a href="' . esc_url( $href ) . '" class="' . esc_attr( $classes ) . '"' . $target . '>';
+
+	if ( $anuncio ) {
 		echo '<span class="ad-slot__eyebrow">Publicidade</span>';
-		echo '<img src="' . esc_url( $image_url ) . '" alt="Publicidade" class="ad-slot__image">';
+		echo '<img src="' . esc_url( $anuncio['imagem_url'] ) . '" alt="' . esc_attr( $anuncio['alt'] ?: 'Publicidade' ) . '" class="ad-slot__image">';
 	} else {
 		echo '<span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>';
 		echo '<span class="ad-slot__eyebrow">Publicidade</span>';

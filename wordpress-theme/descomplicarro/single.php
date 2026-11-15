@@ -77,12 +77,10 @@ while ( have_posts() ) :
 
 		<section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="materia-apos-conteudo">
 			<div class="container">
-				<a href="#" class="ad-slot__unit">
-					<span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>
-					<span class="ad-slot__eyebrow">Publicidade</span>
-					<span class="ad-slot__placeholder-text">PUBLICIDADE — ESPAÇO RESERVADO</span>
-					<span class="ad-slot__frame-mark ad-slot__frame-mark--br" aria-hidden="true"></span>
-				</a>
+				<?php
+				$materia_categoria_ids = wp_list_pluck( get_the_category(), 'term_id' );
+				dc_ad_slot_unit( 'dc_materia_ad', 'materia-apos-conteudo', $materia_categoria_ids );
+				?>
 			</div>
 		</section>
 

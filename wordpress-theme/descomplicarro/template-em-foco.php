@@ -80,7 +80,7 @@ foreach ( $editorias as $slug => $info ) {
   <?php if ( dc_section_active( 'dc_emfoco_ad1_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-destaques-ultimas">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_emfoco_ad1' ); ?>
+      <?php dc_ad_slot_unit( 'dc_emfoco_ad1', 'emfoco-destaques-ultimas' ); ?>
     </div>
   </section>
   <?php endif; ?>
@@ -233,7 +233,7 @@ foreach ( $editorias as $slug => $info ) {
   <?php if ( dc_section_active( 'dc_emfoco_ad2_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="emfoco-editorias-youtube">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_emfoco_ad2' ); ?>
+      <?php dc_ad_slot_unit( 'dc_emfoco_ad2', 'emfoco-editorias-youtube' ); ?>
     </div>
   </section>
   <?php endif; ?>

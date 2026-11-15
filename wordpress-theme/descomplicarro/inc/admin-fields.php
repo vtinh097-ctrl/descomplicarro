@@ -133,6 +133,58 @@ function dc_admin_file( $post, $key, $label, $desc = '' ) {
 	dc_admin_field_wrap_end();
 }
 
+/** Campo de data nativo (input type="date", formato YYYY-MM-DD). */
+function dc_admin_date( $post, $key, $label, $desc = '' ) {
+	$value = get_post_meta( $post->ID, $key, true );
+	dc_admin_field_wrap_start( $label, $desc );
+	printf(
+		'<input type="date" name="%1$s" value="%2$s" />',
+		esc_attr( $key ),
+		esc_attr( $value )
+	);
+	dc_admin_field_wrap_end();
+}
+
+/** Campo numérico simples (ex.: prioridade). */
+function dc_admin_number( $post, $key, $label, $default = 0, $desc = '' ) {
+	$value = get_post_meta( $post->ID, $key, true );
+	$value = ( $value !== '' ) ? $value : $default;
+	dc_admin_field_wrap_start( $label, $desc );
+	printf(
+		'<input type="number" step="1" class="small-text" name="%1$s" value="%2$s" />',
+		esc_attr( $key ),
+		esc_attr( $value )
+	);
+	dc_admin_field_wrap_end();
+}
+
+/**
+ * Lista de checkboxes com as categorias reais do WordPress (Posts →
+ * Categories) — usada para vincular uma campanha a uma ou mais editorias.
+ * Nenhuma marcada = campanha "geral" (não vinculada a nenhuma categoria
+ * específica). O valor salvo é um array de IDs de categoria.
+ */
+function dc_admin_categorias_checklist( $post, $key, $label, $desc = '' ) {
+	$selecionadas = get_post_meta( $post->ID, $key, true );
+	$selecionadas = is_array( $selecionadas ) ? array_map( 'intval', $selecionadas ) : array();
+	$categorias   = get_categories( array( 'hide_empty' => false ) );
+	dc_admin_field_wrap_start( $label, $desc );
+	if ( empty( $categorias ) ) {
+		echo '<p style="color:#646970;">Nenhuma categoria cadastrada ainda em Posts → Categories.</p>';
+	} else {
+		foreach ( $categorias as $categoria ) {
+			printf(
+				'<label style="display:inline-block;margin:0 16px 6px 0;"><input type="checkbox" name="%1$s[]" value="%2$d" %3$s /> %4$s</label>',
+				esc_attr( $key ),
+				$categoria->term_id,
+				checked( in_array( $categoria->term_id, $selecionadas, true ), true, false ),
+				esc_html( $categoria->name )
+			);
+		}
+	}
+	dc_admin_field_wrap_end();
+}
+
 function dc_admin_section_title( $title ) {
 	echo '<h4 style="margin:22px 0 8px;padding-top:16px;border-top:1px solid #dcdcde;">' . esc_html( $title ) . '</h4>';
 }

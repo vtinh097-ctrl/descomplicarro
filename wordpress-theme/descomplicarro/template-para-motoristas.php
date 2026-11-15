@@ -48,7 +48,7 @@ get_header();
   <?php if ( dc_section_active( 'dc_motoristas_ad1_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="motoristas-solucoes-match">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_motoristas_ad1' ); ?>
+      <?php dc_ad_slot_unit( 'dc_motoristas_ad1', 'motoristas-solucoes-match' ); ?>
     </div>
   </section>
   <?php endif; ?>
@@ -246,7 +246,7 @@ get_header();
   <?php if ( dc_section_active( 'dc_motoristas_ad2_ativo' ) ) : ?>
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="motoristas-final">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_motoristas_ad2' ); ?>
+      <?php dc_ad_slot_unit( 'dc_motoristas_ad2', 'motoristas-final' ); ?>
     </div>
   </section>
   <?php endif; ?>

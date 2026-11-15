@@ -78,7 +78,7 @@ get_header();
   <!-- ESPAÇO PUBLICITÁRIO 01 -->
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="home-portas-emfoco">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_home_ad1' ); ?>
+      <?php dc_ad_slot_unit( 'dc_home_ad1', 'home-portas-emfoco' ); ?>
     </div>
   </section>
   <?php endif; ?>
@@ -147,7 +147,7 @@ get_header();
   <!-- ESPAÇO PUBLICITÁRIO 02 -->
   <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="home-emfoco-youtube">
     <div class="container">
-      <?php dc_ad_slot_unit( 'dc_home_ad2' ); ?>
+      <?php dc_ad_slot_unit( 'dc_home_ad2', 'home-emfoco-youtube' ); ?>
     </div>
   </section>
   <?php endif; ?>
