@@ -165,15 +165,8 @@ function dc_render_meta_box_home( $post ) {
 	dc_admin_url( $post, 'dc_home_ad1_url', 'Link do anunciante' );
 	dc_admin_image( $post, 'dc_home_ad1_imagem', 'Imagem/banner' );
 
-	dc_admin_section_title( 'N.02 — Em Foco (seleção editorial, 3 cards)' );
-	for ( $i = 1; $i <= 3; $i++ ) {
-		echo '<p style="font-weight:600;margin-bottom:2px;">Card ' . $i . '</p>';
-		dc_admin_text( $post, "dc_home_emfoco{$i}_categoria", 'Categoria' );
-		dc_admin_text( $post, "dc_home_emfoco{$i}_titulo", 'Título' );
-		dc_admin_textarea( $post, "dc_home_emfoco{$i}_resumo", 'Resumo', '', 2 );
-		dc_admin_url( $post, "dc_home_emfoco{$i}_url", 'Link da matéria' );
-		dc_admin_image( $post, "dc_home_emfoco{$i}_imagem", 'Imagem' );
-	}
+	dc_admin_section_title( 'N.02 — Em Foco' );
+	echo '<p style="color:#666;">As 3 matérias mais recentes publicadas no WordPress aparecem aqui automaticamente — não é preciso selecionar nada.</p>';
 
 	dc_admin_section_title( 'Espaço publicitário 2 (entre Em Foco e YouTube)' );
 	dc_admin_checkbox( $post, 'dc_home_ad2_ativo', 'Exibir este espaço publicitário' );
@@ -194,19 +187,14 @@ function dc_render_meta_box_home( $post ) {
 		array( 'dc_home_abertura_titulo', 'dc_home_abertura_paragrafo', 'dc_home_abertura_botao_label',
 			'dc_home_porta1_titulo', 'dc_home_porta1_desc', 'dc_home_porta2_titulo', 'dc_home_porta2_desc',
 			'dc_home_porta3_titulo', 'dc_home_porta3_desc', 'dc_home_porta4_titulo', 'dc_home_porta4_desc',
-			'dc_home_emfoco1_categoria', 'dc_home_emfoco1_titulo', 'dc_home_emfoco1_resumo',
-			'dc_home_emfoco2_categoria', 'dc_home_emfoco2_titulo', 'dc_home_emfoco2_resumo',
-			'dc_home_emfoco3_categoria', 'dc_home_emfoco3_titulo', 'dc_home_emfoco3_resumo',
 			'dc_home_video1_titulo', 'dc_home_video1_resumo', 'dc_home_video2_titulo', 'dc_home_video2_resumo',
 			'dc_home_video3_titulo', 'dc_home_video3_resumo',
 		),
 		array( 'dc_home_abertura_botao_url', 'dc_home_ad1_url', 'dc_home_ad2_url', 'dc_home_youtube_botao_url',
-			'dc_home_emfoco1_url', 'dc_home_emfoco2_url', 'dc_home_emfoco3_url',
 			'dc_home_video1_url', 'dc_home_video2_url', 'dc_home_video3_url',
 		),
 		array( 'dc_home_abertura_imagem', 'dc_home_porta1_imagem', 'dc_home_porta2_imagem', 'dc_home_porta3_imagem', 'dc_home_porta4_imagem',
 			'dc_home_ad1_imagem', 'dc_home_ad2_imagem',
-			'dc_home_emfoco1_imagem', 'dc_home_emfoco2_imagem', 'dc_home_emfoco3_imagem',
 			'dc_home_video1_imagem', 'dc_home_video2_imagem', 'dc_home_video3_imagem',
 		),
 		array( 'dc_home_ad1_ativo', 'dc_home_ad2_ativo' )

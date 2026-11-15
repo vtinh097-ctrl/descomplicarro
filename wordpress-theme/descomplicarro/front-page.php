@@ -101,22 +101,35 @@ get_header();
 
       <div class="emfoco-grid">
         <?php
-        $emfoco_padrao = array(
-          1 => 'PLACEHOLDER — Título da matéria selecionada 01',
-          2 => 'PLACEHOLDER — Título da matéria selecionada 02',
-          3 => 'PLACEHOLDER — Título da matéria selecionada 03',
-        );
-        foreach ( $emfoco_padrao as $i => $titulo_padrao ) :
+        // As 3 matérias mais recentes publicadas no WordPress, de qualquer
+        // categoria — automático, sem seleção manual (ver inc/activation.php
+        // e template-em-foco.php, que seguem a mesma regra).
+        $home_emfoco_query = new WP_Query( array(
+          'posts_per_page'      => 3,
+          'ignore_sticky_posts' => true,
+        ) );
+        foreach ( $home_emfoco_query->posts as $emfoco_post ) :
+          $emfoco_categorias = get_the_category( $emfoco_post->ID );
+          $emfoco_categoria  = ! empty( $emfoco_categorias ) ? $emfoco_categorias[0]->name : '';
+          $emfoco_thumb      = get_the_post_thumbnail_url( $emfoco_post, 'large' );
+          if ( ! $emfoco_thumb ) {
+            $emfoco_thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
+          }
           ?>
-          <a href="<?php dc_url( "dc_home_emfoco{$i}_url" ); ?>" class="emfoco-card">
+          <a href="<?php echo esc_url( get_permalink( $emfoco_post ) ); ?>" class="emfoco-card">
             <div class="emfoco-card__media">
-              <img src="<?php echo esc_url( dc_image_url( "dc_home_emfoco{$i}_imagem" ) ); ?>" alt="" class="emfoco-card__image">
+              <img src="<?php echo esc_url( $emfoco_thumb ); ?>" alt="" class="emfoco-card__image">
             </div>
-            <span class="emfoco-card__category"><?php dc_text( "dc_home_emfoco{$i}_categoria", 'PLACEHOLDER — CATEGORIA' ); ?></span>
-            <h3 class="emfoco-card__title"><?php dc_text( "dc_home_emfoco{$i}_titulo", $titulo_padrao ); ?></h3>
-            <p class="emfoco-card__excerpt"><?php dc_text( "dc_home_emfoco{$i}_resumo", 'PLACEHOLDER — pequena chamada/resumo da matéria a ser substituído pelo conteúdo real.' ); ?></p>
+            <?php if ( $emfoco_categoria ) : ?>
+            <span class="emfoco-card__category"><?php echo esc_html( $emfoco_categoria ); ?></span>
+            <?php endif; ?>
+            <h3 class="emfoco-card__title"><?php echo esc_html( get_the_title( $emfoco_post ) ); ?></h3>
+            <p class="emfoco-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt( $emfoco_post ), 22, '…' ) ); ?></p>
           </a>
-        <?php endforeach; ?>
+        <?php endforeach; wp_reset_postdata(); ?>
+        <?php if ( ! $home_emfoco_query->posts ) : ?>
+          <p class="perfil__text">Ainda não há matérias publicadas. Assim que uma publicação for criada no WordPress, ela aparecerá aqui automaticamente.</p>
+        <?php endif; ?>
       </div>
 
       <div class="section-cta">
