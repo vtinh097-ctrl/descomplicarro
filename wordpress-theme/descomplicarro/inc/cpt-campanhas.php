@@ -158,9 +158,8 @@ function dc_render_metabox_campanha( $post ) {
 	dc_admin_checkbox( $post, 'dc_campanha_nova_aba', 'Abrir destino em nova aba' );
 
 	dc_admin_section_title( 'Segmentação' );
-	dc_admin_select( $post, 'dc_campanha_posicao', 'Posição publicitária', wp_list_pluck( dc_campanha_posicoes(), 'label' ) );
-	dc_admin_categorias_checklist( $post, 'dc_campanha_categorias', 'Categorias editoriais vinculadas', 'Nenhuma marcada = campanha geral, exibida em qualquer categoria (quando a posição é segmentada). Marque uma ou mais para restringir.' );
-	dc_admin_number( $post, 'dc_campanha_prioridade', 'Prioridade', 10, 'Quando mais de uma campanha ativa se qualifica para o mesmo espaço, vence o número menor. Em empate, vence a campanha mais antiga. Padrão: 10.' );
+	dc_admin_checklist( $post, 'dc_campanha_posicoes', 'Posições publicitárias', wp_list_pluck( dc_campanha_posicoes(), 'label' ), 'Marque uma ou mais — a mesma campanha pode aparecer em vários espaços ao mesmo tempo (ex.: Home e Para Motoristas juntos).' );
+	dc_admin_categorias_checklist( $post, 'dc_campanha_categorias', 'Categorias editoriais vinculadas', 'Vale só para as posições segmentadas por editoria (Matéria e Página de editoria) — nas demais, é ignorado. Nenhuma marcada = campanha geral, exibida em qualquer categoria. Marque uma ou mais para restringir.' );
 
 	dc_admin_section_title( 'Período' );
 	dc_admin_date( $post, 'dc_campanha_data_inicio', 'Data de início' );
@@ -169,6 +168,7 @@ function dc_render_metabox_campanha( $post ) {
 
 	$status = dc_campanha_status( $post->ID );
 	echo '<p style="margin-top:16px;"><strong>Status atual: ' . esc_html( dc_campanha_status_label( $status ) ) . '</strong> — calculado automaticamente a partir das datas e do campo "desativada manualmente" acima. Não precisa de atualização manual.</p>';
+	echo '<p style="color:#646970;">O site não deixa duas campanhas ficarem ativas ao mesmo tempo no mesmo espaço: se as datas desta campanha baterem com as de outra já ativa na mesma posição (e mesma categoria, quando for o caso), esta aqui é salva automaticamente como desativada, com um aviso explicando qual campanha está conflitando.</p>';
 }
 
 add_action( 'save_post_dc_campanha', 'dc_save_metabox_campanha' );
@@ -220,14 +220,15 @@ function dc_save_metabox_campanha( $post_id ) {
 		update_post_meta( $post_id, $key, isset( $_POST[ $key ] ) ? 1 : 0 );
 	}
 
-	// Posição (whitelist contra a lista oficial — nunca grava um valor fora dela).
-	if ( isset( $_POST['dc_campanha_posicao'] ) ) {
-		$posicao = sanitize_key( wp_unslash( $_POST['dc_campanha_posicao'] ) );
-		if ( array_key_exists( $posicao, dc_campanha_posicoes() ) ) {
-			update_post_meta( $post_id, 'dc_campanha_posicao', $posicao );
-		} else {
-			delete_post_meta( $post_id, 'dc_campanha_posicao' );
-		}
+	// Posições (array de slugs, sempre conferidos contra a lista oficial — nunca grava um valor fora dela).
+	$posicoes_enviadas = isset( $_POST['dc_campanha_posicoes'] ) && is_array( $_POST['dc_campanha_posicoes'] )
+		? array_map( 'sanitize_key', wp_unslash( $_POST['dc_campanha_posicoes'] ) )
+		: array();
+	$posicoes_validas = array_values( array_intersect( $posicoes_enviadas, array_keys( dc_campanha_posicoes() ) ) );
+	if ( empty( $posicoes_validas ) ) {
+		delete_post_meta( $post_id, 'dc_campanha_posicoes' );
+	} else {
+		update_post_meta( $post_id, 'dc_campanha_posicoes', $posicoes_validas );
 	}
 
 	// Categorias (array de IDs reais de categoria).
@@ -243,13 +244,6 @@ function dc_save_metabox_campanha( $post_id ) {
 		update_post_meta( $post_id, 'dc_campanha_categorias', $categorias_validas );
 	}
 
-	// Prioridade (número inteiro).
-	if ( isset( $_POST['dc_campanha_prioridade'] ) && $_POST['dc_campanha_prioridade'] !== '' ) {
-		update_post_meta( $post_id, 'dc_campanha_prioridade', (int) $_POST['dc_campanha_prioridade'] );
-	} else {
-		delete_post_meta( $post_id, 'dc_campanha_prioridade' );
-	}
-
 	// Datas (YYYY-MM-DD; só grava se vier num formato válido).
 	foreach ( array( 'dc_campanha_data_inicio', 'dc_campanha_data_fim' ) as $key ) {
 		if ( ! isset( $_POST[ $key ] ) ) {
@@ -262,6 +256,118 @@ function dc_save_metabox_campanha( $post_id ) {
 			update_post_meta( $post_id, $key, $data );
 		}
 	}
+
+	dc_campanha_resolver_conflito( $post_id );
+}
+
+/**
+ * Nunca deixa duas campanhas ficarem ativas ao mesmo tempo no mesmo espaço:
+ * depois de salvos os campos acima, se esta campanha (do jeito que acabou de
+ * ser salva) está "ativa" e compete por alguma posição/categoria com outra
+ * campanha que já está ativa, ESTA é quem recua — grava
+ * dc_campanha_ativa=0 nela mesma e guarda um aviso (dc_campanha_aviso_conflito)
+ * explicando com qual campanha e em qual posição, exibido uma única vez no
+ * admin (ver dc_campanha_admin_aviso_conflito()). A campanha já em exibição
+ * nunca é desativada por causa de uma campanha nova sendo salva.
+ */
+function dc_campanha_resolver_conflito( $post_id ) {
+	if ( dc_campanha_status( $post_id ) !== 'ativa' ) {
+		delete_post_meta( $post_id, 'dc_campanha_aviso_conflito' );
+		return;
+	}
+
+	$posicoes   = (array) get_post_meta( $post_id, 'dc_campanha_posicoes', true );
+	$categorias = (array) get_post_meta( $post_id, 'dc_campanha_categorias', true );
+	$inicio     = get_post_meta( $post_id, 'dc_campanha_data_inicio', true );
+	$fim        = get_post_meta( $post_id, 'dc_campanha_data_fim', true );
+	if ( empty( $posicoes ) ) {
+		return; // Sem posição marcada, não compete por espaço nenhum.
+	}
+
+	$conflito = dc_campanha_encontrar_conflito( $post_id, $posicoes, $categorias, $inicio, $fim );
+	if ( ! $conflito ) {
+		delete_post_meta( $post_id, 'dc_campanha_aviso_conflito' );
+		return;
+	}
+
+	update_post_meta( $post_id, 'dc_campanha_ativa', 0 );
+	$posicoes_label = implode( ', ', wp_list_pluck(
+		array_intersect_key( dc_campanha_posicoes(), array_flip( $conflito['posicoes_em_comum'] ) ),
+		'label'
+	) );
+	update_post_meta(
+		$post_id,
+		'dc_campanha_aviso_conflito',
+		sprintf(
+			'Esta campanha entrou em conflito de datas com a campanha "%s" no(s) espaço(s) "%s" e foi salva como desativada. Ajuste as datas, as posições/categorias, ou desative a outra campanha e marque "Campanha ativa" aqui de novo.',
+			get_the_title( $conflito['post']->ID ),
+			$posicoes_label
+		)
+	);
+}
+
+/** Procura, entre as demais campanhas ativas, uma que dispute a mesma posição+categoria+período. Devolve array( 'post' => WP_Post, 'posicoes_em_comum' => array ) ou null. */
+function dc_campanha_encontrar_conflito( $post_id, $posicoes, $categorias, $inicio, $fim ) {
+	$todas_posicoes = dc_campanha_posicoes();
+	$outras         = get_posts( array(
+		'post_type'      => 'dc_campanha',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'exclude'        => array( $post_id ),
+	) );
+
+	foreach ( $outras as $outra ) {
+		if ( dc_campanha_status( $outra->ID ) !== 'ativa' ) {
+			continue;
+		}
+		$outra_posicoes = (array) get_post_meta( $outra->ID, 'dc_campanha_posicoes', true );
+		$posicoes_em_comum = array_values( array_intersect( $posicoes, $outra_posicoes ) );
+		if ( empty( $posicoes_em_comum ) ) {
+			continue;
+		}
+		$outra_inicio = get_post_meta( $outra->ID, 'dc_campanha_data_inicio', true );
+		$outra_fim    = get_post_meta( $outra->ID, 'dc_campanha_data_fim', true );
+		if ( ! dc_campanha_periodos_se_sobrepoem( $inicio, $fim, $outra_inicio, $outra_fim ) ) {
+			continue;
+		}
+
+		$outra_categorias = (array) get_post_meta( $outra->ID, 'dc_campanha_categorias', true );
+		foreach ( $posicoes_em_comum as $posicao ) {
+			$segmentada = ! empty( $todas_posicoes[ $posicao ]['segmentada'] );
+			if ( ! $segmentada ) {
+				return array( 'post' => $outra, 'posicoes_em_comum' => $posicoes_em_comum ); // Posição geral: conflita sempre.
+			}
+			// Posição segmentada: só conflita se as categorias se cruzarem, ou
+			// se uma das duas for "geral" (sem categoria = concorre em todas).
+			if ( empty( $categorias ) || empty( $outra_categorias ) || array_intersect( $categorias, $outra_categorias ) ) {
+				return array( 'post' => $outra, 'posicoes_em_comum' => $posicoes_em_comum );
+			}
+		}
+	}
+	return null;
+}
+
+/** true quando os dois períodos (início/fim, "" = sem limite) se sobrepõem em algum dia. */
+function dc_campanha_periodos_se_sobrepoem( $inicio_a, $fim_a, $inicio_b, $fim_b ) {
+	$inicio_a = $inicio_a ?: '0000-01-01';
+	$fim_a    = $fim_a ?: '9999-12-31';
+	$inicio_b = $inicio_b ?: '0000-01-01';
+	$fim_b    = $fim_b ?: '9999-12-31';
+	return ( $inicio_a <= $fim_b ) && ( $inicio_b <= $fim_a );
+}
+
+/** Mostra, uma única vez, o aviso de conflito gravado por dc_campanha_resolver_conflito() ao abrir a campanha afetada. */
+add_action( 'admin_notices', 'dc_campanha_admin_aviso_conflito' );
+function dc_campanha_admin_aviso_conflito() {
+	global $post;
+	if ( ! $post || $post->post_type !== 'dc_campanha' ) {
+		return;
+	}
+	$aviso = get_post_meta( $post->ID, 'dc_campanha_aviso_conflito', true );
+	if ( ! $aviso ) {
+		return;
+	}
+	echo '<div class="notice notice-warning"><p><strong>Publicidade:</strong> ' . esc_html( $aviso ) . '</p></div>';
 }
 
 /* ==========================================================================
@@ -311,10 +417,11 @@ function dc_campanha_status_label( $status ) {
  * Dentro de uma posição segmentada, uma campanha sem nenhuma categoria
  * vinculada é "geral" e concorre em qualquer categoria.
  *
- * Nada de rodízio nesta versão: entre as campanhas empatadas em
- * elegibilidade, vence sempre a de menor "prioridade" (e, em empate, a mais
- * antiga) — regra simples e previsível, fácil de trocar por rodízio depois
- * sem tocar nos templates, já que eles só conhecem esta função.
+ * Nunca deveria existir mais de uma campanha ativa elegível ao mesmo tempo
+ * aqui — dc_campanha_resolver_conflito() impede isso no momento de salvar a
+ * campanha. Se ainda assim houver mais de uma (edição direta no banco,
+ * por exemplo), a mais antiga (menor ID) vence, como rede de segurança
+ * simples e previsível — nunca rodízio.
  */
 function dc_resolver_anuncio( $posicao, $categoria_ids = array() ) {
 	$posicoes = dc_campanha_posicoes();
@@ -323,19 +430,26 @@ function dc_resolver_anuncio( $posicao, $categoria_ids = array() ) {
 	}
 	$segmentada = $posicoes[ $posicao ]['segmentada'];
 
+	// "dc_campanha_posicoes" é salvo como array (uma campanha pode valer para
+	// várias posições ao mesmo tempo) — um meta_query simples não filtra
+	// array serializado de forma confiável, então a lista de campanhas vem
+	// inteira (volume baixo, nada que pese no banco) e o filtro por posição
+	// é feito aqui em PHP, junto com o de categoria.
 	$query = new WP_Query( array(
 		'post_type'              => 'dc_campanha',
 		'post_status'            => 'publish',
 		'posts_per_page'         => -1,
 		'no_found_rows'          => true,
 		'update_post_term_cache' => false,
-		'meta_query'             => array(
-			array( 'key' => 'dc_campanha_posicao', 'value' => $posicao ),
-		),
 	) );
 
 	$elegiveis = array();
 	foreach ( $query->posts as $campanha ) {
+		$posicoes_campanha = get_post_meta( $campanha->ID, 'dc_campanha_posicoes', true );
+		$posicoes_campanha = is_array( $posicoes_campanha ) ? $posicoes_campanha : array();
+		if ( ! in_array( $posicao, $posicoes_campanha, true ) ) {
+			continue;
+		}
 		if ( dc_campanha_status( $campanha->ID ) !== 'ativa' ) {
 			continue;
 		}
@@ -360,12 +474,7 @@ function dc_resolver_anuncio( $posicao, $categoria_ids = array() ) {
 	}
 
 	usort( $elegiveis, function ( $a, $b ) {
-		$prioridade_a = (int) get_post_meta( $a->ID, 'dc_campanha_prioridade', true ) ?: 10;
-		$prioridade_b = (int) get_post_meta( $b->ID, 'dc_campanha_prioridade', true ) ?: 10;
-		if ( $prioridade_a === $prioridade_b ) {
-			return $a->ID <=> $b->ID;
-		}
-		return $prioridade_a <=> $prioridade_b;
+		return $a->ID <=> $b->ID;
 	} );
 
 	$vencedora = $elegiveis[0];
@@ -439,9 +548,17 @@ function dc_campanha_admin_column_content( $column, $post_id ) {
 		echo esc_html( get_post_meta( $post_id, 'dc_campanha_anunciante', true ) ?: '—' );
 	}
 	if ( $column === 'dc_posicao' ) {
-		$posicoes = dc_campanha_posicoes();
-		$posicao  = get_post_meta( $post_id, 'dc_campanha_posicao', true );
-		echo esc_html( isset( $posicoes[ $posicao ] ) ? $posicoes[ $posicao ]['label'] : '—' );
+		$posicoes      = dc_campanha_posicoes();
+		$selecionadas  = get_post_meta( $post_id, 'dc_campanha_posicoes', true );
+		$selecionadas  = is_array( $selecionadas ) ? $selecionadas : array();
+		if ( empty( $selecionadas ) ) {
+			echo '—';
+		} else {
+			$rotulos = array_map( function ( $slug ) use ( $posicoes ) {
+				return isset( $posicoes[ $slug ] ) ? $posicoes[ $slug ]['label'] : null;
+			}, $selecionadas );
+			echo esc_html( implode( ', ', array_filter( $rotulos ) ) );
+		}
 	}
 	if ( $column === 'dc_categorias' ) {
 		$ids = get_post_meta( $post_id, 'dc_campanha_categorias', true );
@@ -503,32 +620,34 @@ function dc_campanha_admin_filtros() {
 	echo '</select>';
 }
 
-add_action( 'pre_get_posts', 'dc_campanha_admin_aplicar_filtros' );
-function dc_campanha_admin_aplicar_filtros( $query ) {
-	if ( ! is_admin() || ! $query->is_main_query() || $query->get( 'post_type' ) !== 'dc_campanha' ) {
-		return;
-	}
-	if ( ! empty( $_GET['dc_filtro_posicao'] ) ) {
-		$query->set( 'meta_key', 'dc_campanha_posicao' );
-		$query->set( 'meta_value', sanitize_key( wp_unslash( $_GET['dc_filtro_posicao'] ) ) );
-	}
-	// Status não é um meta salvo (é calculado), então o filtro de status é
-	// aplicado depois da consulta, direto na listagem (ver dc_campanha_admin_filtrar_por_status).
-}
-
-add_filter( 'the_posts', 'dc_campanha_admin_filtrar_por_status', 10, 2 );
-function dc_campanha_admin_filtrar_por_status( $posts, $query ) {
+/**
+ * Posição, categoria e status são todos filtrados aqui, em PHP, depois da
+ * consulta principal — "posições" e "categorias" são arrays salvos em post
+ * meta (um meta_query simples não filtra array serializado de forma
+ * confiável) e "status" nem é salvo, é calculado. Volume baixo de
+ * campanhas, sem impacto de desempenho.
+ */
+add_filter( 'the_posts', 'dc_campanha_admin_filtrar_resultados', 10, 2 );
+function dc_campanha_admin_filtrar_resultados( $posts, $query ) {
 	if ( ! is_admin() || ! $query->is_main_query() || $query->get( 'post_type' ) !== 'dc_campanha' ) {
 		return $posts;
 	}
+	$posicao_filtro   = ! empty( $_GET['dc_filtro_posicao'] ) ? sanitize_key( wp_unslash( $_GET['dc_filtro_posicao'] ) ) : '';
 	$categoria_filtro = ! empty( $_GET['dc_filtro_categoria'] ) ? (int) $_GET['dc_filtro_categoria'] : 0;
 	$status_filtro    = ! empty( $_GET['dc_filtro_status'] ) ? sanitize_key( wp_unslash( $_GET['dc_filtro_status'] ) ) : '';
-	if ( ! $categoria_filtro && ! $status_filtro ) {
+	if ( ! $posicao_filtro && ! $categoria_filtro && ! $status_filtro ) {
 		return $posts;
 	}
-	return array_values( array_filter( $posts, function ( $post ) use ( $categoria_filtro, $status_filtro ) {
+	return array_values( array_filter( $posts, function ( $post ) use ( $posicao_filtro, $categoria_filtro, $status_filtro ) {
 		if ( $status_filtro && dc_campanha_status( $post->ID ) !== $status_filtro ) {
 			return false;
+		}
+		if ( $posicao_filtro ) {
+			$posicoes = get_post_meta( $post->ID, 'dc_campanha_posicoes', true );
+			$posicoes = is_array( $posicoes ) ? $posicoes : array();
+			if ( ! in_array( $posicao_filtro, $posicoes, true ) ) {
+				return false;
+			}
 		}
 		if ( $categoria_filtro ) {
 			$categorias = get_post_meta( $post->ID, 'dc_campanha_categorias', true );

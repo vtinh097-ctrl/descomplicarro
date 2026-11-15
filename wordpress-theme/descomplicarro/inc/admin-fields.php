@@ -159,6 +159,28 @@ function dc_admin_number( $post, $key, $label, $default = 0, $desc = '' ) {
 }
 
 /**
+ * Lista de checkboxes genérica a partir de um array fixo $options
+ * (valor => rótulo) — usada quando o campo precisa aceitar MAIS de uma
+ * escolha ao mesmo tempo (ao contrário de dc_admin_select, que só aceita
+ * uma). O valor salvo é um array dos valores marcados.
+ */
+function dc_admin_checklist( $post, $key, $label, $options, $desc = '' ) {
+	$selecionados = get_post_meta( $post->ID, $key, true );
+	$selecionados = is_array( $selecionados ) ? $selecionados : array();
+	dc_admin_field_wrap_start( $label, $desc );
+	foreach ( $options as $valor => $rotulo ) {
+		printf(
+			'<label style="display:block;margin:0 0 6px 0;"><input type="checkbox" name="%1$s[]" value="%2$s" %3$s /> %4$s</label>',
+			esc_attr( $key ),
+			esc_attr( $valor ),
+			checked( in_array( (string) $valor, array_map( 'strval', $selecionados ), true ), true, false ),
+			esc_html( $rotulo )
+		);
+	}
+	dc_admin_field_wrap_end();
+}
+
+/**
  * Lista de checkboxes com as categorias reais do WordPress (Posts →
  * Categories) — usada para vincular uma campanha a uma ou mais editorias.
  * Nenhuma marcada = campanha "geral" (não vinculada a nenhuma categoria
