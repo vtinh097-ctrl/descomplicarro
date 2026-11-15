@@ -13,6 +13,8 @@ Este skill estrutura carrosséis onde cada slide é um clipe curto em loop com e
 
 **Essência:** complexidade → compreensão → autonomia → decisão.
 
+**Analogias concretas:** antes de desenhar o diagrama de um slide, procure uma comparação do cotidiano que qualquer pessoa reconheça na hora (esporte, cozinha, corpo humano) pro mecanismo que ele visualiza. Ex.: perda de potência em altitude = jogador de futebol perdendo fôlego numa partida em La Paz. Às vezes vale literalmente desenhar a analogia em vez do mecanismo técnico puro — ela pode ser mais fácil de entender num piscar de olho que um gráfico técnico.
+
 **Cores** (só estas): grafite `#252525`, off-white `#F4F1EA`, laranja queimado `#C65A32` usado como intervenção pontual — aqui, tipicamente como o ponto final depois do título, ou como o único traço/nó destacado dentro de um diagrama majoritariamente grafite/off-white.
 
 **Tipografia:** Space Grotesk pesado e condensado para o título principal de cada slide (a peça que carrega o impacto); DM Sans para o texto de apoio que fecha o raciocínio.

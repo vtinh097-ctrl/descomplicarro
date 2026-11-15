@@ -13,6 +13,8 @@ Este skill escreve matérias pra seção Em Foco do site, encaixadas na estrutur
 
 **Tom:** editorial e avaliativo/crítico — a matéria questiona, não só relata ou elogia. Linguagem acessível, nunca condescendente nem cheia de jargão não explicado. Nunca soa como release de assessoria reescrito, nem como post de blog genérico de carro.
 
+**Analogias concretas:** sempre que a matéria explicar um mecanismo técnico, procure uma comparação do cotidiano que qualquer leitor reconheça na hora (esporte, cozinha, corpo humano) em vez de só explicar com termo técnico. Ex.: perda de potência do motor em altitude = jogador de futebol perdendo fôlego numa partida em La Paz (menos oxigênio no ar, nos dois casos). É tradução de verdade, não um recurso de estilo — é o próprio "decomplicar" em ação.
+
 **Conteúdo em parceria:** quando houver relação comercial com a marca citada, isso é sempre declarado de forma visível (campo `materia-parceria`, já existe no template) — nunca omitido ou escondido no fim do texto. Isso não muda o tom crítico da matéria.
 
 **Cores/tipografia em elementos visuais da matéria** (imagem de capa, gráficos internos, se houver): grafite `#252525`, off-white `#F4F1EA`, laranja queimado `#C65A32` como destaque pontual; Space Grotesk em títulos, DM Sans no corpo — mesma identidade do resto do site.

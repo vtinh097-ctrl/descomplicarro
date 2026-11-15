@@ -15,6 +15,8 @@ Este skill estrutura vídeos (longos e curtos) para o canal do DESCOMPLICARRO. A
 
 **Tom:** editorial e avaliativo/crítico — o vídeo questiona, não só elogia. Linguagem acessível, nunca condescendente nem cheia de jargão não explicado.
 
+**Analogias concretas:** sempre que for explicar um mecanismo técnico abstrato, procure uma comparação do cotidiano que qualquer pessoa reconheça na hora — algo do esporte, da cozinha, do corpo humano, do dia a dia. Ex.: perda de potência do motor em altitude = jogador de futebol perdendo fôlego numa partida em La Paz (menos oxigênio no ar, em ambos os casos). Isso é "decomplicar" em ação, não um enfeite — traduz o conceito técnico pra algo que já faz sentido sem precisar de explicação extra.
+
 **Identidade visual que aparece em tela (overlays, lower-thirds, cortes de texto):**
 - Cores só estas: grafite `#252525`, off-white `#F4F1EA`, laranja queimado `#C65A32` usado apenas como destaque pontual (um dado, uma palavra, uma linha) — nunca como cor dominante de tela.
 - Tipografia: Space Grotesk para títulos/números/destaques, DM Sans para legendas e texto de apoio.

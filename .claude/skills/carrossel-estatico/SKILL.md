@@ -13,6 +13,8 @@ Este skill gera carrosséis de imagem estática (swipe simples, sem animação p
 
 **A marca nunca pode soar como:** carrossel genérico de dicas numeradas sem fio condutor, meme automotivo, post de concessionária/oficina vendendo serviço.
 
+**Analogias concretas:** sempre que um slide explicar um mecanismo técnico, procure uma comparação do cotidiano que qualquer pessoa reconheça na hora (esporte, cozinha, corpo humano) em vez de só explicar com termo técnico. Ex.: perda de potência em altitude = jogador de futebol perdendo fôlego numa partida em La Paz. É tradução, não enfeite.
+
 **Cores** (só estas): grafite `#252525` (estrutura/fundo), off-white `#F4F1EA` (respiro/fundo alternado), laranja queimado `#C65A32` (intervenção pontual — um grifo, uma palavra, uma linha, nunca o fundo do slide inteiro).
 
 **Tipografia:** Space Grotesk para o título de cada slide (pesado, caixa alta quando for a frase de impacto); DM Sans para texto de apoio/legenda.
