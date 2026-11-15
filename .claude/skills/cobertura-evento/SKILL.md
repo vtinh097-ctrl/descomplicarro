@@ -5,7 +5,7 @@ description: Define o pacote padrão de conteúdo sempre que o DESCOMPLICARRO co
 
 # Cobertura de evento — DESCOMPLICARRO
 
-Este skill organiza o conteúdo de qualquer evento de marca/fabricante/fornecedor que o DESCOMPLICARRO cubra (lançamento de produto, encontro com imprensa, evento de parceria). Ele não substitui `roteiro-video` nem `carrossel-estatico`/`carrossel-animado` — ele decide O QUE dizer e PARA QUEM, e entrega pra essas skills a execução de cada peça.
+Este skill organiza o conteúdo de qualquer evento de marca/fabricante/fornecedor que o DESCOMPLICARRO cubra (lançamento de produto, encontro com imprensa, evento de parceria). Ele não substitui `roteiro-video` nem `carrossel-estatico`/`carrossel-animado` — ele decide O QUE dizer e PARA QUEM, e entrega pra essas skills a execução de cada peça, inclusive o esqueleto retórico FALAR (Fagulha, Afirmação, Linha do tempo, Argumento, Reforço) que já rege cada uma delas.
 
 ## Objetivo duplo (nunca perder de vista)
 
@@ -49,7 +49,7 @@ Quando o convite do evento não revela o anúncio específico (produto, número,
 ## Como montar a entrega
 
 Para cada uma das 4 peças:
-1. Defina o ângulo/pergunta organizadora específica do público;
+1. Defina o ângulo/pergunta organizadora específica do público — essa pergunta vira a Fagulha, e a resposta resumida em uma frase vira a Afirmação (geralmente é aqui que entra a apresentação da marca, se for o primeiro contato do público com o DESCOMPLICARRO);
 2. Escolha o formato (reel ao vivo via `roteiro-video`, ou carrossel via `carrossel-estatico`/`carrossel-animado`);
 3. Gere o roteiro/especificação completa usando a skill do formato escolhido, já incluindo a linha de crédito ao anfitrião;
 4. Marque claramente onde entra a informação que só existe depois do evento (`[PLACEHOLDER: ...]`).

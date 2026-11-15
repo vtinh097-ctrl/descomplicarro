@@ -21,17 +21,29 @@ Este skill gera carrosséis de imagem estática (swipe simples, sem animação p
 
 **Numeração:** cada slide carrega sua posição como uma "camada" (`N.01`, `N.02`...), ecoando o sistema já usado na home — isso também ajuda quem está lendo a saber quanto falta.
 
+## Esqueleto retórico — método FALAR
+
+Todo carrossel segue o método FALAR, de Fabiana Bertotti, como espinha dorsal:
+
+- **F — Fagulha:** o gancho (slide 1) — o que acende a atenção.
+- **A — Afirmação:** a ideia central do carrossel, numa frase só, no slide logo depois do gancho. Não entrega a resposta final — garante que quem parar de arrastar no meio ainda saiba do que o post tratava.
+- **L — Linha do tempo:** de onde viemos, pra onde vamos — as primeiras camadas de contexto.
+- **A — Argumento:** o dado, caso ou razão que sustenta a virada — as camadas seguintes.
+- **R — Reforço:** o que fica e o que fazer agora — fechamento + CTA.
+
 ## Estrutura do carrossel
 
 Um carrossel bom tem uma única ideia central — ele não é um resumo de vários tópicos, é a decomposição de UM conceito em camadas que se constroem.
 
-**Slide 1 — gancho.** Uma pergunta ou afirmação que cria a lacuna de curiosidade (a mesma lógica do gancho de vídeo). Não é o título de um artigo, é a pergunta que a pessoa já tem na cabeça mas não sabia como formular. Ex.: "Por que a peça original custa o triplo da paralela — e quando isso realmente importa?"
+**Slide 1 — Fagulha (gancho).** Uma pergunta ou afirmação que cria a lacuna de curiosidade (a mesma lógica do gancho de vídeo). Não é o título de um artigo, é a pergunta que a pessoa já tem na cabeça mas não sabia como formular. Ex.: "Por que a peça original custa o triplo da paralela — e quando isso realmente importa?"
 
-**Slides 2 a N-2 — as camadas.** Cada slide avança UM passo do raciocínio, numerado (N.01, N.02...). Regra prática: se você tirar um slide do meio e o próximo ainda fizer sentido sozinho sem ele, o slide do meio não estava carregando informação de verdade — reescreva.
+**Slide 2 — Afirmação.** Uma frase só, direta, dizendo do que o carrossel trata ("hoje a gente separa onde a diferença de preço é real e onde é só etiqueta"). Guarda a resposta/virada pros slides seguintes — aqui é só a ideia central.
 
-**Penúltimo slide — a virada/resposta.** O ponto em que o conceito complicado vira claro. Normalmente o slide com a frase mais forte do carrossel inteiro — é aqui que o laranja pode aparecer com mais intenção (grifo, sublinhado, palavra isolada).
+**Slides 3 a N-2 — Linha do tempo + Argumento (as camadas).** Cada slide avança UM passo do raciocínio, numerado (N.01, N.02...). Regra prática: se você tirar um slide do meio e o próximo ainda fizer sentido sozinho sem ele, o slide do meio não estava carregando informação de verdade — reescreva.
 
-**Último slide — fechamento + CTA.** Resume a resposta em uma frase e aponta pra ação (seguir, comentar, ir pro perfil/link, assistir ao vídeo completo se o carrossel for derivado de um). CTA claro, nunca genérico tipo só "siga pra mais".
+**Penúltimo slide — a virada/resposta (fecha o Argumento).** O ponto em que o conceito complicado vira claro. Normalmente o slide com a frase mais forte do carrossel inteiro — é aqui que o laranja pode aparecer com mais intenção (grifo, sublinhado, palavra isolada).
+
+**Último slide — Reforço (fechamento + CTA).** Resume a resposta em uma frase e aponta pra ação (seguir, comentar, ir pro perfil/link, assistir ao vídeo completo se o carrossel for derivado de um). CTA claro, nunca genérico tipo só "siga pra mais".
 
 ## Regras de texto por slide
 
@@ -53,18 +65,21 @@ Em qualquer rota, releia a especificação de slides contra a Base de marca ante
 ```
 TEMA / IDEIA CENTRAL: [uma frase]
 
-SLIDE 1 — GANCHO
+SLIDE 1 — FAGULHA
 [texto do slide]
+
+SLIDE 2 — AFIRMAÇÃO
+[a ideia central do carrossel, numa frase]
 
 N.01 — [texto do slide]
 N.02 — [texto do slide]
 N.03 — [texto do slide]
 ...
 
-SLIDE [N-1] — A VIRADA
+SLIDE [N-1] — A VIRADA (Argumento)
 [a frase mais forte do carrossel — candidata a grifo laranja]
 
-SLIDE N — FECHAMENTO
+SLIDE N — REFORÇO / FECHAMENTO
 [resposta em uma frase] + [CTA]
 
 LEGENDA DO POST: [texto pra acompanhar o post, não repete os slides, dá contexto/convite]
@@ -75,19 +90,22 @@ LEGENDA DO POST: [texto pra acompanhar o post, não repete os slides, dá contex
 ```
 TEMA: Por que a peça original custa mais caro que a paralela — e quando isso importa de verdade.
 
-SLIDE 1 — GANCHO
+SLIDE 1 — FAGULHA
 "A peça original custa 3x mais que a paralela.
 Isso é só margem de loja ou é outra coisa?"
+
+SLIDE 2 — AFIRMAÇÃO
+"Hoje a gente separa onde essa diferença é real e onde é só etiqueta."
 
 N.01 — Nem toda peça paralela é igual. Existe fabricante homologado e existe o resto.
 N.02 — A diferença de preço paga certificação e controle de qualidade — na maioria das vezes.
 N.03 — Mas em peça de desgaste simples (filtro, pastilha básica), a diferença técnica é quase zero.
 
-SLIDE 4 — A VIRADA
+SLIDE 5 — A VIRADA
 "Pague original onde a segurança depende disso.
 Economize onde a física é a mesma."
 
-SLIDE 5 — FECHAMENTO
+SLIDE 6 — REFORÇO / FECHAMENTO
 Resposta: não existe regra única — existe peça por peça.
 CTA: "Salva esse post pra consultar antes do próximo orçamento."
 

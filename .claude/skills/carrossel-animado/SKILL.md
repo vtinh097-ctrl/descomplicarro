@@ -19,6 +19,15 @@ Este skill estrutura carrosséis onde cada slide é um clipe curto em loop com e
 
 **Evitar sempre:** glow/bokeh ambiente, fundo com gradiente radial, cards brancos com cantos muito arredondados estilo app, ícones de cursor/UI, badges tipo chip de produto, som de trending audio genérico — qualquer coisa que faça o slide parecer demonstração de SaaS em vez de peça editorial técnica.
 
+## Dois níveis de estrutura: FALAR entre slides, coreografia dentro do slide
+
+Este formato tem estrutura em duas camadas — não confunda uma com a outra:
+
+- **Entre os slides do carrossel**, quem organiza o conteúdo é o método FALAR, de Fabiana Bertotti: o **título do slide 1 é a Fagulha** (gancho), o **título do slide 2 é a Afirmação** (a ideia central do carrossel, numa frase), os slides seguintes desenvolvem **Linha do tempo + Argumento**, e o **último slide é o Reforço** (fechamento/CTA).
+- **Dentro de cada slide**, quem organiza a entrada dos elementos é a coreografia de 4 tempos descrita abaixo (hold → título → diagrama → apoio) — isso não muda conforme a letra do FALAR que o slide representa; todo slide, seja ele a Fagulha ou o Reforço, entra na tela do mesmo jeito.
+
+Ou seja: FALAR decide O QUE cada slide diz no todo do carrossel; a coreografia decide COMO o texto/diagrama daquele slide específico aparece na tela.
+
 ## Coreografia de cada slide (4 tempos)
 
 1. **Hold / respiro (≈0.3–0.6s).** Fundo grafite liso ou com uma textura técnica baixíssimo-contraste (grid fino, linha de construção) quase imperceptível — nunca um glow pulsante. É a pausa antes da informação, não um efeito.
@@ -60,6 +69,7 @@ Este formato é motion design (não apenas diagramação), então a entrega tem 
 
 ```
 SLIDE N.0X
+FALAR: [Fagulha | Afirmação | Linha do tempo | Argumento | Reforço]
 Fundo: [grafite liso | textura técnica sutil, especificar]
 
 [0.0–0.5s] HOLD
@@ -85,6 +95,7 @@ SOM: [nota de clique/whoosh por beat]
 
 ```
 SLIDE N.02
+FALAR: Argumento
 Fundo: grafite liso
 
 [0.0–0.5s] HOLD

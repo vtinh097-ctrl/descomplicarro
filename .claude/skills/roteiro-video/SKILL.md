@@ -21,23 +21,36 @@ Este skill estrutura vídeos (longos e curtos) para o canal do DESCOMPLICARRO. A
 - Elementos gráficos de apoio (ficha técnica, veredito, specs): linha técnica, moldura fina, seta, marca de coordenada — nunca gráfico 3D, gradiente, HUD, ícone genérico de app.
 - Numeração/capítulos ecoam o sistema da home (N.00, N.01, N.02...) — todo vídeo estruturado em capítulos deve numerá-los dessa forma, não com títulos soltos.
 
+## Esqueleto retórico — método FALAR
+
+Todo roteiro (longo ou curto) segue o método FALAR, de Fabiana Bertotti, como espinha dorsal:
+
+- **F — Fagulha:** o que acende a atenção (nosso "gancho").
+- **A — Afirmação:** a ideia central do vídeo, dita numa frase só, logo depois da fagulha. Não é o veredito/resposta final — é o "do que este vídeo trata", pra quem não assistir até o fim ainda sair com a ideia principal.
+- **L — Linha do tempo:** de onde viemos, pra onde vamos — o contexto/trajetória (nosso capítulo "O QUE MUDOU").
+- **A — Argumento:** o dado, caso ou razão que sustenta a ideia (nosso "PONTO CRÍTICO").
+- **R — Reforço:** o que fica e o que fazer agora — fechamento + CTA.
+
+Em vídeo longo, as 5 letras normalmente viram capítulos inteiros. No reel curto, F e A costumam ficar quase coladas (pouco tempo pra separar), e a Linha do Tempo pode simplesmente não caber — tudo bem, nem todo formato precisa das 5 letras completas, mas a ordem (Fagulha → Afirmação → ... → Reforço) não muda.
+
 ## Formato 1 — Vídeo longo (YouTube): review ou explicativo
 
 A diferença entre um review genérico e um review DESCOMPLICARRO não é visual, é estrutural: review genérico é "vamos ver esse carro"; review DESCOMPLICARRO responde uma pergunta de decisão real.
 
 **Passo 1 — defina a pergunta organizadora.** Nunca "vamos conhecer o Modelo X". Sempre uma pergunta que alguém faria antes de decidir algo: "Vale a pena pagar mais caro nessa versão?", "Esse motor tem o problema que todo mundo comenta?", "Por que esse painel acende essa luz e quando isso é grave?". Essa pergunta vira o título e o fio condutor do vídeo inteiro.
 
-**Passo 2 — divida em capítulos numerados.** Three a cinco capítulos costuma bastar. Template recomendado para review:
-- `N.01 — O QUE MUDOU` (ou "o que é", pra explicativo técnico)
-- `N.02 — NO DIA A DIA` (como isso se traduz na prática de quem usa/dirige)
-- `N.03 — O PONTO CRÍTICO` (o problema, limitação ou dúvida que o vídeo existe pra resolver — o "QUESTIONE")
-- `N.04 — VALE A PENA?` / `N.04 — O QUE FAZER` (o fechamento que ajuda a decidir — o "DECIDA")
+**Passo 2 — escreva o gancho (Fagulha) de abertura (primeiros 10-15s).** Não é "oi pessoal, bem-vindos ao canal". É a pergunta organizadora entregue direto, ou uma afirmação que já implica a pergunta ("esse motor tem um detalhe que a ficha técnica não conta"). Quem assiste precisa saber em 10 segundos por que esse vídeo importa pra decisão dele.
+
+**Passo 3 — logo em seguida, diga a Afirmação.** Uma frase só, direta, com a ideia central do vídeo ("hoje eu mostro o que é esse problema, de onde ele vem, e quando ele realmente importa pra você"). Isso não entrega o veredito — guarda a resposta/conclusão pro fechamento — mas garante que quem sair no meio do vídeo já saiba do que ele tratava.
+
+**Passo 4 — divida o resto em capítulos numerados** (Linha do tempo + Argumento). Três a cinco capítulos costuma bastar. Template recomendado para review:
+- `N.01 — O QUE MUDOU` (ou "o que é", pra explicativo técnico) — Linha do tempo
+- `N.02 — NO DIA A DIA` (como isso se traduz na prática de quem usa/dirige) — Linha do tempo
+- `N.03 — O PONTO CRÍTICO` (o problema, limitação ou dúvida que o vídeo existe pra resolver — o "QUESTIONE") — Argumento
 
 Para um explicativo técnico (não-review), o mesmo esqueleto funciona trocando "vale a pena" por "o que fazer com essa informação".
 
-**Passo 3 — escreva o gancho de abertura (primeiros 10-15s).** Não é "oi pessoal, bem-vindos ao canal". É a pergunta organizadora entregue direto, ou uma afirmação que já implica a pergunta ("esse motor tem um detalhe que a ficha técnica não conta"). Quem assiste precisa saber em 10 segundos por que esse vídeo importa pra decisão dele.
-
-**Passo 4 — feche sempre apontando pra decisão.** O último capítulo nunca é só um resumo — é a resposta prática à pergunta organizadora, dita com clareza (mesmo que a resposta seja "depende de X").
+**Passo 5 — feche com o Reforço, sempre apontando pra decisão.** O último capítulo nunca é só um resumo — é a resposta prática à pergunta organizadora, dita com clareza (mesmo que a resposta seja "depende de X").
 
 ### O que evitar no vídeo longo
 - Giro de câmera genérico no carro, montagem "vrum vrum" com trilha de hype;
@@ -50,10 +63,10 @@ Para um explicativo técnico (não-review), o mesmo esqueleto funciona trocando 
 
 O reel não é um resumo do vídeo longo, é o gancho dele. Função única: fazer quem está rolando o feed parar e ir assistir o vídeo completo.
 
-**Estrutura (15-45s):**
-1. **Gancho (primeiros 2-3s):** a descoberta/achado mais forte do vídeo longo, dito direto, sem introdução. Ex.: "Esse motor tem um problema que a concessionária não te conta."
-2. **Expansão mínima (5-15s):** uma frase que aprofunda o gancho o suficiente pra gerar curiosidade real, sem entregar a resposta completa.
-3. **CTA (últimos segundos):** chamada clara pro vídeo completo ("análise completa no canal" / "link na bio"), nunca genérica demais ("segue o perfil!" sozinho não é CTA de conversão).
+**Estrutura (15-45s) — FALAR comprimido:**
+1. **Fagulha (primeiros 2-3s):** a descoberta/achado mais forte do vídeo longo, dito direto, sem introdução. Ex.: "Esse motor tem um problema que a concessionária não te conta."
+2. **Afirmação + Argumento (5-15s):** uma frase que diz do que se trata e aprofunda o gancho o suficiente pra gerar curiosidade real, sem entregar a resposta completa. Em reel, essas duas letras do FALAR costumam virar uma frase só — não force uma pausa artificial entre elas.
+3. **Reforço/CTA (últimos segundos):** chamada clara pro vídeo completo ("análise completa no canal" / "link na bio"), nunca genérica demais ("segue o perfil!" sozinho não é CTA de conversão).
 
 **Regra de honestidade:** o gancho precisa ser o achado real do vídeo, só comprimido — nunca uma promessa maior do que o vídeo entrega. Clickbait quebra a credibilidade que é o ativo principal da marca (ela vende "aqui existe conhecimento de verdade").
 
@@ -66,8 +79,11 @@ Ao escrever um roteiro, estruture assim (adapte os capítulos conforme o Passo 2
 ```
 TÍTULO / PERGUNTA ORGANIZADORA: [pergunta de decisão real]
 
-GANCHO (0:00–0:15)
+FAGULHA (0:00–0:10)
 [o que é dito/mostrado nos primeiros segundos]
+
+AFIRMAÇÃO (0:10–0:15)
+[a ideia central do vídeo, numa frase]
 
 N.01 — [NOME DO CAPÍTULO]
 [conteúdo, pontos a cobrir, b-roll sugerido]
@@ -80,9 +96,9 @@ N.0X — FECHAMENTO / VEREDITO
 
 ---
 CHAMADA PARA REELS/SHORTS
-Gancho: [frase de abertura, 2-3s]
-Expansão: [frase intermediária]
-CTA: [chamada final]
+Fagulha: [frase de abertura, 2-3s]
+Afirmação + Argumento: [frase intermediária]
+Reforço/CTA: [chamada final]
 ```
 
 ## Exemplo rápido
@@ -90,9 +106,12 @@ CTA: [chamada final]
 Pergunta organizadora: "Esse SUV popular vale o preço da versão topo de linha?"
 
 ```
-GANCHO (0:00–0:15)
-"A diferença entre a versão de entrada e a topo de linha desse SUV é de R$ 18 mil.
-Isso vale a pena ou é só faixa de preço inflada? Hoje a gente decompõe."
+FAGULHA (0:00–0:10)
+"A diferença entre a versão de entrada e a topo de linha desse SUV é de R$ 18 mil."
+
+AFIRMAÇÃO (0:10–0:15)
+"Hoje a gente decompõe o que desse valor é mecânico de verdade e o que é
+só faixa de preço inflada."
 
 N.01 — O QUE REALMENTE MUDA ENTRE AS VERSÕES
 Specs reais lado a lado, sem floreio — o que é mecânico, o que é só acabamento.
@@ -107,8 +126,8 @@ N.04 — VALE A PENA?
 Resposta direta: pra quem vale, pra quem não vale, e por quê.
 
 CHAMADA PARA REELS
-Gancho: "R$ 18 mil de diferença entre as duas versões desse SUV. Só R$ 3 mil
+Fagulha: "R$ 18 mil de diferença entre as duas versões desse SUV. Só R$ 3 mil
 disso é mecânico de verdade."
-Expansão: "O resto é isso aqui — e a maioria não sabe."
-CTA: "Análise completa no canal pra você decidir com informação de verdade."
+Afirmação + Argumento: "O resto é isso aqui — e a maioria não sabe."
+Reforço/CTA: "Análise completa no canal pra você decidir com informação de verdade."
 ```
