@@ -27,7 +27,7 @@
         </a>
         <a href="<?php echo esc_url( dc_oficinas_credenciamento_url() ); ?>" class="btn-bracket btn-bracket--on-dark" target="_blank" rel="noopener noreferrer">
           <span class="btn-bracket__bracket" aria-hidden="true">[</span>
-          <span class="btn-bracket__label">CREDENCIE SUA OFICINA</span>
+          <span class="btn-bracket__label">CREDENCIE SUA OFICINA NO GI CONECTA</span>
           <span class="btn-bracket__bracket" aria-hidden="true">]</span>
         </a>
       </div>

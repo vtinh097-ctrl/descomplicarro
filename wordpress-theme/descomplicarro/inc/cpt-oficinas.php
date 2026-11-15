@@ -73,27 +73,38 @@ function dc_registrar_cpt_oficinas() {
 }
 
 /**
- * Libera as regras de URL do novo CPT uma única vez (necessário sempre que um
- * CPT com rewrite é registrado). Roda sozinho, sem exigir que o tema seja
- * reativado — mesmo padrão já usado para o category_base do Em Foco.
- */
-/**
+ * Libera as regras de URL do CPT de oficinas — necessário sempre que um CPT
+ * com rewrite é registrado, para que /oficinas-gi-conecta/ (e o permalink de
+ * cada oficina) funcione.
+ *
+ * Isto já foi uma marca "rodou uma vez" (dc_oficinas_rewrite_v1), mas essa
+ * marca não garante o resultado: se as regras de rewrite forem perdidas por
+ * qualquer outro motivo depois (reupload do tema fora do fluxo normal de
+ * ativação, troca de permalinks, um plugin, a hospedagem) — como aconteceu
+ * em produção, derrubando /oficinas-gi-conecta/ para "nada encontrado" —, a
+ * marca continua lá e o flush nunca mais roda. Por isso agora é verificado
+ * o estado de verdade (a regra existe de fato?) a cada carregamento, em vez
+ * de confiar numa marca "já fiz isso uma vez". A checagem é só uma leitura
+ * de option, sem custo; o flush (escrita) só acontece quando a regra
+ * realmente está faltando.
+ *
  * flush_rewrite_rules() chamado durante "init" não é confiável: o próprio
  * WordPress adia a gravação das regras para o momento em que a ação
  * "wp_loaded" dispara (para dar tempo de todo mundo registrar suas rotas
- * antes de salvar) — e se o código que chama o flush marcar "já flushei"
- * antes desse adiamento terminar, a marca fica gravada sem o flush real ter
- * acontecido. Por isso o flush e a marca andam juntos em "wp_loaded", que é
- * o primeiro momento em que uma chamada a flush_rewrite_rules() está
- * garantida a rodar na hora, sem adiamento.
+ * antes de salvar). Por isso a checagem roda em "wp_loaded", o primeiro
+ * momento em que o flush está garantido a acontecer na hora.
  */
 add_action( 'wp_loaded', 'dc_ensure_oficinas_rewrite' );
 function dc_ensure_oficinas_rewrite() {
-	if ( get_option( 'dc_oficinas_rewrite_v1' ) ) {
-		return;
+	$regras = get_option( 'rewrite_rules' );
+	if ( is_array( $regras ) ) {
+		foreach ( array_keys( $regras ) as $padrao ) {
+			if ( strpos( $padrao, 'oficinas-gi-conecta' ) === 0 ) {
+				return; // A regra já existe — nada a fazer.
+			}
+		}
 	}
 	flush_rewrite_rules();
-	update_option( 'dc_oficinas_rewrite_v1', 1 );
 }
 
 /* ==========================================================================
