@@ -116,7 +116,7 @@ get_header();
             $emfoco_thumb = get_template_directory_uri() . '/assets/images/placeholder-photo.svg';
           }
           ?>
-          <a href="<?php echo esc_url( get_permalink( $emfoco_post ) ); ?>" class="emfoco-card">
+          <a href="<?php echo esc_url( get_permalink( $emfoco_post ) ); ?>" class="emfoco-card" data-dc-event="article_click" data-dc-materia="<?php echo esc_attr( $emfoco_post->ID ); ?>" data-dc-editoria="<?php echo esc_attr( $emfoco_categoria ); ?>">
             <div class="emfoco-card__media">
               <img src="<?php echo esc_url( $emfoco_thumb ); ?>" alt="" class="emfoco-card__image">
             </div>

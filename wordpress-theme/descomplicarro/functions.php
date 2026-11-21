@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DC_THEME_VERSION', '1.1.0' );
+define( 'DC_THEME_VERSION', '1.2.0' );
 
 require_once get_template_directory() . '/inc/helpers.php';
 require_once get_template_directory() . '/inc/admin-fields.php';

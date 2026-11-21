@@ -97,6 +97,13 @@ function dc_enqueue_front_assets() {
 	// Carrega sempre (não só quando GA4/GTM estão ativos): mesmo sem nenhuma
 	// ferramenta ligada, os cliques já alimentam window.dataLayer, pronto
 	// para quando as integrações forem ativadas, sem precisar reativar o tema.
+	//
+	// Os mesmos cliques já classificados por este script também alimentam o
+	// painel nativo "Métricas" (Etapa 3 — ver plugin descomplicarro-
+	// oportunidades), que funciona independente de GA4/GTM estarem ativos ou
+	// não. admin-ajax.php é sempre o mesmo endereço do núcleo do WordPress —
+	// localizado aqui só porque dc-tracking.js é um arquivo estático, sem
+	// acesso direto a admin_url().
 	wp_enqueue_script(
 		'descomplicarro-tracking',
 		get_template_directory_uri() . '/assets/js/dc-tracking.js',
@@ -104,6 +111,9 @@ function dc_enqueue_front_assets() {
 		wp_get_theme()->get( 'Version' ),
 		true
 	);
+	wp_localize_script( 'descomplicarro-tracking', 'dcoMetricas', array(
+		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+	) );
 }
 
 add_action( 'admin_enqueue_scripts', 'dc_enqueue_admin_assets' );

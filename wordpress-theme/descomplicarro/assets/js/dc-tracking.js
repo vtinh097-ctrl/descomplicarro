@@ -36,8 +36,52 @@
       params || {}
     );
     window.dataLayer.push(payload);
+    dcEnviarParaMetricasNativas(eventName, params || {});
   }
   window.dcTrack = dcTrack; // disponível para qualquer script futuro que precise disparar eventos próprios.
+
+  /**
+   * Painel nativo "Métricas" (Etapa 3) — totalmente independente do
+   * dataLayer/GA4/GTM acima: mesmo com as duas integrações desligadas (ou
+   * nunca ativadas), este contador continua funcionando sozinho. Cada
+   * evento vira (área, tipo de evento, identificador estável) — nunca um
+   * dado pessoal de quem clicou. "Fire-and-forget": se o endpoint não
+   * existir (plugin de Oportunidades não instalado/ativo), a chamada só
+   * falha silenciosamente, sem quebrar nada na página.
+   */
+  var DCO_AREA_POR_EVENTO = {
+    ad_click: 'anuncio',
+    ad_impression: 'anuncio',
+    article_click: 'materia',
+    partner_click: 'parceiro',
+    credenciamento_click: 'oficina',
+    navigation_click: 'navegacao',
+  };
+
+  function dcEnviarParaMetricasNativas(eventName, params) {
+    if (typeof dcoMetricas === 'undefined' || !dcoMetricas.ajaxUrl) return;
+
+    var area = DCO_AREA_POR_EVENTO[eventName] || 'geral';
+    var identificador =
+      params.campanha_id || params.materia || params.origem || params.button_id || params.destino || '';
+
+    var corpo = new URLSearchParams({
+      action: 'dco_metricas_registrar_clique',
+      area: area,
+      evento: eventName,
+      identificador: String(identificador).slice(0, 100),
+    });
+
+    fetch(dcoMetricas.ajaxUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: corpo,
+      keepalive: true,
+      credentials: 'omit',
+    }).catch(function () {
+      // silencioso de propósito — métrica nunca pode quebrar a navegação do visitante.
+    });
+  }
 
   /** Parâmetros lidos de todo atributo data-dc-* do elemento (menos data-dc-event, que vira o nome do evento). */
   function dcParamsFromElement(el) {
