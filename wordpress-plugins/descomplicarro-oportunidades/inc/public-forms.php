@@ -35,6 +35,9 @@ function dco_shortcode_oportunidades( $atts ) {
 		case 'gerenciar':
 			dco_view_gerenciar();
 			break;
+		case 'solicitar_gestao':
+			dco_view_solicitar_gestao();
+			break;
 		case 'solicitar_contato':
 			dco_view_solicitar_contato();
 			break;
@@ -54,6 +57,16 @@ function dco_enqueue_public_assets() {
 	if ( ! is_singular() || ! has_shortcode( get_post()->post_content, 'dco_oportunidades' ) ) {
 		return;
 	}
+	// Não assume que o tema ativo carrega Space Grotesk/DM Sans (o plugin
+	// precisa continuar com a identidade certa mesmo com outro tema) — se o
+	// tema DESCOMPLICARRO já carregou (handle "google-fonts-descomplicarro"),
+	// o navegador só reaproveita o arquivo já em cache, sem pedir de novo.
+	wp_enqueue_style(
+		'descomplicarro-oportunidades-fonts',
+		'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap',
+		array(),
+		null
+	);
 	wp_enqueue_style( 'descomplicarro-oportunidades-public', DCO_PLUGIN_URL . 'assets/css/public.css', array(), DCO_VERSION );
 	wp_enqueue_script( 'descomplicarro-oportunidades-public', DCO_PLUGIN_URL . 'assets/js/public.js', array(), DCO_VERSION, true );
 	wp_localize_script( 'descomplicarro-oportunidades-public', 'dcoPublico', array(
@@ -67,7 +80,8 @@ function dco_enqueue_public_assets() {
 function dco_view_painel_inicial() {
 	echo '<p class="dco-acoes">';
 	echo '<a class="dco-btn" href="' . esc_url( add_query_arg( 'dco_acao', 'cadastrar_curriculo' ) ) . '">Cadastrar meu currículo</a> ';
-	echo '<a class="dco-btn" href="' . esc_url( add_query_arg( 'dco_acao', 'cadastrar_vaga' ) ) . '">Publicar uma vaga</a>';
+	echo '<a class="dco-btn" href="' . esc_url( add_query_arg( 'dco_acao', 'cadastrar_vaga' ) ) . '">Publicar uma vaga</a> ';
+	echo '<a class="dco-btn dco-btn--secundario" href="' . esc_url( add_query_arg( 'dco_acao', 'solicitar_gestao' ) ) . '">Já tenho cadastro — gerenciar</a>';
 	echo '</p>';
 	dco_renderizar_busca_vagas();
 	dco_renderizar_busca_curriculos();
@@ -94,6 +108,8 @@ function dco_view_cadastrar_curriculo() {
 			$cidade   = sanitize_text_field( wp_unslash( $_POST['dco_cidade'] ?? '' ) );
 			$telefone = sanitize_text_field( wp_unslash( $_POST['dco_telefone'] ?? '' ) );
 			$email    = sanitize_email( wp_unslash( $_POST['dco_email'] ?? '' ) );
+			$resumo   = sanitize_textarea_field( wp_unslash( $_POST['dco_resumo'] ?? '' ) );
+			$especialidades = sanitize_text_field( wp_unslash( $_POST['dco_especialidades'] ?? '' ) );
 			$aceite   = ! empty( $_POST['dco_aceite'] );
 
 			if ( ! $nome ) {
@@ -141,6 +157,12 @@ function dco_view_cadastrar_curriculo() {
 						update_post_meta( $post_id, 'dco_telefone', $telefone );
 					}
 					update_post_meta( $post_id, 'dco_email', $email );
+					if ( $resumo ) {
+						update_post_meta( $post_id, 'dco_resumo', $resumo );
+					}
+					if ( $especialidades ) {
+						update_post_meta( $post_id, 'dco_especialidades', $especialidades );
+					}
 					update_post_meta( $post_id, 'dco_curriculo_pdf', $nome_arquivo_pdf );
 					dco_email_confirmacao_curriculo( $post_id );
 					$sucesso = true;
@@ -178,6 +200,9 @@ function dco_view_cadastrar_curriculo() {
 		</label></p>
 		<p><label>Telefone / WhatsApp<br><input type="text" name="dco_telefone"></label></p>
 		<p><label>E-mail<br><input type="email" name="dco_email" required></label></p>
+		<p><label>Resumo profissional (opcional)<br><textarea name="dco_resumo" rows="3"></textarea></label></p>
+		<p><label>Especialidades (opcional, separadas por vírgula)<br><input type="text" name="dco_especialidades"></label></p>
+		<p class="dco-aviso-privacidade">Na busca pública mostramos só o cargo, a localização, o resumo e as especialidades acima — seu nome, telefone, e-mail e o PDF nunca aparecem publicamente.</p>
 		<p><label>Currículo em PDF (até 5 MB)<br><input type="file" name="dco_curriculo_pdf_arquivo" accept="application/pdf" required></label></p>
 		<p><label><input type="checkbox" name="dco_aceite" value="1"> Li e aceito a <a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>" target="_blank" rel="noopener">Política de Privacidade</a> e os <a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>" target="_blank" rel="noopener">Termos de Uso</a>.</label></p>
 		<p><button type="submit">Enviar cadastro</button></p>
@@ -319,24 +344,37 @@ function dco_view_confirmar() {
 	dco_invalidar_token( $id, 'confirmacao' );
 	dco_email_link_gestao( $id, $tipo_post === 'dco_vaga' ? 'vaga' : 'curriculo' );
 
-	echo '<div class="dco-aviso dco-aviso--sucesso"><p>Cadastro confirmado e publicado! Também enviamos por e-mail o link para você gerenciar seu cadastro (editar, renovar ou excluir) a qualquer momento — guarde-o.</p></div>';
+	echo '<div class="dco-aviso dco-aviso--sucesso"><p>Cadastro confirmado e publicado! Também enviamos por e-mail um link para gerenciar seu cadastro (editar, renovar ou excluir) — ele funciona uma única vez e expira em 30 minutos; se precisar depois, é só solicitar um novo link a qualquer momento.</p></div>';
 }
 
 /* ==========================================================================
    GERENCIAR (link de e-mail, uso múltiplo dentro da validade)
    ========================================================================== */
 function dco_view_gerenciar() {
-	$tipo = isset( $_GET['dco_tipo'] ) ? sanitize_key( wp_unslash( $_GET['dco_tipo'] ) ) : ( isset( $_POST['dco_tipo'] ) ? sanitize_key( wp_unslash( $_POST['dco_tipo'] ) ) : '' );
-	$id   = isset( $_GET['dco_id'] ) ? (int) $_GET['dco_id'] : ( isset( $_POST['dco_id'] ) ? (int) $_POST['dco_id'] : 0 );
-	$token = isset( $_GET['dco_token'] ) ? sanitize_text_field( wp_unslash( $_GET['dco_token'] ) ) : ( isset( $_POST['dco_token'] ) ? sanitize_text_field( wp_unslash( $_POST['dco_token'] ) ) : '' );
+	// O POST tem prioridade sobre a URL: o formulário de gestão sempre
+	// embute o token MAIS RECENTE (renovado a cada carregamento — ver
+	// abaixo) no corpo do POST, mas a URL da própria página (inalterada
+	// desde o link original do e-mail) ainda carrega o token ANTIGO na
+	// query string. Sem essa prioridade, o token já consumido da URL
+	// venceria o novo token do formulário e toda ação dentro da mesma
+	// visita falharia logo na primeira tentativa.
+	$tipo = isset( $_POST['dco_tipo'] ) ? sanitize_key( wp_unslash( $_POST['dco_tipo'] ) ) : ( isset( $_GET['dco_tipo'] ) ? sanitize_key( wp_unslash( $_GET['dco_tipo'] ) ) : '' );
+	$id   = isset( $_POST['dco_id'] ) ? (int) $_POST['dco_id'] : ( isset( $_GET['dco_id'] ) ? (int) $_GET['dco_id'] : 0 );
+	$token = isset( $_POST['dco_token'] ) ? sanitize_text_field( wp_unslash( $_POST['dco_token'] ) ) : ( isset( $_GET['dco_token'] ) ? sanitize_text_field( wp_unslash( $_GET['dco_token'] ) ) : '' );
 	$tipo_post = $tipo === 'vaga' ? 'dco_vaga' : 'dco_curriculo';
 
 	// Validação do token: SEMPRE contra o $id desta mesma requisição — nunca
 	// uma ação afeta um post diferente do que o link/token autoriza.
 	if ( ! $id || ! $token || get_post_type( $id ) !== $tipo_post || ! dco_token_valido( $id, 'gestao', $token ) ) {
-		echo '<p>Link de gestão inválido ou expirado. Solicite um novo cadastro ou aguarde o e-mail de confirmação.</p>';
+		dco_exibir_formulario_solicitar_gestao( 'Este link de gestão é inválido, já foi usado ou expirou (os links de gestão valem uma única vez, por 30 minutos). Solicite um novo abaixo.' );
 		return;
 	}
+
+	// Token válido: consome-o e emite um novo no lugar (uso único, 30
+	// minutos) — $token passa a valer o NOVO, embutido no formulário abaixo
+	// para as próximas ações dentro desta mesma visita, sem precisar de um
+	// novo e-mail a cada clique.
+	$token = dco_renovar_token_gestao( $id );
 
 	$mensagem = '';
 	if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
@@ -361,7 +399,8 @@ function dco_view_gerenciar() {
 				$mensagem = 'Cadastro renovado com sucesso.';
 			} elseif ( $acao_gestao === 'salvar' ) {
 				if ( $tipo_post === 'dco_curriculo' ) {
-					dco_salvar_campos_texto( $id, array( 'dco_cargo', 'dco_telefone' ) );
+					dco_salvar_campos_texto( $id, array( 'dco_cargo', 'dco_telefone', 'dco_especialidades' ) );
+					dco_salvar_campos_textarea( $id, array( 'dco_resumo' ) );
 					$estado = sanitize_text_field( wp_unslash( $_POST['dco_estado'] ?? '' ) );
 					$cidade = sanitize_text_field( wp_unslash( $_POST['dco_cidade'] ?? '' ) );
 					if ( array_key_exists( $estado, dco_uf_list() ) && dco_cidade_valida( $estado, $cidade ) ) {
@@ -406,7 +445,7 @@ function dco_view_gerenciar() {
 	<h3>Gerenciar meu cadastro</h3>
 	<p>Status atual: <strong><?php echo esc_html( dco_rotulo_status( $status ) ); ?></strong> · Expira em: <strong><?php echo esc_html( $expira ?: '—' ); ?></strong></p>
 
-	<form method="post" class="dco-form">
+	<form method="post" enctype="multipart/form-data" class="dco-form">
 		<input type="hidden" name="dco_tipo" value="<?php echo esc_attr( $tipo ); ?>">
 		<input type="hidden" name="dco_id" value="<?php echo (int) $id; ?>">
 		<input type="hidden" name="dco_token" value="<?php echo esc_attr( $token ); ?>">
@@ -424,6 +463,8 @@ function dco_view_gerenciar() {
 			</label></p>
 			<p><label>Cidade<br><input type="text" name="dco_cidade" id="dco_cidade_gestao" value="<?php echo esc_attr( get_post_meta( $id, 'dco_cidade', true ) ); ?>"></label></p>
 			<p><label>Telefone / WhatsApp<br><input type="text" name="dco_telefone" value="<?php echo esc_attr( get_post_meta( $id, 'dco_telefone', true ) ); ?>"></label></p>
+			<p><label>Resumo profissional (opcional, exibido na busca)<br><textarea name="dco_resumo" rows="3"><?php echo esc_textarea( get_post_meta( $id, 'dco_resumo', true ) ); ?></textarea></label></p>
+			<p><label>Especialidades (opcional, exibidas na busca)<br><input type="text" name="dco_especialidades" value="<?php echo esc_attr( get_post_meta( $id, 'dco_especialidades', true ) ); ?>"></label></p>
 			<p><label>Substituir currículo em PDF (opcional)<br><input type="file" name="dco_curriculo_pdf_arquivo" accept="application/pdf"></label></p>
 		<?php else : ?>
 			<p><label>Empresa<br><input type="text" name="dco_empresa" value="<?php echo esc_attr( get_post_meta( $id, 'dco_empresa', true ) ); ?>"></label></p>
@@ -475,6 +516,75 @@ function dco_rotulo_status( $status ) {
 }
 
 /* ==========================================================================
+   SOLICITAR NOVO LINK DE GESTÃO (quando o anterior expirou/já foi usado)
+   ========================================================================== */
+function dco_exibir_formulario_solicitar_gestao( $aviso = '' ) {
+	if ( $aviso ) {
+		echo '<div class="dco-aviso"><p>' . esc_html( $aviso ) . '</p></div>';
+	}
+	dco_view_solicitar_gestao( false );
+}
+
+function dco_view_solicitar_gestao( $com_titulo = true ) {
+	$erros   = array();
+	$sucesso = false;
+
+	if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['dco_form'] ) && $_POST['dco_form'] === 'solicitar_gestao' ) {
+		if ( ! isset( $_POST['dco_nonce'] ) || ! wp_verify_nonce( $_POST['dco_nonce'], 'dco_solicitar_gestao' ) ) {
+			$erros[] = 'Sessão expirada, tente novamente.';
+		} elseif ( ! dco_campo_isca_valido() ) {
+			$erros[] = 'Não foi possível processar seu envio.';
+		} elseif ( dco_limite_por_ip_excedido( 'solicitar_gestao', 10 ) ) {
+			$erros[] = 'Muitos pedidos recentes deste endereço. Tente novamente mais tarde.';
+		} else {
+			$email = sanitize_email( wp_unslash( $_POST['dco_email'] ?? '' ) );
+			if ( ! $email || ! is_email( $email ) ) {
+				$erros[] = 'Informe um e-mail válido.';
+			} else {
+				// Procura em AMBOS os tipos — a pessoa pode ter currículo, vaga ou os dois com o mesmo e-mail.
+				foreach ( array(
+					array( 'post_type' => 'dco_curriculo', 'meta_key' => 'dco_email', 'tipo' => 'curriculo' ),
+					array( 'post_type' => 'dco_vaga', 'meta_key' => 'dco_email_candidatura', 'tipo' => 'vaga' ),
+				) as $busca ) {
+					$encontrados = get_posts( array(
+						'post_type'      => $busca['post_type'],
+						'post_status'    => array( 'publish', 'pending', 'suspensa', 'expirada' ),
+						'posts_per_page' => -1,
+						'meta_query'     => array( array( 'key' => $busca['meta_key'], 'value' => $email ) ),
+						'no_found_rows'  => true,
+					) );
+					foreach ( $encontrados as $cadastro ) {
+						dco_email_link_gestao( $cadastro->ID, $busca['tipo'] );
+					}
+				}
+				// Mensagem SEMPRE igual, independente de ter encontrado algo ou
+				// não — nunca revela publicamente se um e-mail tem cadastro.
+				$sucesso = true;
+			}
+		}
+	}
+
+	if ( $sucesso ) {
+		echo '<div class="dco-aviso dco-aviso--sucesso"><p>Se esse e-mail tiver algum cadastro conosco, um novo link de gestão foi enviado — ele vale uma única vez, por 30 minutos.</p></div>';
+		return;
+	}
+
+	dco_exibir_erros( $erros );
+	if ( $com_titulo ) {
+		echo '<h3>Gerenciar meu cadastro</h3><p>Informe o e-mail usado no cadastro — enviaremos um novo link de gestão.</p>';
+	}
+	?>
+	<form method="post" class="dco-form">
+		<input type="hidden" name="dco_form" value="solicitar_gestao">
+		<?php wp_nonce_field( 'dco_solicitar_gestao', 'dco_nonce' ); ?>
+		<?php dco_campo_isca_html(); ?>
+		<p><label>E-mail do cadastro<br><input type="email" name="dco_email" required></label></p>
+		<p><button type="submit">Enviar novo link</button></p>
+	</form>
+	<?php
+}
+
+/* ==========================================================================
    SOLICITAR CONTATO (currículos)
    ========================================================================== */
 function dco_view_solicitar_contato() {
@@ -520,7 +630,12 @@ function dco_view_solicitar_contato() {
 
 	dco_exibir_erros( $erros );
 	?>
-	<h3>Solicitar contato com <?php echo esc_html( get_the_title( $id ) ); ?></h3>
+	<?php
+	$cargo_contato = get_post_meta( $id, 'dco_cargo', true );
+	$cidade_contato = get_post_meta( $id, 'dco_cidade', true );
+	$uf_contato = get_post_meta( $id, 'dco_estado', true );
+	?>
+	<h3>Solicitar contato — <?php echo esc_html( $cargo_contato ); ?><?php echo $cidade_contato ? ' (' . esc_html( trim( $cidade_contato . ( $uf_contato ? ' / ' . $uf_contato : '' ) ) ) . ')' : ''; ?></h3>
 	<p>Seus dados só são compartilhados com esta pessoa — a equipe DESCOMPLICARRO não intermedia nem armazena esta conversa.</p>
 	<form method="post" class="dco-form">
 		<input type="hidden" name="dco_id" value="<?php echo (int) $id; ?>">

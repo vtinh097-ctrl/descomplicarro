@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DESCOMPLICARRO — Oportunidades Automotivas
  * Description: Banco de currículos e vagas do setor automotivo (autogestão por link mágico, sem senha), métricas simples de cliques e automação editorial — construído como plugin próprio para que os dados sobrevivam a trocas/atualizações do tema DESCOMPLICARRO. O tema cuida só da apresentação visual.
- * Version: 0.2.0
+ * Version: 0.3.0
  * Author: DESCOMPLICARRO
  * Text Domain: descomplicarro-oportunidades
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DCO_VERSION', '0.2.0' );
+define( 'DCO_VERSION', '0.3.0' );
 define( 'DCO_PLUGIN_FILE', __FILE__ );
 define( 'DCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -33,6 +33,8 @@ require_once DCO_PLUGIN_DIR . 'inc/cpt-curriculo.php';
 require_once DCO_PLUGIN_DIR . 'inc/cpt-vaga.php';
 require_once DCO_PLUGIN_DIR . 'inc/public-forms.php';
 require_once DCO_PLUGIN_DIR . 'inc/busca.php';
+require_once DCO_PLUGIN_DIR . 'inc/admin-panel.php';
+require_once DCO_PLUGIN_DIR . 'inc/limpeza.php';
 
 register_activation_hook( __FILE__, 'dco_ativar_plugin' );
 /**
@@ -200,17 +202,3 @@ function dco_registrar_menu_admin() {
 	);
 }
 
-function dco_render_pagina_painel() {
-	$total_curriculos = wp_count_posts( 'dco_curriculo' );
-	$total_vagas      = wp_count_posts( 'dco_vaga' );
-	?>
-	<div class="wrap">
-		<h1>Oportunidades Automotivas</h1>
-		<p>Painel em construção (Etapa 2 em andamento). Por enquanto, gerencie Currículos e Vagas pelos menus abaixo — o painel consolidado (filtros, denúncias, exportações) chega nas próximas entregas desta etapa.</p>
-		<ul>
-			<li><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=dco_curriculo' ) ); ?>">Currículos<?php if ( $total_curriculos ) : ?> (<?php echo (int) $total_curriculos->publish; ?> ativos)<?php endif; ?></a></li>
-			<li><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=dco_vaga' ) ); ?>">Vagas<?php if ( $total_vagas ) : ?> (<?php echo (int) $total_vagas->publish; ?> ativas)<?php endif; ?></a></li>
-		</ul>
-	</div>
-	<?php
-}

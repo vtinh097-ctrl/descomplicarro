@@ -125,9 +125,18 @@ function dco_renderizar_busca_curriculos() {
 			$cargo = get_post_meta( $id, 'dco_cargo', true );
 			$cid   = get_post_meta( $id, 'dco_cidade', true );
 			$uf    = get_post_meta( $id, 'dco_estado', true );
+			$resumo = get_post_meta( $id, 'dco_resumo', true );
+			$especialidades = get_post_meta( $id, 'dco_especialidades', true );
+			// NUNCA o nome do profissional (post_title) aqui — só cargo, localização, resumo e especialidades.
 			echo '<li class="dco-card">';
-			echo '<strong>' . esc_html( get_the_title() ) . '</strong> — ' . esc_html( $cargo ) . '<br>';
+			echo '<strong>' . esc_html( $cargo ) . '</strong><br>';
 			echo '<span>' . esc_html( trim( $cid . ( $uf ? ' / ' . $uf : '' ), ' /' ) ) . '</span><br>';
+			if ( $resumo ) {
+				echo '<p>' . esc_html( $resumo ) . '</p>';
+			}
+			if ( $especialidades ) {
+				echo '<p><em>' . esc_html( $especialidades ) . '</em></p>';
+			}
 			printf(
 				'<a href="%s">Solicitar contato</a> &nbsp;',
 				esc_url( dco_url_acao( 'solicitar_contato', 'curriculo', $id, '' ) )

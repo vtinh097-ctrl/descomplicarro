@@ -6,10 +6,16 @@
  * Dois tipos de token por cadastro:
  *   - "confirmacao": uso ÚNICO, confirma o e-mail e publica o cadastro.
  *     Curto (48h) — se não for usado, o cadastro nunca sai de "Em avaliação"
- *     e pode ser limpo depois (ver rotina de limpeza, a ser criada).
- *   - "gestao": uso MÚLTIPLO dentro da validade (renovável), para o próprio
- *     profissional/empresa editar, renovar ou excluir o próprio cadastro —
- *     sem precisar criar conta nem senha.
+ *     e é removido depois pela rotina de limpeza (ver inc/limpeza.php).
+ *   - "gestao": uso ÚNICO e de validade CURTA (30 minutos) — cada clique no
+ *     link de e-mail consome aquele token e emite um novo, igualmente de uso
+ *     único e válido por mais 30 minutos a partir daquele momento, embutido
+ *     como campo oculto no formulário renderizado (não um novo link por
+ *     e-mail) — é o que permite continuar editando/renovando/excluindo na
+ *     mesma visita sem precisar abrir o e-mail de novo a cada clique, mas
+ *     sem nunca manter um link de longa duração circulando. Se a pessoa
+ *     perder o link ou ele expirar, usa "solicitar novo link" (ver
+ *     dco_view_solicitar_gestao() em inc/public-forms.php).
  *
  * NUNCA se guarda o token em texto puro — só o hash (SHA-256). Quem só tem
  * acesso ao banco de dados (um backup vazado, por exemplo) não consegue
@@ -21,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'DCO_TOKEN_CONFIRMACAO_SEGUNDOS', 2 * DAY_IN_SECONDS );
-define( 'DCO_TOKEN_GESTAO_SEGUNDOS', 395 * DAY_IN_SECONDS ); // 13 meses — folga de 1 mês sobre a validade de 12 meses do conteúdo.
+define( 'DCO_TOKEN_GESTAO_SEGUNDOS', 30 * MINUTE_IN_SECONDS );
 
 function dco_gerar_token_bruto() {
 	return bin2hex( random_bytes( 24 ) ); // 48 caracteres hexadecimais — não previsível por força bruta.
@@ -60,6 +66,18 @@ function dco_token_valido( $post_id, $tipo, $token_bruto ) {
 function dco_invalidar_token( $post_id, $tipo ) {
 	delete_post_meta( $post_id, "dco_token_{$tipo}_hash" );
 	delete_post_meta( $post_id, "dco_token_{$tipo}_expira" );
+}
+
+/**
+ * Consome o token de gestão atual (uso único) e emite um novo no lugar,
+ * válido por mais DCO_TOKEN_GESTAO_SEGUNDOS a partir de agora — usado a
+ * cada carregamento da tela de gestão e a cada ação (salvar/renovar/
+ * excluir) para permitir continuar na mesma visita sem precisar de um novo
+ * e-mail, mas sem nunca manter um link antigo válido.
+ */
+function dco_renovar_token_gestao( $post_id ) {
+	dco_invalidar_token( $post_id, 'gestao' );
+	return dco_definir_token( $post_id, 'gestao', DCO_TOKEN_GESTAO_SEGUNDOS );
 }
 
 /** Monta a URL pública de uma ação (confirmar, gerenciar, candidatar etc.) — sempre na página que tem o shortcode [dco_oportunidades], via query var própria (ver inc/public-forms.php). */

@@ -104,7 +104,10 @@ function dco_render_metabox_curriculo( $post ) {
 	dco_admin_text( $post, 'dco_cidade', 'Cidade', 'Precisa ser um município real do estado selecionado.' );
 	dco_admin_text( $post, 'dco_telefone', 'Telefone / WhatsApp' );
 	dco_admin_email( $post, 'dco_email', 'E-mail', 'NUNCA exibido publicamente — usado só para a confirmação de cadastro e o link de gestão.' );
+	dco_admin_textarea( $post, 'dco_resumo', 'Resumo profissional (opcional)', 'Exibido publicamente na busca, se preenchido. Nunca inclua dados de contato aqui.', 3 );
+	dco_admin_text( $post, 'dco_especialidades', 'Especialidades (opcional)', 'Separadas por vírgula. Exibidas publicamente na busca, se preenchidas.' );
 	dco_admin_file( $post, 'dco_curriculo_pdf', 'Currículo em PDF', 'Somente PDF, até 5 MB. Verificado pelo conteúdo real do arquivo (não só pela extensão) e salvo direto em armazenamento protegido — nunca passa pela Biblioteca de Mídia.' );
+	echo '<p style="color:#646970;font-size:12px;">O NOME (título deste cadastro) nunca é exibido na busca pública — só cargo, localização, resumo e especialidades.</p>';
 
 	dco_admin_section_title( 'Informações de controle' );
 	dco_admin_readonly_info( 'E-mail confirmado', get_post_meta( $post->ID, 'dco_email_confirmado', true ) ? 'Sim' : 'Não' );
@@ -127,7 +130,8 @@ function dco_save_metabox_curriculo( $post_id ) {
 		return;
 	}
 
-	dco_salvar_campos_texto( $post_id, array( 'dco_cargo', 'dco_cidade', 'dco_telefone' ) );
+	dco_salvar_campos_texto( $post_id, array( 'dco_cargo', 'dco_cidade', 'dco_telefone', 'dco_especialidades' ) );
+	dco_salvar_campos_textarea( $post_id, array( 'dco_resumo' ) );
 	dco_salvar_campo_email( $post_id, 'dco_email' );
 
 	if ( isset( $_POST['dco_estado'] ) ) {

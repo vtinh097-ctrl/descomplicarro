@@ -68,9 +68,10 @@ function dco_email_link_gestao( $post_id, $tipo_post ) {
 	$token = dco_definir_token( $post_id, 'gestao', DCO_TOKEN_GESTAO_SEGUNDOS );
 	$link  = dco_url_acao( 'gerenciar', $tipo_post, $post_id, $token );
 	$rotulo = $tipo_post === 'vaga' ? 'sua vaga' : 'seu currículo';
-	$corpo = '<h2 style="font-size:18px;">Cadastro confirmado — guarde este link</h2>'
-		. '<p>Seu cadastro está publicado. Use o link abaixo sempre que quiser editar, renovar ou excluir ' . esc_html( $rotulo ) . ' — sem precisar de login nem senha. Guarde este e-mail, é o único jeito de acessar essa gestão.</p>'
-		. '<p><a href="' . esc_url( $link ) . '" style="display:inline-block;background:#C65A32;color:#F4F1EA;padding:12px 20px;text-decoration:none;">Gerenciar meu cadastro</a></p>';
+	$corpo = '<h2 style="font-size:18px;">Cadastro confirmado</h2>'
+		. '<p>Seu cadastro está publicado. Use o link abaixo agora para editar, renovar ou excluir ' . esc_html( $rotulo ) . ' — sem precisar de login nem senha.</p>'
+		. '<p><a href="' . esc_url( $link ) . '" style="display:inline-block;background:#C65A32;color:#F4F1EA;padding:12px 20px;text-decoration:none;">Gerenciar meu cadastro</a></p>'
+		. '<p style="font-size:13px;color:#555;">Por segurança, este link funciona uma única vez e expira em 30 minutos. Se precisar gerenciar ' . esc_html( $rotulo ) . ' depois, basta solicitar um novo link a qualquer momento — não é preciso guardar este e-mail.</p>';
 	return dco_enviar_email( $email, 'Seu link de gestão — DESCOMPLICARRO', $corpo );
 }
 
