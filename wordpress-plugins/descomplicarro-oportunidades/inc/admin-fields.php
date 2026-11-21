@@ -67,17 +67,20 @@ function dco_admin_date( $post, $key, $label, $desc = '' ) {
 	dco_admin_field_wrap_end();
 }
 
-/** Campo de arquivo (PDF do currículo): botão para abrir a Biblioteca de Mídia (wp.media), guarda o ID do anexo. */
+/**
+ * Campo de upload de PDF — input de arquivo nativo do navegador, SEM
+ * passar pela Biblioteca de Mídia do WordPress (ver inc/upload-handler.php
+ * sobre por que: o arquivo nunca deve tocar a pasta pública de uploads,
+ * nem por um instante). O arquivo já cadastrado (se houver) é só
+ * informado por nome — trocar exige enviar um novo PDF.
+ */
 function dco_admin_file( $post, $key, $label, $desc = '' ) {
-	$attachment_id = (int) get_post_meta( $post->ID, $key, true );
-	$filename      = $attachment_id ? basename( get_attached_file( $attachment_id ) ) : '';
+	$nome_atual = get_post_meta( $post->ID, $key, true );
 	dco_admin_field_wrap_start( $label, $desc );
-	echo '<div class="dco-file-field" data-key="' . esc_attr( $key ) . '">';
-	echo '<span class="dco-file-preview" style="display:block;margin-bottom:6px;font-style:italic;">' . esc_html( $filename ) . '</span>';
-	printf( '<input type="hidden" class="dco-file-id" name="%1$s" value="%2$d" />', esc_attr( $key ), $attachment_id );
-	echo '<button type="button" class="button dco-file-select">Selecionar arquivo</button> ';
-	echo '<button type="button" class="button dco-file-remove">Remover</button>';
-	echo '</div>';
+	if ( $nome_atual ) {
+		echo '<p style="margin:0 0 6px;font-style:italic;">Arquivo atual: ' . esc_html( $nome_atual ) . ' — selecione um novo arquivo abaixo só se quiser substituí-lo.</p>';
+	}
+	printf( '<input type="file" name="%1$s_arquivo" accept="application/pdf" />', esc_attr( $key ) );
 	dco_admin_field_wrap_end();
 }
 
@@ -146,14 +149,3 @@ function dco_salvar_campo_data( $post_id, $key ) {
 	}
 }
 
-function dco_salvar_campo_arquivo( $post_id, $key ) {
-	if ( ! isset( $_POST[ $key ] ) ) {
-		return;
-	}
-	$attachment_id = (int) $_POST[ $key ];
-	if ( $attachment_id > 0 ) {
-		update_post_meta( $post_id, $key, $attachment_id );
-	} else {
-		delete_post_meta( $post_id, $key );
-	}
-}

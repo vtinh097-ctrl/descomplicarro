@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DESCOMPLICARRO — Oportunidades Automotivas
  * Description: Banco de currículos e vagas do setor automotivo (autogestão por link mágico, sem senha), métricas simples de cliques e automação editorial — construído como plugin próprio para que os dados sobrevivam a trocas/atualizações do tema DESCOMPLICARRO. O tema cuida só da apresentação visual.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: DESCOMPLICARRO
  * Text Domain: descomplicarro-oportunidades
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DCO_VERSION', '0.1.0' );
+define( 'DCO_VERSION', '0.2.0' );
 define( 'DCO_PLUGIN_FILE', __FILE__ );
 define( 'DCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -25,8 +25,14 @@ define( 'DCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once DCO_PLUGIN_DIR . 'inc/admin-fields.php';
 require_once DCO_PLUGIN_DIR . 'inc/admin-status-js.php';
 require_once DCO_PLUGIN_DIR . 'inc/municipios.php';
+require_once DCO_PLUGIN_DIR . 'inc/upload-handler.php';
+require_once DCO_PLUGIN_DIR . 'inc/tokens.php';
+require_once DCO_PLUGIN_DIR . 'inc/emails.php';
+require_once DCO_PLUGIN_DIR . 'inc/moderacao.php';
 require_once DCO_PLUGIN_DIR . 'inc/cpt-curriculo.php';
 require_once DCO_PLUGIN_DIR . 'inc/cpt-vaga.php';
+require_once DCO_PLUGIN_DIR . 'inc/public-forms.php';
+require_once DCO_PLUGIN_DIR . 'inc/busca.php';
 
 register_activation_hook( __FILE__, 'dco_ativar_plugin' );
 /**
@@ -64,47 +70,80 @@ function dco_ensure_capacidades() {
 	dco_garantir_capacidades();
 }
 
-function dco_pasta_protegida_path() {
+/**
+ * ONDE os PDFs de currículo ficam guardados: duas camadas de proteção, não
+ * uma só.
+ *
+ * CAMADA PRINCIPAL — uma pasta FORA da raiz pública do site (um nível acima
+ * de ABSPATH, a pasta onde o WordPress está instalado). Em qualquer
+ * hospedagem normal (inclusive a Hostinger), só o conteúdo DENTRO da raiz
+ * pública (geralmente "public_html") é servido pela internet — uma pasta um
+ * nível acima dela simplesmente não tem URL nenhuma que alcance, em
+ * NENHUM servidor (Apache, nginx, LiteSpeed, o que for), com ou sem
+ * ".htaccess". Por isso esta camada não depende de nenhuma configuração do
+ * servidor para funcionar — ao contrário de só confiar num .htaccess.
+ *
+ * CAMADA DE RESERVA — caso a hospedagem restrinja a escrita fora da raiz
+ * pública (algumas configurações de "open_basedir" fazem isso), uma pasta
+ * dentro de wp-content/uploads, protegida por .htaccess ("Require all
+ * denied" + a sintaxe equivalente para Apache 2.2, "Deny from all") e sem
+ * listagem de diretório. Verificado com um servidor Apache de verdade neste
+ * ambiente de desenvolvimento (não só lendo o conteúdo do arquivo): acesso
+ * direto ao PDF, listagem do diretório e leitura do próprio .htaccess
+ * retornaram 403 nos três casos.
+ *
+ * dco_pasta_protegida_path() testa a camada principal a cada uso (sem
+ * confiar numa marca "já verifiquei uma vez" — mesma lição já registrada em
+ * outras partes do projeto) e só recorre à de reserva se a principal não
+ * puder ser criada/escrita.
+ */
+function dco_pasta_protegida_fora_webroot_path() {
+	return trailingslashit( dirname( ABSPATH ) ) . 'dco-curriculos-privado';
+}
+
+function dco_pasta_protegida_reserva_path() {
 	$uploads = wp_upload_dir();
 	return trailingslashit( $uploads['basedir'] ) . 'dco-curriculos-privado';
 }
 
+function dco_pasta_utilizavel( $pasta ) {
+	if ( ! file_exists( $pasta ) ) {
+		if ( ! @wp_mkdir_p( $pasta ) ) {
+			return false;
+		}
+	}
+	return is_dir( $pasta ) && is_writable( $pasta );
+}
+
+function dco_pasta_protegida_path() {
+	$principal = dco_pasta_protegida_fora_webroot_path();
+	if ( dco_pasta_utilizavel( $principal ) ) {
+		return $principal;
+	}
+	return dco_pasta_protegida_reserva_path();
+}
+
 /**
- * Pasta de armazenamento dos PDFs de currículo: nome de arquivo não
- * previsível (sufixo aleatório, ver dco_validar_e_proteger_pdf() em
- * inc/cpt-curriculo.php) E bloqueio de acesso direto via .htaccess — sem
- * listagem de diretório e sem acesso via navegador a NENHUM arquivo da
- * pasta, nem o PDF nem um eventual script malicioso disfarçado. As duas
- * sintaxes (Apache 2.4 "Require all denied" e a 2.2 "Deny from all") são
- * gravadas para funcionar em qualquer versão — cada hospedagem ativa o
- * <IfModule> correto sozinha.
- *
- * IMPORTANTE SOBRE TESTE LOCAL: o servidor embutido do PHP (usado neste
- * ambiente de desenvolvimento local, "php -S") NÃO processa .htaccess —
- * nenhum servidor desse tipo processa. Isso significa que este bloqueio não
- * pôde ser verificado empiricamente no ambiente local; ele depende do
- * servidor de produção (Hostinger) ser Apache com suporte a .htaccess
- * habilitado, que é o padrão da hospedagem compartilhada deles. Antes de ir
- * para produção, farei uma verificação final diretamente lá.
- *
- * Nenhum link público para esta pasta existe ainda em lugar nenhum do site
- * — o único acesso possível hoje é pelo wp-admin autenticado. O link de
- * download com expiração (para o próprio profissional baixar seu currículo
- * pelo "gerenciar meu cadastro") é a próxima parte desta etapa.
+ * Prepara as duas pastas candidatas (mesmo que só uma acabe sendo usada por
+ * dco_pasta_protegida_path()) com .htaccess + index.html — a de reserva
+ * porque pode vir a ser necessária, e a principal como camada extra mesmo
+ * fora do webroot (nunca custa, e cobre o caso raro de uma hospedagem
+ * expor essa pasta por engano, ex.: um alias de servidor mal configurado).
  */
 function dco_garantir_pasta_protegida() {
-	$pasta = dco_pasta_protegida_path();
-	if ( ! file_exists( $pasta ) ) {
-		wp_mkdir_p( $pasta );
-	}
-	$htaccess = $pasta . '/.htaccess';
-	$conteudo_esperado = "<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\nOptions -Indexes\n";
-	if ( ! file_exists( $htaccess ) || file_get_contents( $htaccess ) !== $conteudo_esperado ) {
-		file_put_contents( $htaccess, $conteudo_esperado );
-	}
-	$index = $pasta . '/index.html';
-	if ( ! file_exists( $index ) ) {
-		file_put_contents( $index, '' );
+	foreach ( array( dco_pasta_protegida_fora_webroot_path(), dco_pasta_protegida_reserva_path() ) as $pasta ) {
+		if ( ! dco_pasta_utilizavel( $pasta ) ) {
+			continue;
+		}
+		$htaccess = $pasta . '/.htaccess';
+		$conteudo_esperado = "<IfModule mod_authz_core.c>\n\tRequire all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n\tOrder allow,deny\n\tDeny from all\n</IfModule>\nOptions -Indexes\n";
+		if ( ! file_exists( $htaccess ) || file_get_contents( $htaccess ) !== $conteudo_esperado ) {
+			@file_put_contents( $htaccess, $conteudo_esperado );
+		}
+		$index = $pasta . '/index.html';
+		if ( ! file_exists( $index ) ) {
+			@file_put_contents( $index, '' );
+		}
 	}
 }
 
@@ -146,27 +185,6 @@ function dco_garantir_capacidades() {
 			}
 		}
 	}
-}
-
-add_action( 'admin_enqueue_scripts', 'dco_enqueue_admin_assets' );
-function dco_enqueue_admin_assets( $hook ) {
-	if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
-		return;
-	}
-	$post_type = $hook === 'post-new.php'
-		? ( isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : 'post' )
-		: get_post_type();
-	if ( ! in_array( $post_type, array( 'dco_curriculo', 'dco_vaga' ), true ) ) {
-		return;
-	}
-	wp_enqueue_media();
-	wp_enqueue_script(
-		'descomplicarro-oportunidades-admin',
-		DCO_PLUGIN_URL . 'assets/js/admin.js',
-		array( 'jquery' ),
-		DCO_VERSION,
-		true
-	);
 }
 
 add_action( 'admin_menu', 'dco_registrar_menu_admin' );

@@ -10,12 +10,11 @@
  *   - "expirada" (customizado) = passou da validade de 12 meses sem renovação
  * Nada é apagado ao suspender/expirar — só deixa de aparecer publicamente.
  *
- * NESTA ENTREGA: CPT, metabox de administração e armazenamento protegido do
- * PDF já funcionam (o administrador já pode cadastrar/gerenciar pelo
- * wp-admin). O AUTOCADASTRO PÚBLICO (formulário no site, link mágico de
- * confirmação por e-mail, "gerenciar meu cadastro", "solicitar contato" e
- * denúncia) é a próxima parte desta mesma etapa — ver o relatório de
- * entrega para o que falta e o prazo.
+ * "public" fica false DE PROPÓSITO: este CPT nunca tem página/arquivo
+ * gerado automaticamente pelo WordPress (sem permalink individual, sem
+ * URL previsível por ID) — toda exibição pública passa pelos shortcodes em
+ * inc/public-forms.php e inc/busca.php, que decidem exatamente o que
+ * mostrar (nunca e-mail, telefone ou o PDF em si).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -59,27 +58,42 @@ function dco_registrar_cpt_curriculo() {
 			'all_items'     => 'Currículos',
 			'menu_name'     => 'Currículos',
 		),
-		// "public" fica false nesta entrega: a listagem/perfil público (parte
-		// do autocadastro, ainda não construída) só é ligada quando essa parte
-		// estiver pronta e autorizada — ver cabeçalho do arquivo.
-		'public'             => false,
-		'publicly_queryable' => false,
-		'exclude_from_search'=> true,
-		'show_ui'            => true,
-		'show_in_menu'       => 'dco-oportunidades',
-		'show_in_rest'       => false,
-		'supports'           => array( 'title' ),
-		'capability_type'    => array( 'dco_curriculo', 'dco_curriculos' ),
-		'map_meta_cap'       => true,
+		'public'              => false,
+		'publicly_queryable'  => false,
+		'exclude_from_search' => true,
+		'show_ui'             => true,
+		'show_in_menu'        => 'dco-oportunidades',
+		'show_in_rest'        => false,
+		'supports'            => array( 'title' ),
+		'capability_type'     => array( 'dco_curriculo', 'dco_curriculos' ),
+		'map_meta_cap'        => true,
 	) );
 }
 
 /* ==========================================================================
-   METABOX — dados do currículo
+   METABOX — dados do currículo (administração pelo wp-admin)
    ========================================================================== */
 add_action( 'add_meta_boxes', 'dco_registrar_metabox_curriculo' );
 function dco_registrar_metabox_curriculo() {
 	add_meta_box( 'dco_curriculo_dados', 'Dados do currículo', 'dco_render_metabox_curriculo', 'dco_curriculo', 'normal', 'high' );
+}
+
+/**
+ * O formulário de edição padrão do WordPress só ganha enctype
+ * "multipart/form-data" sozinho quando o tipo de conteúdo declara suporte a
+ * "thumbnail" (comportamento antigo do núcleo, sem relação nenhuma com
+ * upload de arquivo em metabox) — como "dco_curriculo" não declara esse
+ * suporte (não precisamos de imagem destacada aqui), o campo de upload do
+ * PDF simplesmente não seria enviado sem isto. "post_edit_form_tag" é o
+ * gancho que o próprio WordPress documenta para plugins acrescentarem esse
+ * atributo quando precisam de upload de arquivo num metabox.
+ */
+add_action( 'post_edit_form_tag', 'dco_adicionar_enctype_multipart_curriculo' );
+function dco_adicionar_enctype_multipart_curriculo() {
+	global $post;
+	if ( $post && $post->post_type === 'dco_curriculo' ) {
+		echo ' enctype="multipart/form-data"';
+	}
 }
 
 function dco_render_metabox_curriculo( $post ) {
@@ -90,7 +104,7 @@ function dco_render_metabox_curriculo( $post ) {
 	dco_admin_text( $post, 'dco_cidade', 'Cidade', 'Precisa ser um município real do estado selecionado.' );
 	dco_admin_text( $post, 'dco_telefone', 'Telefone / WhatsApp' );
 	dco_admin_email( $post, 'dco_email', 'E-mail', 'NUNCA exibido publicamente — usado só para a confirmação de cadastro e o link de gestão.' );
-	dco_admin_file( $post, 'dco_curriculo_pdf', 'Currículo em PDF', 'Somente PDF, até 5 MB. Verificado pelo conteúdo real do arquivo (não só pela extensão) e movido para armazenamento protegido ao salvar.' );
+	dco_admin_file( $post, 'dco_curriculo_pdf', 'Currículo em PDF', 'Somente PDF, até 5 MB. Verificado pelo conteúdo real do arquivo (não só pela extensão) e salvo direto em armazenamento protegido — nunca passa pela Biblioteca de Mídia.' );
 
 	dco_admin_section_title( 'Informações de controle' );
 	dco_admin_readonly_info( 'E-mail confirmado', get_post_meta( $post->ID, 'dco_email_confirmado', true ) ? 'Sim' : 'Não' );
@@ -125,18 +139,16 @@ function dco_save_metabox_curriculo( $post_id ) {
 		}
 	}
 
-	if ( isset( $_POST['dco_curriculo_pdf'] ) ) {
-		$novo_attachment_id = (int) $_POST['dco_curriculo_pdf'];
-		$atual_attachment_id = (int) get_post_meta( $post_id, 'dco_curriculo_pdf', true );
-		if ( $novo_attachment_id > 0 && $novo_attachment_id !== $atual_attachment_id ) {
-			$resultado = dco_validar_e_proteger_pdf( $novo_attachment_id );
-			if ( is_wp_error( $resultado ) ) {
-				set_transient( 'dco_erro_pdf_' . $post_id, $resultado->get_error_message(), 60 );
-			} else {
-				update_post_meta( $post_id, 'dco_curriculo_pdf', $novo_attachment_id );
+	if ( ! empty( $_FILES['dco_curriculo_pdf_arquivo']['name'] ) ) {
+		$resultado = dco_processar_upload_pdf( $_FILES['dco_curriculo_pdf_arquivo'] );
+		if ( is_wp_error( $resultado ) ) {
+			set_transient( 'dco_erro_pdf_' . $post_id, $resultado->get_error_message(), 60 );
+		} else {
+			$arquivo_anterior = get_post_meta( $post_id, 'dco_curriculo_pdf', true );
+			update_post_meta( $post_id, 'dco_curriculo_pdf', $resultado );
+			if ( $arquivo_anterior && $arquivo_anterior !== $resultado ) {
+				dco_excluir_pdf_protegido( $arquivo_anterior );
 			}
-		} elseif ( $novo_attachment_id === 0 ) {
-			delete_post_meta( $post_id, 'dco_curriculo_pdf' );
 		}
 	}
 
@@ -160,44 +172,20 @@ function dco_admin_notice_erro_pdf() {
 }
 
 /**
- * Valida o arquivo enviado (extensão REAL do conteúdo, não só o nome, via
- * wp_check_filetype_and_ext — que confere o tipo verdadeiro do arquivo; e
- * tamanho máximo de 5 MB) e, se válido, move fisicamente o arquivo da pasta
- * pública de uploads para a pasta protegida (fora de listagem/execução
- * direta — ver dco_garantir_pasta_protegida() no arquivo principal do
- * plugin). O anexo é marcado como privado para não aparecer em nenhuma
- * consulta pública de mídia do WordPress.
+ * Exclusão PERMANENTE (não a lixeira — "Esvaziar lixeira" ou exclusão direta
+ * via API) de um currículo também remove o PDF físico da pasta protegida,
+ * para nunca deixar um arquivo órfão sem dono para sempre. Suspender,
+ * expirar ou mover para a lixeira NUNCA apaga o arquivo — só a exclusão
+ * definitiva, e só o arquivo DESTE post específico (nunca afeta outro
+ * currículo).
  */
-function dco_validar_e_proteger_pdf( $attachment_id ) {
-	$caminho_atual = get_attached_file( $attachment_id );
-	if ( ! $caminho_atual || ! file_exists( $caminho_atual ) ) {
-		return new WP_Error( 'dco_arquivo_ausente', 'o arquivo enviado não foi encontrado no servidor.' );
+add_action( 'before_delete_post', 'dco_limpar_arquivo_ao_excluir_curriculo' );
+function dco_limpar_arquivo_ao_excluir_curriculo( $post_id ) {
+	if ( get_post_type( $post_id ) !== 'dco_curriculo' ) {
+		return;
 	}
-
-	$tamanho_maximo = 5 * MB_IN_BYTES;
-	if ( filesize( $caminho_atual ) > $tamanho_maximo ) {
-		wp_delete_attachment( $attachment_id, true );
-		return new WP_Error( 'dco_arquivo_grande', 'o arquivo excede o limite de 5 MB.' );
+	$arquivo = get_post_meta( $post_id, 'dco_curriculo_pdf', true );
+	if ( $arquivo ) {
+		dco_excluir_pdf_protegido( $arquivo );
 	}
-
-	$checagem = wp_check_filetype_and_ext( $caminho_atual, wp_basename( $caminho_atual ) );
-	if ( empty( $checagem['ext'] ) || strtolower( $checagem['ext'] ) !== 'pdf' || $checagem['type'] !== 'application/pdf' ) {
-		wp_delete_attachment( $attachment_id, true );
-		return new WP_Error( 'dco_tipo_invalido', 'o arquivo não é um PDF válido (o conteúdo real do arquivo foi conferido, não só o nome).' );
-	}
-
-	$pasta_protegida = dco_pasta_protegida_path();
-	$nome_final      = 'curriculo-' . $attachment_id . '-' . wp_generate_password( 12, false, false ) . '.pdf';
-	$destino         = trailingslashit( $pasta_protegida ) . $nome_final;
-
-	if ( ! @rename( $caminho_atual, $destino ) ) {
-		return new WP_Error( 'dco_mover_falhou', 'não foi possível mover o arquivo para o armazenamento protegido.' );
-	}
-
-	update_attached_file( $attachment_id, $destino );
-	wp_update_post( array( 'ID' => $attachment_id, 'post_status' => 'private' ) );
-	// Remove qualquer metadado de tamanhos/derivados (não se aplica a PDF, mas evita URLs públicas residuais).
-	delete_post_meta( $attachment_id, '_wp_attachment_metadata' );
-
-	return true;
 }
