@@ -1,13 +1,14 @@
 <?php
 /**
  * Template Name: Para Oficinas
- * Reproduz fielmente a página Para Oficinas aprovada da V1.
  *
- * Página temporariamente fora do ar para reformulação (ver Configurações
- * Descomplicarro → GI CONECTA → "Página Para Oficinas"). Nada do conteúdo
- * abaixo foi apagado ou alterado — reativar é só marcar a caixa e salvar.
- * Administradores logados continuam vendo a página normalmente, para poder
- * revisar o conteúdo antes de reativá-la ao público.
+ * NOVO POSICIONAMENTO (ver briefing "ATUALIZAÇÃO DO TEMA E IMPLEMENTAÇÃO DE
+ * NOVAS FUNCIONALIDADES"): a página passa a apresentar o ecossistema de
+ * empresas e profissionais parceiros do DESCOMPLICARRO. Todo o conteúdo
+ * anterior (treinamentos autorais, Mecânico Que Lucra, QR Car, GI CONECTA
+ * na versão antiga) foi preservado integralmente, só OCULTO — ver o bloco
+ * "CONTEÚDO ANTERIOR" no fim deste arquivo. Reativar: marcar
+ * "Exibir conteúdo anterior (treinamentos)" no metabox desta página e salvar.
  */
 if ( ! dc_oficinas_pagina_ativa() && ! current_user_can( 'edit_pages' ) ) {
 	global $wp_query;
@@ -31,6 +32,169 @@ if ( ! dc_oficinas_pagina_ativa() && ! current_user_can( 'edit_pages' ) ) {
 
 get_header();
 
+// N.02 — Ecossistema: parceiros publicados, na ordem definida em "Atributos da página".
+$parceiros_query = new WP_Query( array(
+	'post_type'           => 'dc_parceiro',
+	'post_status'         => 'publish',
+	'posts_per_page'      => -1,
+	'orderby'             => 'menu_order title',
+	'order'               => 'ASC',
+	'ignore_sticky_posts' => true,
+) );
+$parceiros = $parceiros_query->posts;
+wp_reset_postdata();
+
+// N.03 — Conhecimento Técnico: as 3 matérias mais recentes da editoria Técnica.
+$tecnica_termo   = get_category_by_slug( 'tecnica' );
+$tecnica_posts   = array();
+$tecnica_url     = home_url( '/em-foco/tecnica' );
+if ( $tecnica_termo ) {
+	$tecnica_url   = get_category_link( $tecnica_termo );
+	$tecnica_query = new WP_Query( array(
+		'posts_per_page'      => 3,
+		'cat'                 => $tecnica_termo->term_id,
+		'ignore_sticky_posts' => true,
+	) );
+	$tecnica_posts = $tecnica_query->posts;
+	wp_reset_postdata();
+}
+?>
+
+  <!-- N.00 — ABERTURA -->
+  <section class="section section--abertura section--graphite" aria-labelledby="oficinas-novo-heading">
+    <div class="container section--abertura__inner">
+      <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>ABERTURA</span></div>
+      <div class="abertura__content">
+        <h1 id="oficinas-novo-heading" class="abertura__heading"><?php dc_text( 'dc_oficinas_novo_titulo', 'Uma oficina de excelência vai muito além da técnica.' ); ?></h1>
+        <?php
+        dc_paragraphs_lines( 'dc_oficinas_novo_texto', array(
+          'Administrar uma oficina mecânica exige conhecimento técnico, gestão, estratégia comercial, segurança jurídica, organização financeira e um bom relacionamento com o cliente.',
+          'O DESCOMPLICARRO conecta você a empresas e profissionais que conhecemos, em cujo trabalho confiamos e que contribuem para o desenvolvimento do setor automotivo.',
+          'Isso se apoia em três pilares: parcerias com empresas e profissionais de confiança, conexão com oportunidades reais de trabalho no setor automotivo e acesso a informação técnica que ajuda sua oficina a evoluir.',
+        ), null, 'abertura__paragraph' );
+        ?>
+      </div>
+    </div>
+  </section>
+
+  <!-- N.01 — NOSSO ECOSSISTEMA -->
+  <section class="section section--offwhite" aria-labelledby="ecossistema-heading">
+    <div class="container">
+      <div class="section-index"><span>N.01</span><span class="section-index__line"></span><span>NOSSO ECOSSISTEMA</span></div>
+      <div class="section-heading-row"><h2 id="ecossistema-heading" class="section-heading"><?php dc_text( 'dc_oficinas_ecossistema_titulo', 'Soluções para potencializar sua oficina.' ); ?></h2></div>
+
+      <?php if ( $parceiros ) : ?>
+      <div class="parceiros-grid">
+        <?php foreach ( $parceiros as $parceiro ) :
+          $logo_id  = (int) get_post_meta( $parceiro->ID, 'dc_parceiro_logotipo', true );
+          $logo_url = $logo_id ? wp_get_attachment_image_url( $logo_id, 'medium' ) : '';
+          $segmento = get_post_meta( $parceiro->ID, 'dc_parceiro_segmento', true );
+          $desc     = get_post_meta( $parceiro->ID, 'dc_parceiro_descricao', true );
+          $botao    = get_post_meta( $parceiro->ID, 'dc_parceiro_botao_label', true );
+          $url      = get_post_meta( $parceiro->ID, 'dc_parceiro_url', true );
+          ?>
+          <div class="parceiro-card">
+            <div class="parceiro-card__logo">
+              <?php if ( $logo_url ) : ?>
+                <img src="<?php echo esc_url( $logo_url ); ?>" alt="Logotipo — <?php echo esc_attr( get_the_title( $parceiro ) ); ?>" class="parceiro-card__logo-img">
+              <?php else : ?>
+                <span class="ad-slot__placeholder-text">LOGOTIPO — A CADASTRAR</span>
+              <?php endif; ?>
+            </div>
+            <div class="parceiro-card__body">
+              <?php if ( $segmento ) : ?><span class="parceiro-card__segmento"><?php echo esc_html( $segmento ); ?></span><?php endif; ?>
+              <h3 class="parceiro-card__nome"><?php echo esc_html( get_the_title( $parceiro ) ); ?></h3>
+              <?php if ( $desc ) : ?><p class="parceiro-card__desc"><?php echo esc_html( $desc ); ?></p><?php endif; ?>
+              <?php if ( $url ) : ?>
+                <div class="parceiro-card__cta">
+                  <a href="<?php echo esc_url( $url ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer" data-dc-event="partner_click" data-dc-parceiro="<?php echo esc_attr( $parceiro->ID ); ?>">
+                    <span class="btn-bracket__bracket" aria-hidden="true">[</span>
+                    <span class="btn-bracket__label"><?php echo esc_html( $botao ? $botao : 'CONHEÇA' ); ?></span>
+                    <span class="btn-bracket__bracket" aria-hidden="true">]</span>
+                  </a>
+                </div>
+              <?php endif; ?>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+      <?php else : ?>
+        <p class="perfil__text">Em breve, novos parceiros aparecerão aqui.</p>
+      <?php endif; ?>
+    </div>
+  </section>
+
+  <!-- N.02 — CONHECIMENTO TÉCNICO -->
+  <section class="section section--offwhite" aria-labelledby="oficinas-tecnica-heading">
+    <div class="container">
+      <div class="section-index"><span>N.02</span><span class="section-index__line"></span><span>CONHECIMENTO TÉCNICO</span></div>
+      <div class="section-heading-row"><h2 id="oficinas-tecnica-heading" class="section-heading"><?php dc_text( 'dc_oficinas_tecnica_titulo', 'Conhecimento que transforma a reparação.' ); ?></h2></div>
+      <div class="bloco-texto__col">
+        <?php dc_paragraphs_lines( 'dc_oficinas_tecnica_texto', array( 'Informações técnicas, diagnósticos, tecnologias, procedimentos e conteúdos desenvolvidos para quem vive a reparação automotiva.' ) ); ?>
+      </div>
+
+      <?php if ( $tecnica_posts ) : ?>
+      <div class="ultimas-grid">
+        <?php foreach ( $tecnica_posts as $post_item ) : dc_emfoco_card( $post_item ); endforeach; ?>
+      </div>
+      <?php else : ?>
+        <p class="perfil__text">Em breve, novas matérias em Técnica.</p>
+      <?php endif; ?>
+
+      <div class="section-cta">
+        <a href="<?php echo esc_url( $tecnica_url ); ?>" class="btn-bracket">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">ACESSE A EDITORIA TÉCNICA</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <?php if ( dc_section_active( 'dc_oficinas_ad_ativo' ) ) : ?>
+  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="oficinas-formacao">
+    <div class="container">
+      <?php dc_ad_slot_unit( 'dc_oficinas_ad', 'oficinas-formacao' ); ?>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <!-- N.03 — GI CONECTA -->
+  <section class="section section--gi-conecta-oficinas section--graphite" aria-labelledby="oficinas-gi-novo-heading">
+    <div class="container">
+      <div class="section-index section-index--on-dark"><span>N.03</span><span class="section-index__line"></span><span>GI CONECTA</span></div>
+      <div class="section-heading-row"><h2 id="oficinas-gi-novo-heading" class="section-heading section-heading--on-dark"><?php dc_text( 'dc_oficinas_gi_novo_titulo', 'Sua oficina leva a excelência a sério?' ); ?></h2></div>
+      <p class="abertura__paragraph"><?php dc_text( 'dc_oficinas_gi_novo_texto', 'Faça parte de uma rede que valoriza a transparência, a competência técnica e o respeito ao motorista.' ); ?></p>
+      <div class="solucao__cta">
+        <a href="<?php echo esc_url( dc_oficinas_credenciamento_url() ); ?>" class="btn-bracket btn-bracket--on-dark" target="_blank" rel="noopener noreferrer" data-dc-event="credenciamento_click" data-dc-origem="para-oficinas">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">CREDENCIE SUA OFICINA</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- N.04 — NOVAS PARCERIAS -->
+  <section class="section section--offwhite" aria-labelledby="oficinas-novas-parcerias-heading">
+    <div class="container">
+      <div class="section-index"><span>N.04</span><span class="section-index__line"></span><span>NOVAS PARCERIAS</span></div>
+      <div class="section-heading-row"><h2 id="oficinas-novas-parcerias-heading" class="section-heading"><?php dc_text( 'dc_oficinas_parcerias_titulo', 'Sua empresa contribui para a evolução do setor automotivo?' ); ?></h2></div>
+      <div class="bloco-texto__col">
+        <?php dc_paragraphs_lines( 'dc_oficinas_parcerias_texto', array( 'Queremos conhecer soluções que ajudem a construir um mercado de reparação mais profissional, eficiente e preparado para o futuro.' ) ); ?>
+      </div>
+      <div class="solucao__cta">
+        <a href="mailto:contato@descomplicarro.com.br" class="btn-bracket">
+          <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">SEJA NOSSO PARCEIRO</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+<?php if ( dc_section_active( 'dc_oficinas_treinamentos_ativo' ) ) : ?>
+<?php
+/* ==========================================================================
+   CONTEÚDO ANTERIOR (oculto por padrão) — treinamentos autorais, Mecânico
+   Que Lucra, QR Car e a versão antiga do bloco GI CONECTA. Nada aqui foi
+   apagado ou alterado; reativar é marcar "Exibir conteúdo anterior
+   (treinamentos)" no metabox desta página e salvar.
+   ========================================================================== */
 $formacao_padrao = array(
 	array( 'jornada_tag' => 'Evidenciar', 'titulo' => 'Checklist Vendedor', 'conceito' => 'Inspeção que gera evidências.',
 		'texto' => 'Um treinamento para ensinar o mecânico a realizar um checklist rápido e assertivo e utilizar recursos visuais e ferramentas lúdicas para produzir evidências e vídeos que ajudem o consultor no processo comercial.',
@@ -62,7 +226,7 @@ $ml_acessos = dc_repeater( 'dc_ml_acessos' );
 $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
 ?>
 
-  <!-- BLOCO N.00 — ABERTURA -->
+  <!-- BLOCO N.00 (antigo) — ABERTURA -->
   <section class="section section--abertura section--graphite" aria-labelledby="oficinas-heading">
     <div class="container section--abertura__inner">
       <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>ABERTURA</span></div>
@@ -171,14 +335,6 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
     </div>
   </section>
 
-  <?php if ( dc_section_active( 'dc_oficinas_ad_ativo' ) ) : ?>
-  <section class="ad-slot" aria-label="Espaço publicitário" data-ad-slot="oficinas-formacao">
-    <div class="container">
-      <?php dc_ad_slot_unit( 'dc_oficinas_ad', 'oficinas-formacao' ); ?>
-    </div>
-  </section>
-  <?php endif; ?>
-
   <!-- BLOCO N.03 — PACK DE PAPELARIA -->
   <section class="section section--pack section--graphite" aria-labelledby="pack-heading">
     <svg class="section-bg-graphic" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
@@ -222,7 +378,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
     </div>
   </section>
 
-  <!-- BLOCO N.04 — GI CONECTA (credenciamento) -->
+  <!-- BLOCO N.04 — GI CONECTA (credenciamento, versão antiga) -->
   <section class="section section--gi-conecta-oficinas section--offwhite" aria-labelledby="gi-conecta-oficinas-heading">
     <div class="container">
       <div class="section-index"><span>N.04</span><span class="section-index__line"></span><span>GI CONECTA</span></div>
@@ -247,7 +403,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
   </section>
 
   <?php if ( dc_section_active( 'dc_parceiros_ativo' ) ) : ?>
-  <!-- BLOCO N.05 — PARCEIROS EM QUE ACREDITAMOS -->
+  <!-- BLOCO N.05 — PARCEIROS EM QUE ACREDITAMOS (versão antiga) -->
   <section class="section section--parceiros section--offwhite" aria-labelledby="parceiros-heading">
     <svg class="section-bg-graphic" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
       <line x1="1200" y1="140" x2="740" y2="140" stroke="#252525" stroke-width="1" opacity="0.07"></line>
@@ -333,5 +489,7 @@ $ml_acessos = ! empty( $ml_acessos ) ? $ml_acessos : $ml_padrao;
       </div>
     </div>
   </section>
+
+<?php endif; // dc_oficinas_treinamentos_ativo ?>
 
 <?php get_footer(); ?>

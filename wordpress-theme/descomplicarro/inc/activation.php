@@ -122,6 +122,51 @@ function dc_ensure_experiencias_oculta_por_padrao() {
 	update_option( 'dc_experiencias_oculta_v2', 1 );
 }
 
+/**
+ * REESTRUTURAÇÃO PARA OFICINAS — o conteúdo anterior (treinamentos, Mecânico
+ * Que Lucra, QR Car, GI Conecta na versão antiga) foi preservado na íntegra
+ * em template-para-oficinas.php, mas deve começar OCULTO: a página agora
+ * mostra o novo ecossistema de parceiros por padrão. Mesmo cuidado já usado
+ * em dc_ensure_experiencias_oculta_por_padrao() — força o valor direto, sem
+ * checar "só se nunca foi definido", porque esse checkbox também é gravado
+ * a cada salvamento da página (marcado ou não).
+ */
+add_action( 'init', 'dc_ensure_oficinas_treinamentos_oculto_por_padrao', 20 );
+function dc_ensure_oficinas_treinamentos_oculto_por_padrao() {
+	if ( get_option( 'dc_oficinas_treinamentos_oculto_v1' ) ) {
+		return;
+	}
+	$pagina = get_page_by_path( 'para-oficinas' );
+	if ( $pagina ) {
+		update_post_meta( $pagina->ID, 'dc_oficinas_treinamentos_ativo', 0 );
+	}
+	update_option( 'dc_oficinas_treinamentos_oculto_v1', 1 );
+}
+
+/**
+ * REESTRUTURAÇÃO PARA OFICINAS — a página tinha sido tirada do menu/do ar
+ * temporariamente (ver dc_oficinas_pagina_ativa() em inc/helpers.php) para
+ * a reformulação pedida num ticket anterior. Com a reformulação pronta
+ * (reestruturação concluída acima), a página volta ao menu e ao público
+ * automaticamente ao atualizar o tema — não é preciso entrar em
+ * Configurações Descomplicarro e marcar a caixa manualmente.
+ *
+ * "oficinas_pagina_ativa" mora dentro do array da opção "dc_options", junto
+ * com outros dados (WhatsApp, e-mail, redes sociais etc.) — por isso lê o
+ * array inteiro, altera só essa chave e regrava o array completo, para
+ * nunca apagar nenhuma outra configuração já salva.
+ */
+add_action( 'init', 'dc_ensure_oficinas_pagina_reativada', 20 );
+function dc_ensure_oficinas_pagina_reativada() {
+	if ( get_option( 'dc_oficinas_pagina_reativada_v1' ) ) {
+		return;
+	}
+	$options = get_option( 'dc_options', array() );
+	$options['oficinas_pagina_ativa'] = 1;
+	update_option( 'dc_options', $options );
+	update_option( 'dc_oficinas_pagina_reativada_v1', 1 );
+}
+
 function dc_provision_menu( $ids ) {
 	$menu_name = 'Navegação Principal';
 	$menu_id   = 0;

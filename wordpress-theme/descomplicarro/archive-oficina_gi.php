@@ -113,7 +113,7 @@ if ( ! array_key_exists( $estado_atual, $uf_lista ) ) {
       <?php wp_reset_postdata(); ?>
 
       <div class="section-cta">
-        <a href="<?php echo esc_url( dc_oficinas_credenciamento_url() ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer">
+        <a href="<?php echo esc_url( dc_oficinas_credenciamento_url() ); ?>" class="btn-bracket" target="_blank" rel="noopener noreferrer" data-dc-event="credenciamento_click" data-dc-origem="gi-conecta-busca">
           <span class="btn-bracket__bracket" aria-hidden="true">[</span><span class="btn-bracket__label">QUERO CREDENCIAR MINHA OFICINA</span><span class="btn-bracket__bracket" aria-hidden="true">]</span>
         </a>
       </div>

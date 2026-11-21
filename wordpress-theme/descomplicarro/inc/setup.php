@@ -22,6 +22,20 @@ function dc_theme_setup() {
 	register_nav_menus( array(
 		'principal' => 'Navegação Principal (header)',
 	) );
+
+	/*
+	 * Tamanho dedicado para banners publicitários (padrão oficial: 1600×400,
+	 * proporção 4:1). O tamanho nativo "large" do WordPress é limitado a
+	 * 1024×1024 por padrão — um banner 1600×400 virava um arquivo de
+	 * 1024×256, menor que o espaço onde é exibido (até ~1200px de largura
+	 * no desktop), e o navegador esticava essa imagem pequena para caber,
+	 * perdendo nitidez. "dc_anuncio" nunca aumenta uma imagem menor que
+	 * 1600px (o terceiro parâmetro, false, só permite reduzir, nunca
+	 * cortar/ampliar) — usado exclusivamente pelo Gerenciador de
+	 * Publicidade (ver inc/cpt-campanhas.php e dc_ad_slot_unit() em
+	 * inc/helpers.php); nenhuma outra imagem do site usa este tamanho.
+	 */
+	add_image_size( 'dc_anuncio', 1600, 400, false );
 }
 
 /**
@@ -74,6 +88,18 @@ function dc_enqueue_front_assets() {
 	wp_enqueue_script(
 		'descomplicarro-main',
 		get_template_directory_uri() . '/assets/js/main.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		true
+	);
+
+	// Rastreamento (dataLayer/GTM) — ver inc/analytics.php e assets/js/dc-tracking.js.
+	// Carrega sempre (não só quando GA4/GTM estão ativos): mesmo sem nenhuma
+	// ferramenta ligada, os cliques já alimentam window.dataLayer, pronto
+	// para quando as integrações forem ativadas, sem precisar reativar o tema.
+	wp_enqueue_script(
+		'descomplicarro-tracking',
+		get_template_directory_uri() . '/assets/js/dc-tracking.js',
 		array(),
 		wp_get_theme()->get( 'Version' ),
 		true

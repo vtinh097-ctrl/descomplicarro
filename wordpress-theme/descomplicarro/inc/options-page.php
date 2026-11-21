@@ -56,6 +56,25 @@ function dc_sanitize_options( $input ) {
 	$clean['banner_institucional_url'] = isset( $input['banner_institucional_url'] ) ? esc_url_raw( wp_unslash( $input['banner_institucional_url'] ) ) : '';
 	$clean['banner_institucional_alt'] = isset( $input['banner_institucional_alt'] ) ? sanitize_text_field( wp_unslash( $input['banner_institucional_alt'] ) ) : '';
 
+	// Métricas e integrações — cada ID só é salvo se bater com o formato oficial da
+	// própria ferramenta; formato errado não é gravado (evita código "fictício").
+	$ga4 = isset( $input['ga4_id'] ) ? strtoupper( trim( wp_unslash( $input['ga4_id'] ) ) ) : '';
+	if ( $ga4 !== '' && ! preg_match( '/^G-[A-Z0-9]{6,}$/', $ga4 ) ) {
+		add_settings_error( 'dc_options', 'ga4_invalido', 'ID do Google Analytics 4 inválido (formato esperado: G-XXXXXXXXXX) — não foi salvo.' );
+		$ga4 = get_option( 'dc_options' )['ga4_id'] ?? '';
+	}
+	$clean['ga4_id'] = $ga4;
+
+	$gtm = isset( $input['gtm_id'] ) ? strtoupper( trim( wp_unslash( $input['gtm_id'] ) ) ) : '';
+	if ( $gtm !== '' && ! preg_match( '/^GTM-[A-Z0-9]{4,}$/', $gtm ) ) {
+		add_settings_error( 'dc_options', 'gtm_invalido', 'ID do Google Tag Manager inválido (formato esperado: GTM-XXXXXXX) — não foi salvo.' );
+		$gtm = get_option( 'dc_options' )['gtm_id'] ?? '';
+	}
+	$clean['gtm_id'] = $gtm;
+
+	$clean['gsc_verificacao'] = isset( $input['gsc_verificacao'] ) ? sanitize_text_field( wp_unslash( $input['gsc_verificacao'] ) ) : '';
+	$clean['metricas_ativo']  = isset( $input['metricas_ativo'] ) ? 1 : 0;
+
 	return $clean;
 }
 
@@ -158,6 +177,44 @@ function dc_render_options_page() {
 				</tr>
 			</table>
 			<p class="description">Enquanto nenhuma imagem for enviada aqui, os espaços sem campanha ativa mostram o placeholder "PUBLICIDADE — ESPAÇO RESERVADO", como sempre mostraram.</p>
+
+			<h2>Métricas e integrações</h2>
+			<p class="description">Preparação para Google Analytics 4, Google Tag Manager e Google Search Console. Enquanto os identificadores não forem preenchidos aqui, nada é carregado no site.</p>
+			<table class="form-table" role="presentation">
+				<tr>
+					<th><label for="dc_metricas_ativo">Status das integrações</label></th>
+					<td>
+						<label><input type="checkbox" id="dc_metricas_ativo" name="dc_options[metricas_ativo]" value="1" <?php checked( $get( 'metricas_ativo' ), 1 ); ?> /> Ativar GA4/GTM/GSC no site</label>
+						<p class="description">
+							<?php
+							$ga4_ok = (bool) $get( 'ga4_id' );
+							$gtm_ok = (bool) $get( 'gtm_id' );
+							if ( $ga4_ok || $gtm_ok ) {
+								echo 'Identificadores cadastrados: ' . esc_html( trim( ( $ga4_ok ? 'GA4 ' : '' ) . ( $gtm_ok ? 'GTM' : '' ) ) ) . '.';
+							} else {
+								echo 'Nenhum identificador cadastrado ainda — mesmo marcando esta caixa, nada é carregado enquanto os campos abaixo estiverem vazios.';
+							}
+							?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="dc_ga4_id">ID de medição do GA4</label></th>
+					<td><input type="text" id="dc_ga4_id" name="dc_options[ga4_id]" value="<?php echo esc_attr( $get( 'ga4_id' ) ); ?>" class="regular-text" placeholder="G-XXXXXXXXXX" /></td>
+				</tr>
+				<tr>
+					<th><label for="dc_gtm_id">ID do contêiner do GTM</label></th>
+					<td><input type="text" id="dc_gtm_id" name="dc_options[gtm_id]" value="<?php echo esc_attr( $get( 'gtm_id' ) ); ?>" class="regular-text" placeholder="GTM-XXXXXXX" /></td>
+				</tr>
+				<tr>
+					<th><label for="dc_gsc_verificacao">Código de verificação do Search Console</label></th>
+					<td>
+						<input type="text" id="dc_gsc_verificacao" name="dc_options[gsc_verificacao]" value="<?php echo esc_attr( $get( 'gsc_verificacao' ) ); ?>" class="regular-text" placeholder="conteúdo da metatag google-site-verification" />
+						<p class="description">Cole apenas o código (o conteúdo da tag <code>&lt;meta name="google-site-verification" content="..."&gt;</code> fornecida pelo Search Console) — a tag é montada automaticamente.</p>
+					</td>
+				</tr>
+			</table>
+			<p class="description">Importante: GA4 e GTM juntos só devem medir pageviews uma vez — ver instruções de configuração entregues junto com esta atualização para não duplicar eventos/visualizações.</p>
 
 			<?php submit_button( 'Salvar configurações' ); ?>
 		</form>

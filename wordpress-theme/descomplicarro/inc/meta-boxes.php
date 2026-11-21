@@ -365,8 +365,37 @@ function dc_render_meta_box_motoristas( $post ) {
    PARA OFICINAS
    ========================================================================== */
 function dc_render_meta_box_oficinas( $post ) {
-	dc_admin_section_title( 'N.00 — Abertura' );
-	dc_admin_text( $post, 'dc_oficinas_titulo', 'Título (H1)' );
+	dc_admin_section_title( 'N.00 (novo) — Abertura' );
+	dc_admin_text( $post, 'dc_oficinas_novo_titulo', 'Título (H1)' );
+	dc_admin_textarea( $post, 'dc_oficinas_novo_texto', 'Parágrafos (um por linha)', '', 3 );
+
+	dc_admin_section_title( 'N.01 (novo) — Nosso Ecossistema' );
+	dc_admin_text( $post, 'dc_oficinas_ecossistema_titulo', 'Título da seção' );
+	echo '<p style="color:#646970;">Os parceiros exibidos aqui são cadastrados em "Parceiros", no menu lateral do WordPress — não neste metabox.</p>';
+
+	dc_admin_section_title( 'N.02 (novo) — Conhecimento Técnico' );
+	dc_admin_text( $post, 'dc_oficinas_tecnica_titulo', 'Título da seção' );
+	dc_admin_textarea( $post, 'dc_oficinas_tecnica_texto', 'Parágrafo', '', 2 );
+	echo '<p style="color:#646970;">As matérias exibidas são as 3 mais recentes da editoria Técnica — atualiza sozinho, sem precisar editar aqui.</p>';
+
+	dc_admin_section_title( 'N.03 (novo) — GI Conecta' );
+	dc_admin_text( $post, 'dc_oficinas_gi_novo_titulo', 'Título da seção' );
+	dc_admin_textarea( $post, 'dc_oficinas_gi_novo_texto', 'Parágrafo', '', 2 );
+	echo '<p style="color:#646970;">O botão "CREDENCIE SUA OFICINA" usa o mesmo link de credenciamento configurado em Configurações Descomplicarro → GI CONECTA.</p>';
+
+	dc_admin_section_title( 'N.04 (novo) — Novas Parcerias' );
+	dc_admin_text( $post, 'dc_oficinas_parcerias_titulo', 'Título da seção' );
+	dc_admin_textarea( $post, 'dc_oficinas_parcerias_texto', 'Parágrafo', '', 2 );
+	echo '<p style="color:#646970;">O botão "SEJA NOSSO PARCEIRO" abre sempre contato@descomplicarro.com.br, conforme definido no projeto.</p>';
+
+	dc_admin_section_title( 'Espaço publicitário (após Conhecimento Técnico)' );
+	dc_admin_checkbox( $post, 'dc_oficinas_ad_ativo', 'Exibir este espaço publicitário' );
+	dc_admin_url( $post, 'dc_oficinas_ad_url', 'Link do anunciante' );
+	dc_admin_image( $post, 'dc_oficinas_ad_imagem', 'Imagem/banner' );
+
+	dc_admin_section_title( 'CONTEÚDO ANTERIOR — treinamentos (oculto por padrão)' );
+	dc_admin_checkbox( $post, 'dc_oficinas_treinamentos_ativo', 'Exibir conteúdo anterior (treinamentos, Mecânico Que Lucra, QR Car, GI Conecta antigo)', 'Nada deste conteúdo foi apagado — está todo preservado abaixo. Marque para reativá-lo; ele volta a aparecer no fim da página, depois das seções novas.' );
+	dc_admin_text( $post, 'dc_oficinas_titulo', 'Título (H1) — versão anterior' );
 	dc_admin_textarea( $post, 'dc_oficinas_paragrafos', 'Parágrafos', '', 4 );
 	dc_admin_textarea( $post, 'dc_oficinas_forte', 'Parágrafo de destaque', '', 2 );
 	dc_admin_image( $post, 'dc_oficinas_imagem', 'Imagem de abertura' );
@@ -419,13 +448,13 @@ function dc_render_meta_box_oficinas( $post ) {
 		'botao_url' => array( 'label' => 'URL comercial', 'type' => 'text' ),
 	) );
 
-	dc_admin_section_title( 'Espaço publicitário (após Formação)' );
-	dc_admin_checkbox( $post, 'dc_oficinas_ad_ativo', 'Exibir este espaço publicitário' );
-	dc_admin_url( $post, 'dc_oficinas_ad_url', 'Link do anunciante' );
-	dc_admin_image( $post, 'dc_oficinas_ad_imagem', 'Imagem/banner' );
-
 	dc_meta_box_footer(
-		array( 'dc_oficinas_titulo', 'dc_oficinas_paragrafos', 'dc_oficinas_forte',
+		array( 'dc_oficinas_novo_titulo', 'dc_oficinas_novo_texto',
+			'dc_oficinas_ecossistema_titulo',
+			'dc_oficinas_tecnica_titulo', 'dc_oficinas_tecnica_texto',
+			'dc_oficinas_gi_novo_titulo', 'dc_oficinas_gi_novo_texto',
+			'dc_oficinas_parcerias_titulo', 'dc_oficinas_parcerias_texto',
+			'dc_oficinas_titulo', 'dc_oficinas_paragrafos', 'dc_oficinas_forte',
 			'dc_oficinas_jornada_heading', 'dc_oficinas_jornada_texto', 'dc_oficinas_jornada_etapas',
 			'dc_pack_lead', 'dc_pack_texto', 'dc_pack_itens', 'dc_pack_botao_label',
 			'dc_oficinas_gi_texto', 'dc_oficinas_gi_botao_label',
@@ -433,7 +462,7 @@ function dc_render_meta_box_oficinas( $post ) {
 		),
 		array( 'dc_pack_botao_url', 'dc_oficinas_gi_botao_url', 'dc_qrcar_url', 'dc_oficinas_ad_url' ),
 		array( 'dc_oficinas_imagem', 'dc_qrcar_imagem', 'dc_ml_imagem', 'dc_oficinas_ad_imagem' ),
-		array( 'dc_parceiros_ativo', 'dc_oficinas_ad_ativo' ),
+		array( 'dc_parceiros_ativo', 'dc_oficinas_ad_ativo', 'dc_oficinas_treinamentos_ativo' ),
 		array( 'dc_oficinas_formacao', 'dc_ml_acessos' ),
 		array( 'dc_oficinas_imagem_legenda', 'dc_qrcar_imagem_legenda', 'dc_ml_imagem_legenda' )
 	);

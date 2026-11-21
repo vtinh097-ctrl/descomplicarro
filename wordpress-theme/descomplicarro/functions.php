@@ -19,4 +19,6 @@ require_once get_template_directory() . '/inc/options-page.php';
 require_once get_template_directory() . '/inc/meta-boxes.php';
 require_once get_template_directory() . '/inc/cpt-oficinas.php';
 require_once get_template_directory() . '/inc/cpt-campanhas.php';
+require_once get_template_directory() . '/inc/cpt-parceiros.php';
+require_once get_template_directory() . '/inc/analytics.php';
 require_once get_template_directory() . '/inc/activation.php';

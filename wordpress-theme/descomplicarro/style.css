@@ -2270,3 +2270,77 @@ button:focus-visible {
 @media (max-width: 900px) {
   .modalidades-grid { grid-template-columns: 1fr; }
 }
+
+/* --------------------------------------------------------------------------
+   51. PARA OFICINAS — ECOSSISTEMA DE PARCEIROS (reestruturação)
+   Novos estilos restritos a este bloco da página Para Oficinas — nenhuma
+   outra página é afetada. Mesmo nível de destaque visual para todos os
+   cards (nenhuma variante "em destaque"), conforme aprovado.
+   -------------------------------------------------------------------------- */
+.parceiros-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.parceiro-card {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-width) solid var(--color-graphite);
+  padding-top: var(--space-xs);
+}
+
+.parceiro-card__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-graphite-08);
+  overflow: hidden;
+}
+
+.parceiro-card__logo-img {
+  max-width: 70%;
+  max-height: 70%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.parceiro-card__body {
+  padding-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.parceiro-card__segmento {
+  font-family: var(--font-body);
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-orange);
+}
+
+.parceiro-card__nome {
+  font-size: 1.3rem;
+  margin-top: var(--space-2xs);
+}
+
+.parceiro-card__desc {
+  margin-top: var(--space-xs);
+  color: var(--color-graphite-70);
+  flex-grow: 1;
+}
+
+.parceiro-card__cta {
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 1024px) {
+  .parceiros-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .parceiros-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
+}

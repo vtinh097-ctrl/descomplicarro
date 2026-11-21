@@ -136,15 +136,14 @@ function dc_ad_slot_unit( $key_prefix, $posicao = null, $categoria_ids = array()
 	$anuncio = $posicao ? dc_resolver_anuncio( $posicao, $categoria_ids ) : null;
 
 	if ( ! $anuncio ) {
-		$post_id   = get_the_ID();
-		$image_id  = (int) get_post_meta( $post_id, "{$key_prefix}_imagem", true );
-		$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : false;
-		if ( $image_url ) {
+		$post_id  = get_the_ID();
+		$image_id = (int) get_post_meta( $post_id, "{$key_prefix}_imagem", true );
+		if ( $image_id && wp_attachment_is_image( $image_id ) ) {
 			$anuncio = array(
-				'imagem_url' => $image_url,
-				'href'       => dc_field_raw( "{$key_prefix}_url", '#', $post_id ) ?: '#',
-				'alt'        => 'Publicidade',
-				'nova_aba'   => false,
+				'imagem_id' => $image_id,
+				'href'      => dc_field_raw( "{$key_prefix}_url", '#', $post_id ) ?: '#',
+				'alt'       => 'Publicidade',
+				'nova_aba'  => false,
 			);
 		}
 	}
@@ -156,11 +155,43 @@ function dc_ad_slot_unit( $key_prefix, $posicao = null, $categoria_ids = array()
 	$href      = $anuncio ? ( $anuncio['href'] ?: '#' ) : '#';
 	$classes   = 'ad-slot__unit' . ( $anuncio ? ' ad-slot__unit--filled' : '' );
 	$target    = ( $anuncio && ! empty( $anuncio['nova_aba'] ) ) ? ' target="_blank" rel="noopener noreferrer"' : '';
-	echo '<a href="' . esc_url( $href ) . '" class="' . esc_attr( $classes ) . '"' . $target . '>';
+
+	/*
+	 * Identificadores para as métricas de publicidade (ver assets/js/dc-tracking.js
+	 * e inc/analytics.php) — câmpanha/anunciante/posição/página/editoria, nunca
+	 * só o texto do botão. "data-dc-campanha"/"data-dc-institucional" também
+	 * marcam o elemento para o observador de impressões (50% visível por 1s).
+	 */
+	$editoria_rotulo = '';
+	if ( ! empty( $categoria_ids ) ) {
+		$termo = get_category( reset( $categoria_ids ) );
+		$editoria_rotulo = $termo ? $termo->name : '';
+	}
+	$dados_rastreio = ' data-dc-event="ad_click" data-dc-posicao="' . esc_attr( (string) $posicao ) . '" data-dc-pagina="' . esc_attr( get_the_title() ) . '"';
+	if ( $editoria_rotulo ) {
+		$dados_rastreio .= ' data-dc-editoria="' . esc_attr( $editoria_rotulo ) . '"';
+	}
+	if ( $anuncio && ! empty( $anuncio['campanha_id'] ) ) {
+		$dados_rastreio .= ' data-dc-campanha="' . esc_attr( $anuncio['campanha_id'] ) . '" data-dc-anunciante="' . esc_attr( $anuncio['anunciante'] ) . '"';
+	} elseif ( $anuncio && ! empty( $anuncio['institucional'] ) ) {
+		$dados_rastreio .= ' data-dc-institucional="1"';
+	}
+
+	echo '<a href="' . esc_url( $href ) . '" class="' . esc_attr( $classes ) . '"' . $target . $dados_rastreio . '>';
 
 	if ( $anuncio ) {
 		echo '<span class="ad-slot__eyebrow">Publicidade</span>';
-		echo '<img src="' . esc_url( $anuncio['imagem_url'] ) . '" alt="' . esc_attr( $anuncio['alt'] ?: 'Publicidade' ) . '" class="ad-slot__image">';
+		/*
+		 * "dc_anuncio" (1600×400, registrado em inc/setup.php) no lugar de
+		 * "large" (limitado a 1024px) — é essa troca que corrige a perda de
+		 * nitidez dos banners. wp_get_attachment_image() também gera
+		 * srcset/sizes nativamente, então uma tela retina pode pedir uma
+		 * versão maior quando o arquivo original permitir.
+		 */
+		echo wp_get_attachment_image( $anuncio['imagem_id'], 'dc_anuncio', false, array(
+			'class' => 'ad-slot__image',
+			'alt'   => $anuncio['alt'] ?: 'Publicidade',
+		) );
 	} else {
 		echo '<span class="ad-slot__frame-mark ad-slot__frame-mark--tl" aria-hidden="true"></span>';
 		echo '<span class="ad-slot__eyebrow">Publicidade</span>';
@@ -387,7 +418,7 @@ function dc_emfoco_card( $post, $extra_class = '', $on_dark = false ) {
 	$classes      = 'emfoco-card' . ( $extra_class ? ' ' . $extra_class : '' );
 	$date_classes = 'emfoco-card__date' . ( $on_dark ? ' emfoco-card__date--on-dark' : '' );
 	?>
-	<a href="<?php echo esc_url( get_permalink( $post ) ); ?>" class="<?php echo esc_attr( $classes ); ?>">
+	<a href="<?php echo esc_url( get_permalink( $post ) ); ?>" class="<?php echo esc_attr( $classes ); ?>" data-dc-event="article_click" data-dc-materia="<?php echo esc_attr( $post->ID ); ?>" data-dc-editoria="<?php echo esc_attr( $categoria ); ?>">
 		<div class="emfoco-card__media">
 			<img src="<?php echo esc_url( $thumb ); ?>" alt="" class="emfoco-card__image">
 		</div>

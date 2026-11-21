@@ -479,16 +479,17 @@ function dc_resolver_anuncio( $posicao, $categoria_ids = array() ) {
 
 	$vencedora = $elegiveis[0];
 	$imagem_id = (int) get_post_meta( $vencedora->ID, 'dc_campanha_imagem', true );
-	$imagem_url = wp_get_attachment_image_url( $imagem_id, 'large' );
-	if ( ! $imagem_url ) {
+	if ( ! $imagem_id || ! wp_attachment_is_image( $imagem_id ) ) {
 		return null;
 	}
 
 	return array(
-		'imagem_url' => $imagem_url,
-		'href'       => dc_field_raw( 'dc_campanha_url', '#', $vencedora->ID ) ?: '#',
-		'alt'        => dc_field_raw( 'dc_campanha_alt', '', $vencedora->ID ),
-		'nova_aba'   => (bool) get_post_meta( $vencedora->ID, 'dc_campanha_nova_aba', true ),
+		'imagem_id'   => $imagem_id,
+		'href'        => dc_field_raw( 'dc_campanha_url', '#', $vencedora->ID ) ?: '#',
+		'alt'         => dc_field_raw( 'dc_campanha_alt', '', $vencedora->ID ),
+		'nova_aba'    => (bool) get_post_meta( $vencedora->ID, 'dc_campanha_nova_aba', true ),
+		'campanha_id' => $vencedora->ID,
+		'anunciante'  => dc_field_raw( 'dc_campanha_anunciante', '', $vencedora->ID ),
 	);
 }
 
@@ -500,11 +501,7 @@ function dc_resolver_anuncio( $posicao, $categoria_ids = array() ) {
  */
 function dc_banner_institucional() {
 	$imagem_id = (int) dc_option( 'banner_institucional_imagem', 0 );
-	if ( ! $imagem_id ) {
-		return null;
-	}
-	$imagem_url = wp_get_attachment_image_url( $imagem_id, 'large' );
-	if ( ! $imagem_url ) {
+	if ( ! $imagem_id || ! wp_attachment_is_image( $imagem_id ) ) {
 		return null;
 	}
 	$url = dc_option( 'banner_institucional_url', '' );
@@ -512,10 +509,11 @@ function dc_banner_institucional() {
 		$url = dc_whatsapp_link( 'Olá! Quero anunciar no DESCOMPLICARRO.' );
 	}
 	return array(
-		'imagem_url' => $imagem_url,
-		'href'       => $url,
-		'alt'        => dc_option( 'banner_institucional_alt', 'Divulgue sua marca aqui' ),
-		'nova_aba'   => true,
+		'imagem_id'      => $imagem_id,
+		'href'           => $url,
+		'alt'            => dc_option( 'banner_institucional_alt', 'Divulgue sua marca aqui' ),
+		'nova_aba'       => true,
+		'institucional'  => true,
 	);
 }
 
