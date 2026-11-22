@@ -15,7 +15,24 @@ O modelo visual (1 ou 2) é escolhido automaticamente pela editoria da
 matéria — ver `wordpress-plugins/descomplicarro-oportunidades/README.md`
 para a tabela completa e o que cada modelo exige.
 
-## Como usar (`gerar-por-link.php`)
+## Duas versões do gerador
+
+- **`gerar-por-link-sem-wp.php`** (recomendado para um projeto
+  independente deste repositório) — **não precisa de WordPress
+  nenhum**. Monta o mesmo "pacote" de conteúdo direto do HTML raspado do
+  link e chama as mesmas funções aprovadas de renderização/specs/legenda
+  sem nenhuma alteração nelas. Testado lado a lado com a versão abaixo:
+  produz os mesmos arquivos, pixel a pixel.
+- **`gerar-por-link.php`** — precisa de um WordPress local (variável
+  `DCO_WP_LOAD`), porque monta uma matéria-espelho de verdade antes de
+  gerar. Mantido porque é o caminho mais direto se este projeto algum
+  dia reativar a automação completa do WordPress (que exige um post de
+  verdade para o `wp_cron` disparar).
+
+As duas aceitam exatamente os mesmos argumentos e as mesmas flags —
+tudo abaixo vale para qualquer uma das duas.
+
+## Como usar
 
 ```
 php ferramentas/sob-demanda/gerar-por-link.php "<link-da-materia>" "<pasta-de-saida>"
@@ -46,22 +63,32 @@ informação, só não aproveita o ângulo editorial mais rico. (O Stories é
 sempre igual ao Modelo 1, qualquer que seja a editoria, então não tem
 flag própria.)
 
-## O que o script faz, por baixo
+## O que cada script faz, por baixo
 
-Reaproveita INTEGRALMENTE o gerador já aprovado do plugin
+Os dois reaproveitam INTEGRALMENTE o gerador já aprovado do plugin
 (`inc/editorial-selecao.php`, `inc/editorial-render.php`,
 `inc/editorial-render-modelo2.php`, `inc/editorial-gerador.php`,
 `inc/editorial-legenda.php`) — nenhum layout foi duplicado ou
-reconstruído. A única coisa nova é a ponte: buscar o HTML
-da matéria pelo link, montar uma matéria-espelho **local e nunca
-publicada** (status `draft`, então a automação de publicação do plugin
-nunca dispara) só para poder reaproveitar essas funções (que foram
-escritas para operar sobre uma matéria do WordPress), gerar os arquivos, e
-apagar a matéria-espelho e as imagens importadas no final — não acumula
-nada no banco local.
+reconstruído. Só muda a "ponte" entre o HTML raspado do link e essas
+funções:
 
-Precisa do WordPress local carregado (variável `DCO_WP_LOAD`, default
-`/home/user/wp-local/wp-load.php`).
+- **`gerar-por-link.php`**: monta uma matéria-espelho **local e nunca
+  publicada** (status `draft`, então a automação de publicação do plugin
+  nunca dispara) para poder chamar `dco_editorial_montar_pacote($post_id)`
+  e `dco_editorial_gerar_arquivos($post_id, ...)` sem alterá-las, gera os
+  arquivos, e apaga a matéria-espelho e as imagens importadas no final —
+  não acumula nada no banco local. Precisa do WordPress local carregado
+  (variável `DCO_WP_LOAD`, default `/home/user/wp-local/wp-load.php`).
+- **`gerar-por-link-sem-wp.php`**: monta o mesmo array `$pacote` (mesmas
+  chaves, mesmo formato) diretamente a partir do HTML raspado — sem post,
+  sem banco, sem biblioteca de mídia — e chama as funções de specs/
+  renderização/legenda uma por uma (sem passar por
+  `dco_editorial_gerar_arquivos()`, que espera um `$post_id`). Define
+  `ABSPATH` como uma constante qualquer só para satisfazer a guarda de
+  segurança padrão do WordPress que cada arquivo de `inc/` tem no topo
+  (`if (!defined('ABSPATH')) exit;`) — não é o WordPress de verdade, só
+  o suficiente para esses arquivos carregarem fora dele. Baixa as
+  imagens direto para uma pasta temporária do sistema e apaga ao final.
 
 ## Processo de cada pedido (lado do Claude)
 
