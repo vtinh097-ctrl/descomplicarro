@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DESCOMPLICARRO — Oportunidades Automotivas
  * Description: Banco de currículos e vagas do setor automotivo (autogestão por link mágico, sem senha), métricas simples de cliques e automação editorial — construído como plugin próprio para que os dados sobrevivam a trocas/atualizações do tema DESCOMPLICARRO. O tema cuida só da apresentação visual.
- * Version: 0.4.1
+ * Version: 0.5.0
  * Author: DESCOMPLICARRO
  * Text Domain: descomplicarro-oportunidades
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DCO_VERSION', '0.4.1' );
+define( 'DCO_VERSION', '0.5.0' );
 define( 'DCO_PLUGIN_FILE', __FILE__ );
 define( 'DCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -38,6 +38,16 @@ require_once DCO_PLUGIN_DIR . 'inc/limpeza.php';
 require_once DCO_PLUGIN_DIR . 'inc/metricas-db.php';
 require_once DCO_PLUGIN_DIR . 'inc/metricas-endpoint.php';
 require_once DCO_PLUGIN_DIR . 'inc/metricas-painel.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-campos.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-render.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-selecao.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-gerador.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-legenda.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-status-db.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-drive.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-email.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-cron.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-painel.php';
 
 register_activation_hook( __FILE__, 'dco_ativar_plugin' );
 /**
@@ -50,6 +60,7 @@ function dco_ativar_plugin() {
 	dco_garantir_pasta_protegida();
 	dco_garantir_capacidades();
 	dco_metricas_garantir_tabela();
+	dco_editorial_garantir_tabela();
 	// CPTs recém-registrados só valem depois de um flush de rewrite rules.
 	flush_rewrite_rules();
 }
