@@ -250,5 +250,13 @@ function dco_editorial_montar_pacote( $post_id ) {
 		'pool_imagens'    => dco_editorial_pool_imagens( $post_id ),
 		'itens'           => $itens,
 		'tags'            => wp_list_pluck( get_the_tags( $post_id ) ?: array(), 'name' ),
+		// Estrutura fixa "Entenda. Questione. Decida." do MODELO 2 (Técnica/
+		// Guias) — ver inc/editorial-render-modelo2.php. Campos aditivos:
+		// não mudam nada do que o Modelo 1 já lê deste pacote.
+		'm2_chamada'      => get_post_meta( $post_id, '_dco_m2_chamada', true ),
+		'm2_entenda'      => get_post_meta( $post_id, '_dco_m2_entenda', true ),
+		'm2_questione'    => get_post_meta( $post_id, '_dco_m2_questione', true ),
+		'm2_decida'       => get_post_meta( $post_id, '_dco_m2_decida', true ),
+		'm2_usar_foto'    => (bool) get_post_meta( $post_id, '_dco_m2_usar_foto', true ),
 	);
 }

@@ -37,6 +37,11 @@ function dco_editorial_hashtags_do_titulo( $titulo, $limite = 6 ) {
 	return $tags;
 }
 
+/** Remove os marcadores **destaque** do Modelo 2, mantendo só o texto. */
+function dco_editorial_remover_marcadores_destaque( $texto ) {
+	return trim( preg_replace( '/\*\*(.+?)\*\*/u', '$1', (string) $texto ) );
+}
+
 function dco_editorial_montar_legenda( array $pacote ) {
 	$linhas = array();
 
@@ -48,12 +53,28 @@ function dco_editorial_montar_legenda( array $pacote ) {
 		$linhas[] = '';
 	}
 
-	foreach ( array_slice( $pacote['itens'], 0, 4 ) as $item ) {
-		$trecho = trim( $item['titulo'] );
-		if ( ! empty( $item['texto'] ) ) {
-			$trecho .= ' — ' . trim( $item['texto'] );
+	// MODELO 2 (Técnica/Guias) usa a estrutura fixa "Entenda. Questione.
+	// Decida." — a legenda resume ESSE conteúdo, nunca o `itens` genérico
+	// (que pertence só ao caminho H2 do Modelo 1/comum e nem é usado na
+	// geração dos slides quando o Modelo 2 está ativo).
+	$usa_modelo2 = function_exists( 'dco_editorial_modelo_visual_da_categoria' )
+		&& 2 === dco_editorial_modelo_visual_da_categoria( $pacote['categoria_slug'] ?? '' );
+
+	if ( $usa_modelo2 ) {
+		$rotulos = array( 'm2_entenda' => 'Entenda', 'm2_questione' => 'Questione', 'm2_decida' => 'Decida' );
+		foreach ( $rotulos as $chave => $rotulo ) {
+			if ( ! empty( $pacote[ $chave ] ) ) {
+				$linhas[] = $rotulo . ': ' . dco_editorial_remover_marcadores_destaque( $pacote[ $chave ] );
+			}
 		}
-		$linhas[] = $trecho;
+	} else {
+		foreach ( array_slice( $pacote['itens'], 0, 4 ) as $item ) {
+			$trecho = trim( $item['titulo'] );
+			if ( ! empty( $item['texto'] ) ) {
+				$trecho .= ' — ' . trim( $item['texto'] );
+			}
+			$linhas[] = $trecho;
+		}
 	}
 	$linhas[] = '';
 

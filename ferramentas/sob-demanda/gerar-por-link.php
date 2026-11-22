@@ -25,9 +25,19 @@
  *      acumulando no banco local).
  *
  * Uso: php gerar-por-link.php "<url-da-materia>" "<pasta-de-saida>"
- *      [--destaques="linha1|linha2|linha3"]   (Reviews, opcional)
- *      [--educativo="linha1|linha2|linha3"]   (Técnica/Guias, opcional)
- *      [--gancho="frase do ângulo editorial"] (Técnica/Guias, opcional)
+ *      [--destaques="linha1|linha2|linha3"]    (Reviews — Modelo 1, opcional)
+ *
+ *      MODELO 2 (Técnica/Guias) — estrutura fixa "Entenda. Questione.
+ *      Decida.", sempre 5 slides. Cada bloco é escrito a partir do
+ *      conteúdo real da matéria, nunca inventado:
+ *      [--chamada="chamada forte da capa"]     (opcional — sem isso, usa o título real)
+ *      [--entenda="explicação técnica..."]
+ *      [--questione="reflexão ou dúvida..."]
+ *      [--decida="orientação prática..."]
+ *      [--usarfoto=1]                          (opcional — Modelo 2 não usa foto por padrão)
+ *
+ *      Dentro de --chamada/--entenda/--questione/--decida, **palavra** ou
+ *      **trecho** destaca esse trecho em laranja no slide.
  */
 
 if ( PHP_SAPI !== 'cli' ) {
@@ -193,6 +203,21 @@ if ( ! empty( $opcoes['educativo'] ) ) {
 }
 if ( ! empty( $opcoes['gancho'] ) ) {
 	update_post_meta( $post_id, '_dco_edu_gancho', $opcoes['gancho'] );
+}
+
+// MODELO 2 — estrutura fixa "Entenda. Questione. Decida." (Técnica/Guias).
+// Cada bloco é escrito a partir do conteúdo real da matéria, nunca
+// inventado — ver ferramentas/sob-demanda/README.md.
+if ( ! empty( $opcoes['chamada'] ) ) {
+	update_post_meta( $post_id, '_dco_m2_chamada', $opcoes['chamada'] );
+}
+foreach ( array( 'entenda', 'questione', 'decida' ) as $secao ) {
+	if ( ! empty( $opcoes[ $secao ] ) ) {
+		update_post_meta( $post_id, '_dco_m2_' . $secao, $opcoes[ $secao ] );
+	}
+}
+if ( ! empty( $opcoes['usarfoto'] ) ) {
+	update_post_meta( $post_id, '_dco_m2_usar_foto', '1' );
 }
 
 // ---------------------------------------------------------------------

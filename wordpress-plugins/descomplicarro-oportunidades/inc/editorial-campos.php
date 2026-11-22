@@ -46,12 +46,18 @@ function dco_editorial_render_metabox( $post ) {
 	echo '<p style="color:#646970;margin-top:-4px;">Usado no carrossel/Stories quando a matéria é da editoria Reviews. Escreva fatos reais e já verificados — a automação nunca completa nem corrige um dado técnico sozinha.</p>';
 	dco_editorial_campo_linhas_textarea( $post, '_dco_destaques_veiculo', 'Destaques do veículo', 'Ex.: "0–100 km/h em 7,2 segundos", "943 litros de caçamba"', 6 );
 
-	dco_admin_section_title( 'Técnica e Guias — conteúdo educativo do carrossel' );
-	echo '<p style="color:#646970;margin-top:-4px;">Usado quando a matéria é da editoria Técnica ou Guias, para fugir de um carrossel que só repete os parágrafos da matéria. Sem preenchimento, a automação usa os subtítulos da própria matéria.</p>';
-	dco_admin_text( $post, '_dco_edu_gancho', 'Gancho principal do carrossel', 'Uma frase que resuma o ângulo editorial (ex.: "3 mitos sobre troca de óleo que ainda enganam motorista")' );
-	dco_editorial_campo_linhas_textarea( $post, '_dco_edu_curiosidades', 'Curiosidades / informações complementares', 'Fatos reais que não precisam estar no corpo da matéria', 6 );
-	dco_editorial_campo_linhas_textarea( $post, '_dco_edu_perguntas_mitos', 'Perguntas, mitos ou explicações', 'Ex.: "Mito: óleo mais grosso protege mais o motor"', 6 );
-	dco_editorial_campo_linhas_textarea( $post, '_dco_edu_frases', 'Frases de destaque', 'Frases curtas e diretas para usar como título de slide', 4 );
+	dco_admin_section_title( 'Técnica e Guias — "Entenda. Questione. Decida."' );
+	echo '<p style="color:#646970;margin-top:-4px;">Usado quando a matéria é da editoria Técnica ou Guias — carrossel de 5 slides fixos (capa, Entenda, Questione, Decida, CTA). Escreva cada bloco a partir do que a matéria já diz — nunca invente dado técnico ou recomendação. Dentro do texto, <code>**palavra**</code> destaca esse trecho em laranja no slide.</p>';
+	dco_admin_text( $post, '_dco_m2_chamada', 'Chamada da capa (opcional)', 'Sem preencher, usa o título da matéria' );
+	dco_admin_textarea( $post, '_dco_m2_entenda', 'Entenda — explicação técnica acessível', 'O que é e por que acontece, em linguagem simples' );
+	dco_admin_textarea( $post, '_dco_m2_questione', 'Questione — reflexão, dúvida ou quebra de percepção', 'Uma pergunta ou mito relacionado ao assunto' );
+	dco_admin_textarea( $post, '_dco_m2_decida', 'Decida — orientação prática', 'O que o leitor deve observar ou fazer a respeito' );
+	dco_admin_field_wrap_start( 'Usar fotografia na capa', 'Por padrão o Modelo 2 não usa foto — prioridade é a composição tipográfica' );
+	printf(
+		'<label><input type="checkbox" name="_dco_m2_usar_foto" value="1" %s /> usar a imagem destacada da matéria na capa</label>',
+		checked( get_post_meta( $post->ID, '_dco_m2_usar_foto', true ), '1', false )
+	);
+	dco_admin_field_wrap_end();
 }
 
 add_action( 'save_post', 'dco_editorial_salvar_campos' );
@@ -66,7 +72,7 @@ function dco_editorial_salvar_campos( $post_id ) {
 		return;
 	}
 
-	dco_salvar_campos_texto( $post_id, array( '_dco_edu_gancho' ) );
+	dco_salvar_campos_texto( $post_id, array( '_dco_edu_gancho', '_dco_m2_chamada' ) );
 
 	foreach ( array( '_dco_destaques_veiculo', '_dco_edu_curiosidades', '_dco_edu_perguntas_mitos', '_dco_edu_frases' ) as $key ) {
 		if ( ! isset( $_POST[ $key ] ) ) {
@@ -81,4 +87,11 @@ function dco_editorial_salvar_campos( $post_id ) {
 			delete_post_meta( $post_id, $key );
 		}
 	}
+
+	// MODELO 2 — "Entenda. Questione. Decida." (Técnica/Guias): cada bloco
+	// é um parágrafo livre (com marcadores **destaque** opcionais), não
+	// uma lista de linhas — por isso usa textarea, não
+	// dco_editorial_campo_linhas_textarea().
+	dco_salvar_campos_textarea( $post_id, array( '_dco_m2_entenda', '_dco_m2_questione', '_dco_m2_decida' ) );
+	update_post_meta( $post_id, '_dco_m2_usar_foto', isset( $_POST['_dco_m2_usar_foto'] ) ? '1' : '' );
 }
