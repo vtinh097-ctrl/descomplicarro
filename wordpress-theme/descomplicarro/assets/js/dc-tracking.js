@@ -58,12 +58,29 @@
     navigation_click: 'navegacao',
   };
 
+  /**
+   * Primeira camada contra clique repetido/acidental: um clique duplo ou um
+   * toque que dispara duas vezes no mesmo elemento (comum em celular) não
+   * deve virar dois registros. Guarda só a ASSINATURA do último evento + o
+   * instante, em memória (nunca em localStorage/cookie — não precisa
+   * sobreviver a um recarregamento de página, e assim some sozinho).
+   */
+  var DCO_JANELA_DEBOUNCE_MS = 1500;
+  var dcoUltimoEvento = { assinatura: '', quando: 0 };
+
   function dcEnviarParaMetricasNativas(eventName, params) {
     if (typeof dcoMetricas === 'undefined' || !dcoMetricas.ajaxUrl) return;
 
     var area = DCO_AREA_POR_EVENTO[eventName] || 'geral';
     var identificador =
       params.campanha_id || params.materia || params.origem || params.button_id || params.destino || '';
+
+    var assinatura = eventName + '|' + identificador;
+    var agora = Date.now();
+    if (assinatura === dcoUltimoEvento.assinatura && agora - dcoUltimoEvento.quando < DCO_JANELA_DEBOUNCE_MS) {
+      return; // mesmo evento, mesmo item, clique duplo/repique — não conta de novo.
+    }
+    dcoUltimoEvento = { assinatura: assinatura, quando: agora };
 
     var corpo = new URLSearchParams({
       action: 'dco_metricas_registrar_clique',
