@@ -40,6 +40,7 @@ require_once DCO_PLUGIN_DIR . 'inc/metricas-endpoint.php';
 require_once DCO_PLUGIN_DIR . 'inc/metricas-painel.php';
 require_once DCO_PLUGIN_DIR . 'inc/editorial-campos.php';
 require_once DCO_PLUGIN_DIR . 'inc/editorial-render.php';
+require_once DCO_PLUGIN_DIR . 'inc/editorial-render-modelo2.php';
 require_once DCO_PLUGIN_DIR . 'inc/editorial-selecao.php';
 require_once DCO_PLUGIN_DIR . 'inc/editorial-gerador.php';
 require_once DCO_PLUGIN_DIR . 'inc/editorial-legenda.php';

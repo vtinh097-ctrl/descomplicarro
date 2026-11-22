@@ -85,6 +85,17 @@ function dco_editorial_specs_stories( array $pacote ) {
 }
 
 /**
+ * Qual modelo visual usar, SÓ pela editoria da matéria — nunca por
+ * escolha manual. MODELO 1 (Editorial Fotográfico, intacto desde a
+ * aprovação) para Notícias/Reviews/Bastidores/qualquer outra; MODELO 2
+ * (Educativo e Técnico) só para Técnica e Guias. Ver
+ * inc/editorial-render-modelo2.php para o porquê e as regras do Modelo 2.
+ */
+function dco_editorial_modelo_visual_da_categoria( $categoria_slug ) {
+	return in_array( $categoria_slug, array( 'tecnica', 'guias' ), true ) ? 2 : 1;
+}
+
+/**
  * Gera todos os arquivos (carrossel + Stories) de uma matéria dentro de
  * $pasta_destino/{carrossel,stories}/ — pasta de trabalho temporária,
  * apagada depois do upload ao Drive (ver inc/editorial-cron.php).
@@ -92,6 +103,17 @@ function dco_editorial_specs_stories( array $pacote ) {
  */
 function dco_editorial_gerar_arquivos( $post_id, $pasta_destino ) {
 	$pacote = dco_editorial_montar_pacote( $post_id );
+	$modelo = dco_editorial_modelo_visual_da_categoria( $pacote['categoria_slug'] );
+
+	if ( 2 === $modelo ) {
+		$specs_carrossel = dco_editorial_specs_carrossel_modelo2( $pacote );
+		$specs_stories   = dco_editorial_specs_stories_modelo2( $pacote );
+		$funcao_renderizar = 'dco_editorial_renderizar_slide_modelo2';
+	} else {
+		$specs_carrossel = dco_editorial_specs_carrossel( $pacote );
+		$specs_stories   = dco_editorial_specs_stories( $pacote );
+		$funcao_renderizar = 'dco_editorial_renderizar_slide';
+	}
 
 	$pasta_carrossel = trailingslashit( $pasta_destino ) . 'carrossel';
 	$pasta_stories   = trailingslashit( $pasta_destino ) . 'stories';
@@ -99,23 +121,24 @@ function dco_editorial_gerar_arquivos( $post_id, $pasta_destino ) {
 	wp_mkdir_p( $pasta_stories );
 
 	$arquivos_carrossel = array();
-	foreach ( dco_editorial_specs_carrossel( $pacote ) as $spec ) {
+	foreach ( $specs_carrossel as $spec ) {
 		$caminho = trailingslashit( $pasta_carrossel ) . sprintf( '%02d-%s.png', $spec['numero'], $spec['tipo'] );
-		if ( dco_editorial_renderizar_slide( $spec, $caminho ) ) {
+		if ( call_user_func( $funcao_renderizar, $spec, $caminho ) ) {
 			$arquivos_carrossel[] = $caminho;
 		}
 	}
 
 	$arquivos_stories = array();
-	foreach ( dco_editorial_specs_stories( $pacote ) as $i => $spec ) {
+	foreach ( $specs_stories as $i => $spec ) {
 		$caminho = trailingslashit( $pasta_stories ) . sprintf( '%02d-%s.png', $i + 1, $spec['tipo'] );
-		if ( dco_editorial_renderizar_slide( $spec, $caminho ) ) {
+		if ( call_user_func( $funcao_renderizar, $spec, $caminho ) ) {
 			$arquivos_stories[] = $caminho;
 		}
 	}
 
 	return array(
 		'pacote'    => $pacote,
+		'modelo'    => $modelo,
 		'carrossel' => $arquivos_carrossel,
 		'stories'   => $arquivos_stories,
 	);
