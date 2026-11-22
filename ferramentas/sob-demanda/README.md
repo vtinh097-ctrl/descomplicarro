@@ -11,31 +11,48 @@ A automação completa (`inc/editorial-cron.php`, `editorial-drive.php`,
 preservada e intacta** no plugin, para uma eventual ativação futura — só
 não é usada neste fluxo.
 
+O modelo visual (1 ou 2) é escolhido automaticamente pela editoria da
+matéria — ver `wordpress-plugins/descomplicarro-oportunidades/README.md`
+para a tabela completa e o que cada modelo exige.
+
 ## Como usar (`gerar-por-link.php`)
 
 ```
 php ferramentas/sob-demanda/gerar-por-link.php "<link-da-materia>" "<pasta-de-saida>"
 ```
 
-Opcional, para Reviews (destaques do veículo) ou Técnica/Guias (ângulo
-educativo), quando o cliente já mandar esse conteúdo junto do link:
+Opcional, para Reviews (Modelo 1 — destaques do veículo):
 
 ```
 --destaques="0 a 100 em 7,2s|943 litros de caçamba|Consumo 8,3/13,2 km/l"
---educativo="Mito: óleo mais grosso protege mais|Curiosidade real X"
---gancho="3 mitos sobre troca de óleo que ainda enganam motorista"
+```
+
+Opcional, para Técnica/Guias (Modelo 2 — estrutura fixa "Entenda.
+Questione. Decida.", sempre 5 slides no carrossel). Cada bloco é escrito
+a partir do conteúdo real da matéria, nunca inventado; `**trecho**`
+destaca esse trecho em laranja no slide:
+
+```
+--chamada="chamada forte da capa"        (opcional — sem isso, usa o título real)
+--entenda="explicação técnica acessível, com **destaques** pontuais"
+--questione="reflexão, dúvida ou quebra de percepção relacionada ao tema"
+--decida="orientação prática pra decidir algo a respeito"
+--usarfoto=1                              (opcional — Modelo 2 não usa foto por padrão)
 ```
 
 Sem essas opções, a matéria usa o caminho comum (subtítulos H2 + parágrafo)
 mesmo sendo Reviews ou Técnica/Guias — o que é seguro e nunca inventa
-informação, só não aproveita o ângulo editorial mais rico.
+informação, só não aproveita o ângulo editorial mais rico. (O Stories é
+sempre igual ao Modelo 1, qualquer que seja a editoria, então não tem
+flag própria.)
 
 ## O que o script faz, por baixo
 
 Reaproveita INTEGRALMENTE o gerador já aprovado do plugin
 (`inc/editorial-selecao.php`, `inc/editorial-render.php`,
-`inc/editorial-gerador.php`, `inc/editorial-legenda.php`) — nenhum layout
-foi duplicado ou reconstruído. A única coisa nova é a ponte: buscar o HTML
+`inc/editorial-render-modelo2.php`, `inc/editorial-gerador.php`,
+`inc/editorial-legenda.php`) — nenhum layout foi duplicado ou
+reconstruído. A única coisa nova é a ponte: buscar o HTML
 da matéria pelo link, montar uma matéria-espelho **local e nunca
 publicada** (status `draft`, então a automação de publicação do plugin
 nunca dispara) só para poder reaproveitar essas funções (que foram
@@ -52,8 +69,9 @@ Precisa do WordPress local carregado (variável `DCO_WP_LOAD`, default
 2. Roda `gerar-por-link.php` com o link.
 3. Confere os arquivos gerados (visualmente, antes de entregar).
 4. Para Reviews ou Técnica/Guias sem campos preenchidos: se o conteúdo da
-   matéria permitir, considerar extrair manualmente 3–6 destaques reais
-   (nunca inventados) e rodar de novo com `--destaques`/`--educativo`,
-   como já demonstrado nas entregas anteriores (Ford Maverick, guia de
-   óleo de teste).
+   matéria permitir, considerar curar manualmente o conteúdo real
+   (destaques reais em Reviews; Entenda/Questione/Decida em Técnica/Guias
+   — nunca inventados) e rodar de novo com `--destaques` ou
+   `--chamada`/`--entenda`/`--questione`/`--decida`, como já demonstrado
+   nas entregas anteriores (Ford Maverick, guia de altitude).
 5. Entrega os arquivos (carrossel, Stories, legenda) prontos para baixar.
