@@ -105,15 +105,19 @@ function dco_editorial_gerar_arquivos( $post_id, $pasta_destino ) {
 	$pacote = dco_editorial_montar_pacote( $post_id );
 	$modelo = dco_editorial_modelo_visual_da_categoria( $pacote['categoria_slug'] );
 
+	// O Stories é IGUAL em Técnica/Guias e nas demais editorias — usa
+	// sempre as funções do Modelo 1 (foto + "LEIA A MATÉRIA COMPLETA" +
+	// seta, com espaço reservado pro link), por pedido explícito. Só o
+	// carrossel muda de modelo visual por editoria.
 	if ( 2 === $modelo ) {
-		$specs_carrossel = dco_editorial_specs_carrossel_modelo2( $pacote );
-		$specs_stories   = dco_editorial_specs_stories_modelo2( $pacote );
-		$funcao_renderizar = 'dco_editorial_renderizar_slide_modelo2';
+		$specs_carrossel    = dco_editorial_specs_carrossel_modelo2( $pacote );
+		$funcao_carrossel   = 'dco_editorial_renderizar_slide_modelo2';
 	} else {
-		$specs_carrossel = dco_editorial_specs_carrossel( $pacote );
-		$specs_stories   = dco_editorial_specs_stories( $pacote );
-		$funcao_renderizar = 'dco_editorial_renderizar_slide';
+		$specs_carrossel    = dco_editorial_specs_carrossel( $pacote );
+		$funcao_carrossel   = 'dco_editorial_renderizar_slide';
 	}
+	$specs_stories  = dco_editorial_specs_stories( $pacote );
+	$funcao_stories = 'dco_editorial_renderizar_slide';
 
 	$pasta_carrossel = trailingslashit( $pasta_destino ) . 'carrossel';
 	$pasta_stories   = trailingslashit( $pasta_destino ) . 'stories';
@@ -123,7 +127,7 @@ function dco_editorial_gerar_arquivos( $post_id, $pasta_destino ) {
 	$arquivos_carrossel = array();
 	foreach ( $specs_carrossel as $spec ) {
 		$caminho = trailingslashit( $pasta_carrossel ) . sprintf( '%02d-%s.png', $spec['numero'], $spec['tipo'] );
-		if ( call_user_func( $funcao_renderizar, $spec, $caminho ) ) {
+		if ( call_user_func( $funcao_carrossel, $spec, $caminho ) ) {
 			$arquivos_carrossel[] = $caminho;
 		}
 	}
@@ -131,7 +135,7 @@ function dco_editorial_gerar_arquivos( $post_id, $pasta_destino ) {
 	$arquivos_stories = array();
 	foreach ( $specs_stories as $i => $spec ) {
 		$caminho = trailingslashit( $pasta_stories ) . sprintf( '%02d-%s.png', $i + 1, $spec['tipo'] );
-		if ( call_user_func( $funcao_renderizar, $spec, $caminho ) ) {
+		if ( call_user_func( $funcao_stories, $spec, $caminho ) ) {
 			$arquivos_stories[] = $caminho;
 		}
 	}

@@ -250,50 +250,6 @@ function dco_editorial_renderizar_slide_modelo2( array $spec, $caminho_destino )
 		return true;
 	}
 
-	if ( 'unico' === $secao ) {
-		$y = 72;
-		if ( ! empty( $spec['eyebrow'] ) ) {
-			dco_editorial_desenhar_eyebrow( $im, $spec['eyebrow'], $pad_x, $y, $laranja );
-			$y += 56;
-		}
-		if ( ! empty( $spec['foto'] ) ) {
-			$alt_foto = (int) round( $h * 0.28 );
-			dco_editorial_compor_foto_cover( $im, $spec['foto'], 0, 0, $w, $alt_foto );
-			imagefilledrectangle( $im, 0, $alt_foto, $w, $alt_foto + 6, $laranja );
-			$y = $alt_foto + 60;
-		}
-
-		$zona_topo = $y;
-
-		$tam_titulo = 52;
-		$alt_linha  = (int) round( $tam_titulo * 1.18 );
-		$y         += $alt_linha;
-		$y_apos_titulo = dco_editorial_m2_desenhar_texto_destacado( $im, $spec['titulo'] ?? '', $fonte_display, $tam_titulo, $offwhite, $laranja, $pad_x, $y, $w - $pad_x * 2, $alt_linha );
-		$y            += $y_apos_titulo;
-
-		if ( ! empty( $spec['texto'] ) ) {
-			$y += 28;
-			$tam_dek       = 28;
-			$alt_linha_dek = (int) round( $tam_dek * 1.5 );
-			$y_apos_dek    = dco_editorial_m2_desenhar_texto_destacado( $im, $spec['texto'], $fonte_corpo, $tam_dek, $offwhite_70, $laranja, $pad_x, $y, $w - $pad_x * 2, $alt_linha_dek );
-			$y            += $y_apos_dek;
-		}
-
-		// "LEIA A MATÉRIA COMPLETA" + seta — mesmo convite do Stories do
-		// Modelo 1. Abaixo dela fica de propósito em branco (sem elemento
-		// nenhum até o rodapé): é o espaço reservado pra colar o link da
-		// matéria (figurinha de link do Instagram) na hora de postar.
-		$y_cta = $y + 72;
-		dco_editorial_m2_barra_lateral( $im, $pad_x - 26, $zona_topo, $y_cta - 30, $laranja );
-		dco_editorial_desenhar_paragrafo_centralizado( $im, 'LEIA A MATÉRIA COMPLETA', $fonte_display, 24, $laranja, $centro_x, $y_cta, $w - $pad_x * 2, 30 );
-		imagettftext( $im, 34, 0, $centro_x - 12, $y_cta + 56, $laranja, $fonte_display, '↓' );
-
-		dco_editorial_m2_marca_rodape( $im, $w, $h, null, null );
-		imagepng( $im, $caminho_destino );
-		imagedestroy( $im );
-		return true;
-	}
-
 	// entenda | questione | decida
 	$rotulos = array( 'entenda' => 'Entenda', 'questione' => 'Questione', 'decida' => 'Decida' );
 	$y = 72;
@@ -347,25 +303,9 @@ function dco_editorial_specs_carrossel_modelo2( array $pacote ) {
 }
 
 /**
- * O Stories do Modelo 2 é um único frame — não espelha os 5 slides do
- * carrossel. Reúne a chamada da capa (o gancho) com o convite "LEIA A
- * MATÉRIA COMPLETA" + seta (mesmo convite já usado no Stories do Modelo
- * 1), deixando espaço reservado abaixo pra colar o link da matéria ao
- * postar.
+ * O Stories do Modelo 2 é IGUAL ao do Modelo 1 — por pedido explícito, usa
+ * sempre dco_editorial_specs_stories()/dco_editorial_renderizar_slide()
+ * (inc/editorial-render.php), mesmo em Técnica/Guias. Só o carrossel tem
+ * composição própria do Modelo 2. Ver o dispatch em
+ * inc/editorial-gerador.php:dco_editorial_gerar_arquivos().
  */
-function dco_editorial_specs_stories_modelo2( array $pacote ) {
-	$foto = dco_editorial_imagem_para_indice( $pacote['pool_imagens'], 0 );
-	return array(
-		array(
-			'secao'   => 'unico',
-			'tipo'    => 'unico',
-			'formato' => 'stories',
-			'eyebrow' => $pacote['categoria_label'],
-			'titulo'  => $pacote['m2_chamada'] ?: $pacote['titulo'],
-			'texto'   => $pacote['subtitulo'],
-			'foto'    => ! empty( $pacote['m2_usar_foto'] ) ? $foto : null,
-			'numero'  => 1,
-			'total'   => null,
-		),
-	);
-}
