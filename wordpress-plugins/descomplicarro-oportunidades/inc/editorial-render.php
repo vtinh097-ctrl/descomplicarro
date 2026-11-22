@@ -119,6 +119,21 @@ function dco_editorial_desenhar_paragrafo_centralizado( $im, $texto, $fonte, $ta
 	return count( $linhas ) * $altura_linha;
 }
 
+/**
+ * Uma linha de texto maiúsculo com espaçamento entre letras (estilo
+ * "eyebrow"), centralizada em torno de $centro_x — SEM passar pela
+ * quebra de linha por palavra, porque o espaço fino (U+2009) usado para
+ * simular o letter-spacing é tratado como espaço em branco pelo quebrador
+ * de linha, o que faz a palavra seguinte colar na anterior (bug já visto
+ * e corrigido: "MATÉRIA COMPLETA" virava "MATÉRIACOMPLETA").
+ */
+function dco_editorial_desenhar_eyebrow_centralizado( $im, $texto, $fonte, $tamanho, $cor, $centro_x, $y ) {
+	$espacado = implode( "\xE2\x80\x89", mb_str_split( mb_strtoupper( $texto ) ) );
+	$bbox     = imagettfbbox( $tamanho, 0, $fonte, $espacado );
+	$largura  = abs( $bbox[2] - $bbox[0] );
+	imagettftext( $im, $tamanho, 0, (int) round( $centro_x - $largura / 2 ), $y, $cor, $fonte, $espacado );
+}
+
 /** Desenha um parágrafo quebrado em linhas; devolve a altura total ocupada. */
 function dco_editorial_desenhar_paragrafo( $im, $texto, $fonte, $tamanho, $cor, $x, $y, $max_width, $altura_linha, $max_linhas = 0 ) {
 	$linhas = dco_editorial_quebrar_linhas( $texto, $fonte, $tamanho, $max_width );
@@ -241,8 +256,7 @@ function dco_editorial_renderizar_slide( array $spec, $caminho_destino ) {
 		$centro_x     = (int) round( $w / 2 );
 		$max_texto    = $w - $pad_x * 2 - 80;
 		$cy           = (int) round( $h * 0.46 );
-		$eyebrow_cta = implode( "\xE2\x80\x89", mb_str_split( mb_strtoupper( $spec['eyebrow'] ?? 'Matéria completa' ) ) );
-		dco_editorial_desenhar_paragrafo_centralizado( $im, $eyebrow_cta, $fonte_display, 18, $laranja, $centro_x, $cy - 70, $max_texto, 26 );
+		dco_editorial_desenhar_eyebrow_centralizado( $im, $spec['eyebrow'] ?? 'Matéria completa', $fonte_display, 18, $laranja, $centro_x, $cy - 70 );
 		$alt = dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['titulo'] ?? '', $fonte_display, 30, $offwhite_txt, $centro_x, $cy, $max_texto, 42 );
 		dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['dominio'] ?? 'descomplicarro.com.br', $fonte_display, 22, $laranja, $centro_x, $cy + $alt + 36, $max_texto, 30 );
 		if ( 'carrossel' === $formato ) {
