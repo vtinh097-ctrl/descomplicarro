@@ -238,10 +238,12 @@ function dco_editorial_renderizar_slide_modelo2( array $spec, $caminho_destino )
 	}
 
 	if ( 'cta' === $secao ) {
-		$tam_eyebrow_y = (int) round( $h * 0.40 );
-		dco_editorial_desenhar_eyebrow_centralizado( $im, $spec['eyebrow'] ?? 'Matéria completa', $fonte_display, 18, $laranja, $centro_x, $tam_eyebrow_y );
-		$alt = dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['titulo'] ?? 'Leia a matéria completa', $fonte_display, 36, $offwhite, $centro_x, $tam_eyebrow_y + 50, $w - $pad_x * 2 - 40, 46 );
-		dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['texto'] ?? 'descomplicarro.com.br', $fonte_display, 26, $laranja, $centro_x, $tam_eyebrow_y + 50 + $alt + 34, $w - $pad_x * 2, 32 );
+		$y0 = (int) round( $h * 0.38 );
+		$alt_pergunta = dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['titulo'] ?? 'Quer saber mais sobre esse assunto?', $fonte_display, 38, $offwhite, $centro_x, $y0, $w - $pad_x * 2 - 40, 48 );
+		$y1 = $y0 + $alt_pergunta + 34;
+		$alt_leia = dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['texto'] ?? 'Leia a matéria completa em', $fonte_corpo, 26, $offwhite_70, $centro_x, $y1, $w - $pad_x * 2, 34 );
+		$y2 = $y1 + $alt_leia + 18;
+		dco_editorial_desenhar_paragrafo_centralizado( $im, $spec['site'] ?? 'descomplicarro.com.br', $fonte_display, 30, $laranja, $centro_x, $y2, $w - $pad_x * 2, 36 );
 		dco_editorial_m2_marca_rodape( $im, $w, $h, $spec['numero'] ?? null, $spec['total'] ?? null );
 		imagepng( $im, $caminho_destino );
 		imagedestroy( $im );
@@ -286,7 +288,7 @@ function dco_editorial_specs_modelo2( array $pacote, $formato ) {
 		array( 'secao' => 'entenda', 'texto' => $pacote['m2_entenda'] ?? '', 'numero' => 2 ),
 		array( 'secao' => 'questione', 'texto' => $pacote['m2_questione'] ?? '', 'numero' => 3 ),
 		array( 'secao' => 'decida', 'texto' => $pacote['m2_decida'] ?? '', 'numero' => 4 ),
-		array( 'secao' => 'cta', 'eyebrow' => 'Matéria completa', 'titulo' => 'Leia a matéria completa em', 'texto' => 'descomplicarro.com.br', 'numero' => 5 ),
+		array( 'secao' => 'cta', 'titulo' => 'Quer saber mais sobre esse assunto?', 'texto' => 'Leia a matéria completa em', 'site' => 'descomplicarro.com.br', 'numero' => 5 ),
 	);
 	foreach ( $specs as &$spec ) {
 		$spec['formato'] = $formato;
