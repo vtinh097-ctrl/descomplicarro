@@ -1,0 +1,117 @@
+{
+  "versao": "0.1",
+  "status": "rascunho — aguardando validação com material real (ver references/padroes-aprovados.md)",
+
+  "marca": {
+    "grafite": "#252525",
+    "offwhite": "#F4F1EA",
+    "laranja": "#C65A32",
+    "fonte_titulo": "Space Grotesk",
+    "fonte_texto": "DM Sans"
+  },
+
+  "video": {
+    "largura": 1080,
+    "altura": 1920,
+    "fps": 30,
+    "fps_aceitos_da_origem": [23.976, 24, 25, 29.97, 30],
+    "codec": "libx264",
+    "preset": "slow",
+    "crf": 17,
+    "perfil": "high",
+    "nivel": "4.1",
+    "pix_fmt": "yuv420p",
+    "maxrate": "16M",
+    "bufsize": "32M",
+    "gop_segundos": 2,
+    "ampliacao_max_alerta": 1.25,
+    "ampliacao_max_bloqueio": 2.0
+  },
+
+  "audio": {
+    "taxa": 48000,
+    "canais": 2,
+    "bitrate": "192k",
+    "lufs_alvo": -14.0,
+    "lufs_tolerancia": 1.0,
+    "true_peak_max": -1.5,
+    "lra_alvo": 11,
+    "fade_corte_ms": 12,
+    "voz": {
+      "passa_altas_hz": 80,
+      "reducao_ruido": "auto",
+      "reducao_ruido_niveis": { "leve": 6, "media": 10, "forte": 16 },
+      "deesser": "auto",
+      "compressor": { "threshold_db": -21, "ratio": 2.5, "attack_ms": 8, "release_ms": 150, "makeup_db": 2 },
+      "eq_auto": true
+    },
+    "musica": {
+      "volume_db": -22,
+      "ducking": true,
+      "ducking_ratio": 6,
+      "ducking_threshold": 0.03,
+      "fade_in_s": 0.8,
+      "fade_out_s": 1.5
+    }
+  },
+
+  "zonas_seguras": {
+    "_nota": "Áreas ocupadas pela interface do Reels em 1080x1920. Valores iniciais conservadores; validar com captura de tela real do Instagram antes de aprovar.",
+    "topo": 220,
+    "base": 440,
+    "esquerda": 60,
+    "direita": 150,
+    "coluna_icones_y_inicio": 980
+  },
+
+  "legendas": {
+    "fonte": "DM Sans",
+    "arquivo_fonte": "DMSans-Bold.ttf",
+    "negrito": true,
+    "tamanho": 66,
+    "cor": "#F4F1EA",
+    "cor_destaque": "#C65A32",
+    "contorno_cor": "#252525",
+    "contorno_px": 5,
+    "sombra_px": 2,
+    "sombra_alfa": 0.55,
+    "margem_esquerda": 90,
+    "margem_direita": 150,
+    "base_y": 1400,
+    "entrelinha": 1.12,
+    "max_linhas": 2,
+    "largura_max_px": 820,
+    "max_caracteres_bloco": 42,
+    "min_duracao_s": 0.7,
+    "max_duracao_s": 3.2,
+    "cps_ideal": 17,
+    "max_cps": 21,
+    "pausa_quebra_s": 0.28,
+    "fade_entrada_ms": 60,
+    "fade_saida_ms": 0,
+    "caixa_alta": false,
+    "palavras_fracas_fim_de_linha": ["a", "o", "as", "os", "e", "é", "de", "da", "do", "das", "dos", "em", "no", "na", "nos", "nas", "um", "uma", "que", "com", "por", "pra", "para", "se", "ao", "à", "seu", "sua", "mais", "mas", "ou", "como"]
+  },
+
+  "graficos": {
+    "titulo": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 78, "caixa_alta": true, "y_topo": 330, "caixa_alfa": 0.12, "padding": 22 },
+    "dado": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 160, "tamanho_rotulo": 48, "y_centro": 760 },
+    "termo": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 68, "tamanho_apoio": 46, "y_topo": 330 },
+    "rotulo": { "fonte": "DM Sans 14pt SemiBold", "negrito": false, "tamanho": 54, "tamanho_apoio": 40, "y_base": 1060 },
+    "capitulo": { "fonte": "Space Grotesk Medium", "tamanho": 48, "y_topo": 250 },
+    "cartela_final": { "assinatura": "ENTENDA. QUESTIONE. DECIDA.", "tamanho": 96, "tamanho_cta": 52 },
+    "fade_ms": 150
+  },
+
+  "qa": {
+    "black_pix_th": 0.05,
+    "black_min_s": 0.12,
+    "freeze_ruido": 0.0008,
+    "freeze_min_s": 1.5,
+    "silencio_db": -45,
+    "silencio_min_s": 0.9,
+    "tolerancia_duracao_s": 0.12,
+    "tolerancia_av_s": 0.06,
+    "tolerancia_sync_ms": 25
+  }
+}

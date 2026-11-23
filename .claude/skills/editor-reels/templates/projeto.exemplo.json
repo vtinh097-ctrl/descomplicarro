@@ -1,0 +1,43 @@
+{
+  "projeto": "oleo-mais-caro",
+  "saida": "saida/v1.mp4",
+  "legendas": "legendas.json",
+  "fontes": { "A": "brutos/A.mp4" },
+  "transcricoes": { "A": "trans/A.json" },
+
+  "segmentos": [
+    { "id": "S01", "fonte": "A", "in": 7.88, "out": 10.44, "nota": "FAGULHA — take 3 (mais firme)",
+      "enquadramento": { "modo": "recortar", "zoom": 1.0, "x": 0.5, "y": 0.45 } },
+    { "id": "S02", "fonte": "A", "in": 12.22, "out": 15.86, "nota": "AFIRMAÇÃO",
+      "enquadramento": { "zoom": 1.0, "x": 0.5, "y": 0.45 } },
+    { "id": "S03", "fonte": "A", "in": 21.68, "out": 25.46, "nota": "RESSALVA — punch-in para ênfase",
+      "enquadramento": { "zoom": 1.15, "x": 0.5, "y": 0.42 }, "ganho_db": 1.0 },
+    { "id": "S04", "fonte": "A", "in": 30.43, "out": 35.75, "nota": "REFORÇO + CTA",
+      "enquadramento": { "zoom": 1.0, "x": 0.5, "y": 0.45 } }
+  ],
+
+  "broll": [
+    { "arquivo": "broll/manual.mp4", "inicio": 4.4, "duracao": 1.8, "src_in": 1.0, "fade": 0.15,
+      "origem": "gravação própria", "enquadramento": { "zoom": 1.0 } },
+    { "arquivo": "broll/print-especificacao.png", "inicio": 6.5, "duracao": 2.0,
+      "origem": "manual do fabricante — uso editorial", "enquadramento": { "modo": "encaixar" } }
+  ],
+
+  "graficos": [
+    { "tipo": "titulo", "texto": "O óleo mais caro pode ser o errado.", "destaques": ["ERRADO"], "inicio": 0.0, "fim": 2.5 },
+    { "tipo": "termo", "termo": "Especificação", "explicacao": "a norma de óleo indicada no manual", "inicio": 2.7, "fim": 5.6 },
+    { "tipo": "dado", "valor": "2 fatores", "rotulo": "tipo de motor e quilometragem", "destaques": ["2"], "inicio": 6.4, "fim": 9.6 },
+    { "tipo": "rotulo", "texto": "Vitor Lima", "apoio": "DESCOMPLICARRO", "inicio": 10.0, "fim": 13.0 },
+    { "tipo": "cartela_final", "cta": "Salva pra lembrar na próxima troca", "inicio": 15.4, "fim": 17.2 }
+  ],
+  "destaques_globais": ["manual"],
+  "cauda_s": 1.8,
+
+  "audio": { "reducao_ruido": "auto", "deesser": "auto" },
+  "musica": null,
+
+  "exportacao": { "fps": 30 },
+  "historico": [
+    { "versao": "v1", "data": "AAAA-MM-DD", "ajustes": "primeira versão de teste" }
+  ]
+}

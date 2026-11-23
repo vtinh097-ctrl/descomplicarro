@@ -1,0 +1,355 @@
+#!/usr/bin/env python3
+"""Renderiza o Reel a partir do projeto.json (EDL).
+
+Uso: python3 scripts/render.py projeto.json [--rascunho] [--forcar]
+
+Passos:
+ 1. valida legendas/gráficos (captions lint) — aborta em FALHA (salvo --forcar);
+ 2. gera build/legendas.ass;
+ 3. passo 1: monta segmentos (reenquadramento 9:16, punch-in, fades, B-roll, textos) e
+    trata a voz (passa-altas, ruído, EQ, de-esser, compressor) + música autorizada → master .mov;
+ 4. passo 2: mede loudness do master;
+ 5. passo 3: ganho linear até o alvo + limitador de pico (4x) → MP4 H.264/AAC com faststart;
+    mede o arquivo final e corrige o ganho uma vez se necessário.
+Registra tudo em build/render_log.json. Depois rode SEMPRE scripts/qa.py.
+"""
+import argparse
+import sys
+import time
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rl_common import (FONTS_DIR, audio_profile, die, hex_to_ffmpeg, load_project, loudness,  # noqa: E402
+                       media_info, need, resolve, run, save_json, voice_recommendation)
+import captions  # noqa: E402
+
+IMG_EXT = {".png", ".jpg", ".jpeg", ".webp"}
+
+
+def fps_str(fps):
+    for nominal, frac in ((29.97, "30000/1001"), (23.976, "24000/1001"), (59.94, "60000/1001")):
+        if abs(fps - nominal) < 0.01:
+            return frac
+    return f"{fps:g}"
+
+
+def crop_expr(info, W, H, enq, warn, label, cfg):
+    """Retorna filtro de reenquadramento para 9:16 (recortar|encaixar) + fator de ampliação."""
+    v = info["video"]
+    sw, sh = v["largura"], v["altura"]
+    modo = enq.get("modo", "recortar")
+    zoom = float(enq.get("zoom", 1.0))
+    if modo == "encaixar":
+        # imagem inteira, centrada sobre fundo grafite (telas, prints, B-roll horizontal)
+        y = enq.get("y_px")
+        scale_w = round(W * zoom / 2) * 2
+        f = (f"scale={scale_w}:-2:flags=lanczos,pad={W}:{H}:(ow-iw)/2:"
+             f"{y if y is not None else '(oh-ih)/2'}:color={hex_to_ffmpeg(cfg['marca']['grafite'])}")
+        return f, scale_w / sw
+    target = W / H
+    if sw / sh > target:
+        ch, cw = sh, sh * target
+    else:
+        cw, ch = sw, sw / target
+    cw, ch = cw / zoom, ch / zoom
+    cw, ch = int(cw) // 2 * 2, int(ch) // 2 * 2
+    cx, cy = float(enq.get("x", 0.5)) * sw, float(enq.get("y", 0.5)) * sh
+    x0 = int(min(max(0, cx - cw / 2), sw - cw))
+    y0 = int(min(max(0, cy - ch / 2), sh - ch))
+    amp = W / cw
+    vc = cfg["video"]
+    if amp > vc["ampliacao_max_bloqueio"]:
+        warn(f"{label}: ampliação {amp:.2f}x acima do limite ({vc['ampliacao_max_bloqueio']}x) — "
+             "perda grave de nitidez; reduzir zoom ou usar 'encaixar'")
+    elif amp > vc["ampliacao_max_alerta"]:
+        warn(f"{label}: ampliação {amp:.2f}x — imagem perde nitidez")
+    return f"crop={cw}:{ch}:{x0}:{y0},scale={W}:{H}:flags=lanczos", amp
+
+
+def color_filters(seg, info):
+    f = []
+    if info["video"]["hdr"]:
+        f.append("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,"
+                 "zscale=t=bt709:m=bt709:r=tv")
+    c = seg.get("cor") or {}
+    if c:
+        f.append(f"eq=brightness={c.get('brilho', 0)}:contrast={c.get('contraste', 1)}:"
+                 f"saturation={c.get('saturacao', 1)}:gamma={c.get('gama', 1)}")
+    return f
+
+
+def measure_latency(src, af, ss, rate=48000):
+    """Mede o atraso (amostras) que uma cadeia de filtros introduz, usando 6 s da própria fala."""
+    import subprocess
+    import numpy as np
+
+    def dec(extra):
+        p = subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", f"{ss:.3f}", "-t", "6",
+                            "-i", str(src), "-map", "0:a:0", "-ac", "1", "-ar", str(rate)] + extra +
+                           ["-f", "f32le", "-"], capture_output=True)
+        return np.frombuffer(p.stdout, np.float32)
+    ref, out = dec([]), dec(["-af", af])
+    n = min(ref.size, out.size)
+    if n < rate:
+        return 0
+    size = 1 << (2 * n - 1).bit_length()
+    corr = np.fft.irfft(np.fft.rfft(out[:n], size) * np.conj(np.fft.rfft(ref[:n], size)), size)
+    maxlag = int(0.1 * rate)
+    cand = np.concatenate([corr[:maxlag + 1], corr[-maxlag:]])
+    k = int(np.argmax(cand))
+    return k if k <= maxlag else k - len(cand)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("projeto")
+    ap.add_argument("--rascunho", action="store_true", help="encode rápido só para conferir montagem")
+    ap.add_argument("--forcar", action="store_true", help="renderiza mesmo com FALHA no lint")
+    args = ap.parse_args()
+    need("ffmpeg")
+    t0 = time.time()
+    proj = load_project(args.projeto)
+    cfg, base = proj["_cfg"], proj["_base"]
+    vc, ac = cfg["video"], cfg["audio"]
+    exp = proj.get("exportacao", {})
+    W, H = int(exp.get("largura", vc["largura"])), int(exp.get("altura", vc["altura"]))
+    fps = proj["_fps"]
+    SR = ac["taxa"]
+    build = base / "build"
+    build.mkdir(exist_ok=True)
+    warnings = []
+    warn = warnings.append
+
+    # 1-2. legendas e gráficos
+    issues = captions.cmd_lint(proj, args, quiet=True)
+    fails = [i for i in issues if i[0] == "FALHA"]
+    for lvl, where, msg in issues:
+        print(f"  lint {lvl:<6} {where:<14} {msg}")
+    if fails and not args.forcar:
+        die(f"{len(fails)} FALHA(s) no lint de legendas/gráficos — corrija ou use --forcar")
+    ass_path = captions.cmd_ass(proj, argparse.Namespace(out=str(build / "legendas.ass")))
+
+    # fontes
+    infos = {k: media_info(resolve(base, p)) for k, p in proj["fontes"].items()}
+    for k, inf in infos.items():
+        if not inf["video"]:
+            die(f"fonte {k} sem vídeo")
+        if not inf["audio"]:
+            die(f"fonte {k} sem áudio")
+        src_fps = inf["video"]["fps"] or fps
+        if abs(src_fps - fps) > 0.05 and not (abs(src_fps - 2 * fps) < 0.1):
+            warn(f"fonte {k} a {src_fps:.3f} fps → saída {fps:g} fps (conversão pode gerar leve cadência)")
+
+    inputs, fc = [], []
+    idx = 0
+    # 3a. segmentos
+    vlabels, alabels = [], []
+    fade_ms = ac["fade_corte_ms"] / 1000
+    gra = hex_to_ffmpeg(cfg["marca"]["grafite"])
+    for s in proj["segmentos"]:
+        src = resolve(base, proj["fontes"][s["fonte"]])
+        inf = infos[s["fonte"]]
+        inputs += ["-ss", f"{s['in']:.6f}", "-t", f"{s['_dur'] + 0.5:.6f}", "-i", str(src)]
+        crop, amp = crop_expr(inf, W, H, s.get("enquadramento", {}), warn, s["id"], cfg)
+        s["_ampliacao"] = round(amp, 2)
+        vf = color_filters(s, inf) + [
+            f"fps={fps_str(fps)}", crop, "setsar=1", f"trim=end_frame={s['_frames']}", "setpts=PTS-STARTPTS"]
+        if s.get("fade_entrada"):
+            vf.append(f"fade=t=in:st=0:d={s['fade_entrada']}:color={gra}")
+        if s.get("fade_saida"):
+            vf.append(f"fade=t=out:st={s['_dur'] - s['fade_saida']:.4f}:d={s['fade_saida']}:color={gra}")
+        vf.append("format=yuv420p")
+        fc.append(f"[{idx}:v:0]{','.join(vf)}[v{idx}]")
+        nsamp = round(s["_dur"] * SR)
+        af = [f"aresample={SR}", "aformat=channel_layouts=mono", f"atrim=end_sample={nsamp}",
+              f"apad=whole_len={nsamp}", "asetpts=PTS-STARTPTS"]
+        if s.get("ganho_db"):
+            af.append(f"volume={s['ganho_db']}dB")
+        fin = max(fade_ms, s.get("fade_entrada") or 0)
+        fout = max(fade_ms, s.get("fade_saida") or 0)
+        af += [f"afade=t=in:st=0:d={fin}", f"afade=t=out:st={s['_dur'] - fout:.5f}:d={fout}"]
+        fc.append(f"[{idx}:a:0]{','.join(af)}[a{idx}]")
+        vlabels.append(f"[v{idx}]")
+        alabels.append(f"[a{idx}]")
+        idx += 1
+    n = len(proj["segmentos"])
+    fc.append("".join(v + a for v, a in zip(vlabels, alabels)) + f"concat=n={n}:v=1:a=1[vcat0][acat0]")
+    if proj["_cauda_frames"]:
+        cd = proj["_cauda_frames"] / fps
+        fc.append(f"[vcat0]tpad=stop_mode=add:stop_duration={cd:.6f}:color={gra}[vcat]")
+        fc.append(f"[acat0]apad=pad_dur={cd:.6f}[acat]")
+    else:
+        fc.append("[vcat0]null[vcat]")
+        fc.append("[acat0]anull[acat]")
+
+    # 3b. B-roll
+    cur = "vcat"
+    amb = []
+    for j, b in enumerate(proj.get("broll", [])):
+        src = resolve(base, b["arquivo"])
+        if not src.exists():
+            die(f"B-roll não encontrado: {src}")
+        is_img = src.suffix.lower() in IMG_EXT
+        dur = float(b["duracao"])
+        if is_img:
+            inputs += ["-loop", "1", "-framerate", fps_str(fps), "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
+            binf = media_info(src)
+            binf["video"]["hdr"] = False
+        else:
+            inputs += ["-ss", f"{float(b.get('src_in', 0)):.3f}", "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
+            binf = media_info(src)
+        crop, amp = crop_expr(binf, W, H, b.get("enquadramento", {}), warn, f"B-roll {j + 1}", cfg)
+        nfr = round(dur * fps)
+        fd = float(b.get("fade", 0.15))
+        vf = color_filters(b, binf) + [f"fps={fps_str(fps)}", crop, "setsar=1", f"trim=end_frame={nfr}",
+                                       "setpts=PTS-STARTPTS", "format=yuva420p"]
+        if fd > 0:
+            vf += [f"fade=t=in:st=0:d={fd}:alpha=1", f"fade=t=out:st={dur - fd:.3f}:d={fd}:alpha=1"]
+        vf.append(f"setpts=PTS+{float(b['inicio']):.4f}/TB")
+        fc.append(f"[{idx}:v:0]{','.join(vf)}[b{j}]")
+        fc.append(f"[{cur}][b{j}]overlay=0:0:eof_action=pass:format=auto[vb{j}]")
+        cur = f"vb{j}"
+        if b.get("som_ambiente_db") is not None and not is_img and binf["audio"]:
+            d_ms = round(float(b["inicio"]) * 1000)
+            fc.append(f"[{idx}:a:0]aresample={SR},aformat=channel_layouts=mono,atrim=duration={dur},"
+                      f"afade=t=in:d=0.1,afade=t=out:st={dur - 0.15:.3f}:d=0.15,volume={b['som_ambiente_db']}dB,"
+                      f"adelay={d_ms}:all=1[amb{j}]")
+            amb.append(f"[amb{j}]")
+        idx += 1
+
+    # 3c. textos (ASS) — fontes da marca embarcadas
+    fc.append(f"[{cur}]ass=filename='{ass_path}':fontsdir='{FONTS_DIR}',format=yuv420p[vout]")
+
+    # 3d. voz
+    au = proj.get("audio", {})
+    vcfg = ac["voz"]
+    main_src = resolve(base, proj["fontes"][proj["segmentos"][0]["fonte"]])
+    prof = audio_profile(main_src)
+    rec = voice_recommendation(prof, cfg)
+    nr = au.get("reducao_ruido", vcfg["reducao_ruido"])
+    nr = rec["reducao_ruido"] if nr == "auto" else nr
+    chain = [f"highpass=f={au.get('passa_altas_hz', rec['passa_altas_hz'])}:p=2"]
+    if au.get("declip", rec["declip"]):
+        chain.append("adeclip")
+    if nr and nr != "nenhuma":
+        floor = min(-25, max(-80, prof.get("ruido_de_fundo_dbfs", -60)))
+        chain.append(f"afftdn=nr={vcfg['reducao_ruido_niveis'][nr]}:nf={floor:.0f}:tn=1")
+    eqs = au.get("eq", rec["eq"] if vcfg.get("eq_auto", True) else [])
+    for e in eqs:
+        chain.append(f"equalizer=f={e['f']}:t=q:w={e.get('w', 1)}:g={e['g']}")
+    de = au.get("deesser", vcfg["deesser"])
+    if (rec["deesser"] if de == "auto" else de):
+        chain.append("deesser=i=0.4:m=0.5:f=0.5")
+    if au.get("compressor", True):
+        c = vcfg["compressor"]
+        chain.append(f"acompressor=threshold={c['threshold_db']}dB:ratio={c['ratio']}:attack={c['attack_ms']}:"
+                     f"release={c['release_ms']}:makeup={c['makeup_db']}dB")
+    mid = min(max(0.0, infos[proj["segmentos"][0]["fonte"]]["duracao"] / 2 - 3), 30.0)
+    lat = measure_latency(main_src, ",".join(chain), mid, SR)
+    if lat > 0:
+        # ex.: afftdn atrasa ~25 ms no FFmpeg 6.x — remove o atraso e repõe o fim
+        chain += [f"atrim=start_sample={lat}", "asetpts=PTS-STARTPTS", f"apad=pad_len={lat}"]
+    fc.append(f"[acat]{','.join(chain)}[voz]")
+    voice = "voz"
+    if amb:
+        fc.append(f"[{voice}]{''.join(amb)}amix=inputs={1 + len(amb)}:duration=first:normalize=0[vozamb]")
+        voice = "vozamb"
+
+    # 3e. música (só autorizada)
+    mus = proj.get("musica")
+    total = proj["_duracao"]
+    if mus and mus.get("arquivo"):
+        if not mus.get("autorizada") or not mus.get("licenca"):
+            die("música sem autorização/licença registrada (musica.autorizada=true e musica.licenca)")
+        mc = ac["musica"]
+        inputs += ["-stream_loop", "-1", "-i", str(resolve(base, mus["arquivo"]))]
+        vol = mus.get("volume_db", mc["volume_db"])
+        fo = mus.get("fade_out_s", mc["fade_out_s"])
+        fc.append(f"[{idx}:a:0]aresample={SR},aformat=channel_layouts=mono,atrim=start={mus.get('src_in', 0)},"
+                  f"asetpts=PTS-STARTPTS,atrim=duration={total:.4f},volume={vol}dB,"
+                  f"afade=t=in:d={mus.get('fade_in_s', mc['fade_in_s'])},afade=t=out:st={total - fo:.3f}:d={fo}[mus]")
+        if mus.get("ducking", mc["ducking"]):
+            fc.append(f"[{voice}]asplit=2[vm][vsc]")
+            fc.append(f"[mus][vsc]sidechaincompress=threshold={mc['ducking_threshold']}:ratio={mc['ducking_ratio']}:"
+                      f"attack=30:release=450[mduck]")
+            fc.append("[vm][mduck]amix=inputs=2:duration=first:normalize=0[mix]")
+        else:
+            fc.append(f"[{voice}][mus]amix=inputs=2:duration=first:normalize=0[mix]")
+        voice = "mix"
+        idx += 1
+    fc.append(f"[{voice}]aformat=sample_rates={SR}:channel_layouts=stereo[aout]")
+
+    script = build / "filtergraph.txt"
+    script.write_text(";\n".join(fc) + "\n", encoding="utf-8")
+    master = build / "master.mov"
+    if args.rascunho:
+        venc = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "23"]
+    else:
+        venc = ["-c:v", vc["codec"], "-preset", exp.get("preset", vc["preset"]), "-crf", str(exp.get("crf", vc["crf"])),
+                "-profile:v", vc["perfil"], "-level:v", vc["nivel"], "-maxrate", vc["maxrate"], "-bufsize", vc["bufsize"]]
+    gop = round(fps * vc["gop_segundos"])
+    cmd1 = (["ffmpeg", "-hide_banner", "-y", "-loglevel", "error", "-nostats"] + inputs +
+            ["-filter_complex_script", str(script), "-map", "[vout]", "-map", "[aout]"] + venc +
+            ["-pix_fmt", vc["pix_fmt"], "-g", str(gop), "-r", fps_str(fps), "-fps_mode", "cfr",
+             "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
+             "-c:a", "pcm_s24le", "-t", f"{total:.6f}", str(master)])
+    print(f"passo 1/3: montagem ({n} segmentos, {len(proj.get('broll', []))} B-roll) — duração {total:.2f}s")
+    run(cmd1, capture=False)
+
+    # 4-5. loudness: ganho linear até o alvo + limitador de pico (sobreamostrado 4x p/ inter-sample peaks).
+    #      Mede o arquivo final e corrige o ganho uma vez se ficar fora da tolerância.
+    lufs_t, tp_max = ac["lufs_alvo"], ac["true_peak_max"]
+    m = loudness(master)
+    if m["lufs"] is None:
+        die("não foi possível medir o loudness do master (áudio vazio?)")
+    print(f"passo 2/3: master {m['lufs']} LUFS / TP {m['true_peak']} dBTP")
+    out = resolve(base, proj.get("saida", "saida/reel.mp4"))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    limit = 10 ** ((tp_max - 0.5) / 20)  # margem para o overshoot do AAC
+    gain = lufs_t - m["lufs"]
+    final = None
+    lim_af = f"aresample={SR * 4},alimiter=limit={limit:.4f}:attack=2:release=80:level=0,aresample={SR}"
+    lat3 = measure_latency(main_src, lim_af, 5.0, SR)
+    comp3 = f",atrim=start_sample={lat3},asetpts=PTS-STARTPTS,apad=pad_len={lat3}" if lat3 > 0 else ""
+    for attempt in range(2):
+        af = (f"aresample={SR * 4},volume={gain:.2f}dB,alimiter=limit={limit:.4f}:attack=2:release=80:level=0,"
+              f"aresample={SR}{comp3}")
+        run(["ffmpeg", "-hide_banner", "-y", "-loglevel", "error", "-i", str(master),
+             "-map", "0:v", "-map", "0:a", "-c:v", "copy", "-af", af,
+             "-c:a", "aac", "-b:a", ac["bitrate"], "-ar", str(SR), "-ac", str(ac["canais"]),
+             "-movflags", "+faststart", "-metadata", f"title={proj.get('projeto', '')}",
+             "-metadata", "comment=DESCOMPLICARRO — Editor de Reels", str(out)])
+        final = loudness(out)
+        delta = lufs_t - (final["lufs"] or lufs_t)
+        if abs(delta) <= 0.5:
+            break
+        gain += delta  # o limitador comeu loudness: compensa uma vez
+    limiting = gain - (lufs_t - m["lufs"])
+    if gain > 12:
+        warn(f"ganho de {gain:.1f} dB aplicado: gravação muito baixa — ruído de fundo sobe junto")
+    if final["true_peak"] is not None and final["true_peak"] > tp_max + 0.3:
+        warn(f"true peak final {final['true_peak']} dBTP acima do alvo {tp_max}")
+    if limiting > 2:
+        warn(f"limitador atuou forte (~{limiting:.1f} dB extra): conferir se a voz não ficou achatada")
+    print(f"passo 3/3: {out}  final {final['lufs']} LUFS / TP {final['true_peak']} dBTP ({time.time() - t0:.0f}s)")
+
+    log = {
+        "projeto": str(proj["_path"]), "saida": str(out), "duracao_esperada": total, "fps": fps,
+        "segmentos": [{k: s[k] for k in ("id", "fonte", "in", "out", "_ini", "_fim", "_frames", "_ampliacao")}
+                      for s in proj["segmentos"]],
+        "cortes": [s["_ini"] for s in proj["segmentos"][1:]],
+        "broll": proj.get("broll", []), "graficos": proj.get("graficos", []),
+        "voz": {"cadeia": chain, "perfil_origem": prof, "motivos": rec["motivos"],
+                "latencia_compensada_amostras": {"cadeia_voz": lat, "limitador": lat3}},
+        "loudness_master": m, "loudness_final": final, "ganho_db": round(gain, 2), "avisos": warnings,
+        "lint": [list(i) for i in issues], "rascunho": args.rascunho,
+        "comando_passo1": cmd1,
+    }
+    save_json(build / "render_log.json", log)
+    for w in warnings:
+        print(f"  AVISO: {w}")
+    print("Próximo passo obrigatório: python3 scripts/qa.py", args.projeto)
+
+
+if __name__ == "__main__":
+    main()
