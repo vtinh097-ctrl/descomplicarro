@@ -13,6 +13,10 @@ get_header();
       <div class="section-index" aria-hidden="true"><span>N.00</span><span class="section-index__line"></span><span>PÁGINA</span></div>
       <div class="abertura__content">
         <h1 id="page-heading" class="abertura__heading"><?php the_title(); ?></h1>
+        <?php if ( is_page( 'oportunidades-automotivas' ) ) : ?>
+        <p class="abertura__paragraph is-forte">Conectamos profissionais e oportunidades no setor automotivo.</p>
+        <p class="abertura__paragraph is-menor">Encontre vagas, apresente sua experiência profissional ou descubra talentos para sua empresa. Um espaço criado para aproximar quem busca uma oportunidade de quem precisa de profissionais qualificados.</p>
+        <?php endif; ?>
       </div>
     </div>
   </section>

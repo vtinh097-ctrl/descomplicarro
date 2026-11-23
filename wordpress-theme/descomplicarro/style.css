@@ -984,6 +984,11 @@ button:focus-visible {
    -------------------------------------------------------------------------- */
 .abertura__paragraph.is-forte { font-weight: 700; color: var(--color-offwhite); }
 
+/* Texto complementar menor, usado só na descrição da página Oportunidades
+   Automotivas (ver page.php) — nunca aparece em nenhuma outra página, já
+   que depende da classe is-menor não estar em nenhum outro template. */
+.abertura__paragraph.is-menor { font-size: var(--fs-small); margin-top: var(--space-xs); }
+
 /* Legenda de fotografia — compartilhada entre a abertura e os perfis */
 .figure-caption {
   margin-top: var(--space-xs);
