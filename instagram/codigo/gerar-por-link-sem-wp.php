@@ -181,6 +181,34 @@ function sw_baixar_imagem( $url_imagem, $pasta_tmp ) {
 	$nome    = preg_replace( '/[^a-zA-Z0-9._-]/', '_', basename( parse_url( $url_imagem, PHP_URL_PATH ) ) );
 	$destino = rtrim( $pasta_tmp, '/' ) . '/' . uniqid() . '-' . $nome;
 	file_put_contents( $destino, $dados );
+
+	// Os modelos só abrem JPEG/PNG/WebP (ver dco_editorial_cobrir em
+	// inc/editorial-render.php). Fotos em outro formato (ex.: AVIF, que o
+	// site passou a usar e que o GD daqui não lê) sairiam em branco — então
+	// convertemos para JPEG aqui, antes de entrarem no pool de imagens.
+	$info = @getimagesize( $destino );
+	$tipo = $info ? $info[2] : 0;
+	if ( ! in_array( $tipo, array( IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP ), true ) ) {
+		$jpg = $destino . '.jpg';
+		$src = escapeshellarg( $destino );
+		$dst = escapeshellarg( $jpg );
+		$tentativas = array(
+			"convert $src -quality 95 $dst",
+			"ffmpeg -loglevel error -y -i $src -q:v 2 $dst",
+			"python3 -I -c 'import sys;from PIL import Image;Image.open(sys.argv[1]).convert(\"RGB\").save(sys.argv[2],quality=95)' $src $dst",
+		);
+		foreach ( $tentativas as $cmd ) {
+			@exec( $cmd . ' 2>/dev/null', $saida, $codigo );
+			$ok = @getimagesize( $jpg );
+			if ( 0 === $codigo && $ok && IMAGETYPE_JPEG === $ok[2] ) {
+				@unlink( $destino );
+				sw_log( 'Imagem convertida para JPEG: ' . $nome );
+				return $jpg;
+			}
+		}
+		@unlink( $jpg );
+		sw_log( 'AVISO: formato de imagem não suportado e sem conversor disponível — ' . $nome );
+	}
 	return $destino;
 }
 
