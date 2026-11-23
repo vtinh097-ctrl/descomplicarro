@@ -312,12 +312,9 @@ def check_ressalvas(rep, proj):
                 found = True
                 rep.add("ALERTA", "conteúdo", f"ressalva técnica fora da montagem ({key} {tc(utts[g[0]]['ini'])}): "
                                               f"«{utts[g[0]]['texto'][:90]}» — confirmar que o corte é intencional")
-        for s in segs:
-            for w in tr["palavras"]:
-                for edge, name in ((s["in"], "entrada"), (s["out"], "saída")):
-                    if w["ini"] + 0.03 < edge < w["fim"] - 0.03:
-                        found = True
-                        rep.add("ALERTA", "corte", f"{s['id']} {name} {tc(edge)} corta «{w['w']}»")
+        for msg in decupagem.word_cut_alerts(tr, segs, key):
+            found = True
+            rep.add("ALERTA", "corte", msg)
         if not found:
             rep.add("OK", "conteúdo", f"fonte {key}: ressalvas na montagem e nenhum corte no meio de palavra")
 

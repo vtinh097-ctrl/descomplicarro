@@ -232,7 +232,7 @@ def cmd_lint(proj, args, quiet=False):
         d = g["fim"] - g["inicio"]
         words = len(re.findall(r"\w+", " ".join(str(g.get(k, "")) for k in
                                                 ("texto", "valor", "rotulo", "termo", "explicacao", "apoio", "cta"))))
-        need = max(1.5, 0.25 * words + 0.5) if g["tipo"] != "cartela_final" else 1.2
+        need = max(1.5, 0.25 * words + 0.5) if g["tipo"] not in ("cartela_final", "cartela") else 1.2
         if d < need - 0.05:
             add("ALERTA", gid, f"tempo de leitura curto ({d:.1f}s < {need:.1f}s)")
         if g["fim"] > proj["_duracao"] + 0.01:
@@ -259,18 +259,43 @@ def cmd_lint(proj, args, quiet=False):
     return issues
 
 
-def wrap_title(text, st, maxw=840):
+def wrap_text(text, family, bold, size, maxw):
     words, lines, cur = text.split(), [], ""
     for w in words:
         cand = (cur + " " + w).strip()
-        if cur and _meas.width(cand, "Space Grotesk", True, st["tamanho"]) > maxw:
+        if cur and _meas.width(cand, family, bold, size) > maxw:
             lines.append(cur)
             cur = w
         else:
             cur = cand
     if cur:
         lines.append(cur)
+    # evita linha final órfã de uma palavra curta
+    if len(lines) > 1 and len(lines[-1].split()) == 1:
+        prev = lines[-2].split()
+        if len(prev) > 2:
+            lines[-2], lines[-1] = " ".join(prev[:-1]), prev[-1] + " " + lines[-1]
     return lines
+
+
+def wrap_title(text, st, maxw=840):
+    """Título: menor nº de linhas; com 2+ linhas, quebra equilibrada sem palavra fraca no fim da linha."""
+    size = st["tamanho"]
+    lines = wrap_text(text, "Space Grotesk", True, size, maxw)
+    if len(lines) != 2:
+        return lines
+    words = text.split()
+    weak = {"A", "O", "AS", "OS", "E", "DE", "DA", "DO", "EM", "NO", "NA", "COM", "POR", "PRA", "PARA", "QUE", "UM", "UMA"}
+    best, score = lines, None
+    for i in range(1, len(words)):
+        l1, l2 = " ".join(words[:i]), " ".join(words[i:])
+        w1, w2 = _meas.width(l1, "Space Grotesk", True, size), _meas.width(l2, "Space Grotesk", True, size)
+        if max(w1, w2) > maxw:
+            continue
+        sc = abs(w1 - w2) + (500 if words[i - 1].upper().strip(",.") in weak else 0) + (300 if i == len(words) - 1 else 0)
+        if score is None or sc < score:
+            best, score = [l1, l2], sc
+    return best
 
 
 # ================================================================ ASS
@@ -381,12 +406,31 @@ def cmd_ass(proj, args):
                 E(3, a, b, "TermoApoio", f"{{\\fad({fi},{fo})\\pos(126,{y2})}}"
                                          f"{highlight(g['explicacao'], hl, base_c, hi_c)}")
         elif t == "rotulo":
+            # lado: "esquerda" (padrão) ou "direita" — o rótulo fica do lado de QUEM está sendo nomeado
             st = gc["rotulo"]
-            y = g.get("y", st["y_base"])
-            E(3, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(90, y - st["tamanho"] - 26, 64, 5, hi_c))
-            E(3, a, b, "Rotulo", f"{{\\fad({fi},{fo})\\pos(90,{y})}}{esc(g['texto'].upper())}")
-            if g.get("apoio"):
-                E(3, a, b, "RotuloApoio", f"{{\\fad({fi},{fo})\\pos(90,{y + 12})}}{esc(g['apoio'])}")
+            zs = cfg["zonas_seguras"]
+            if g.get("lado") == "direita":
+                xr = W - zs["direita"] - 20
+                y = g.get("y", zs["coluna_icones_y_inicio"] - 40)
+                E(3, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(xr - 64, y - st["tamanho"] - 26, 64, 5, hi_c))
+                E(3, a, b, "Rotulo", f"{{\\fad({fi},{fo})\\an3\\pos({xr},{y})}}{esc(g['texto'].upper())}")
+                if g.get("apoio"):
+                    E(3, a, b, "RotuloApoio", f"{{\\fad({fi},{fo})\\an9\\pos({xr},{y + 12})}}{esc(g['apoio'])}")
+            else:
+                y = g.get("y", st["y_base"])
+                E(3, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(90, y - st["tamanho"] - 26, 64, 5, hi_c))
+                E(3, a, b, "Rotulo", f"{{\\fad({fi},{fo})\\pos(90,{y})}}{esc(g['texto'].upper())}")
+                if g.get("apoio"):
+                    E(3, a, b, "RotuloApoio", f"{{\\fad({fi},{fo})\\pos(90,{y + 12})}}{esc(g['apoio'])}")
+        elif t == "cartela":
+            # cartela intermediária: tela grafite com uma frase (virada de bloco ou para cobrir imagem
+            # inutilizável). Fica ABAIXO das legendas — a fala continua legendada.
+            st = gc["cartela_final"]
+            E(4, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(0, 0, W, H, gra_c))
+            E(4, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(W / 2 - 60, H / 2 - 230, 120, 8, hi_c))
+            lines = wrap_title(g["texto"].upper(), {"tamanho": st["tamanho"]}, 840)
+            body = "\\N".join(highlight(l, hl, base_c, hi_c) for l in lines)
+            E(4, a, b, "Cartela", f"{{\\fad({fi},{fo})\\an8\\pos({W / 2:.0f},{H / 2 - 180:.0f})}}{body}")
         elif t == "capitulo":
             E(3, a, b, "Capitulo", f"{{\\fad({fi},{fo})}}" + highlight(g["texto"], hl or
                                    re.findall(r"N\.\d+", g["texto"]), base_c, hi_c))
@@ -402,8 +446,9 @@ def cmd_ass(proj, args):
             sig_lines = sig_lines[:-1] + "{\\1c" + hi_c + "&}.{\\1c" + base_c + "&}" if sig_lines.endswith(".") else sig_lines
             E(11, a, b, "Cartela", f"{{\\fad({fi * 2},0)\\an8\\pos({W / 2:.0f},{H / 2 - 50:.0f})}}{sig_lines}")
             if g.get("cta"):
-                E(11, a, b, "CartelaCTA", f"{{\\fad({fi * 2},0)\\an8\\pos({W / 2:.0f},{H / 2 + 300:.0f})}}"
-                                          f"{highlight(g['cta'], hl, base_c, hi_c)}")
+                cta = "\\N".join(highlight(l, hl, base_c, hi_c) for l in
+                                   wrap_text(g["cta"], "DM Sans 14pt Medium", False, st["tamanho_cta"], 820))
+                E(11, a, b, "CartelaCTA", f"{{\\fad({fi * 2},0)\\an8\\pos({W / 2:.0f},{H / 2 + 300:.0f})}}{cta}")
         else:
             die(f"tipo de gráfico desconhecido: {t}")
 

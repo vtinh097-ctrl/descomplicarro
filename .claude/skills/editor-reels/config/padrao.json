@@ -1,7 +1,6 @@
 {
   "versao": "0.1",
   "status": "rascunho — aguardando validação com material real (ver references/padroes-aprovados.md)",
-
   "marca": {
     "grafite": "#252525",
     "offwhite": "#F4F1EA",
@@ -9,12 +8,17 @@
     "fonte_titulo": "Space Grotesk",
     "fonte_texto": "DM Sans"
   },
-
   "video": {
     "largura": 1080,
     "altura": 1920,
     "fps": 30,
-    "fps_aceitos_da_origem": [23.976, 24, 25, 29.97, 30],
+    "fps_aceitos_da_origem": [
+      23.976,
+      24,
+      25,
+      29.97,
+      30
+    ],
     "codec": "libx264",
     "preset": "slow",
     "crf": 17,
@@ -27,7 +31,6 @@
     "ampliacao_max_alerta": 1.25,
     "ampliacao_max_bloqueio": 2.0
   },
-
   "audio": {
     "taxa": 48000,
     "canais": 2,
@@ -40,9 +43,19 @@
     "voz": {
       "passa_altas_hz": 80,
       "reducao_ruido": "auto",
-      "reducao_ruido_niveis": { "leve": 6, "media": 10, "forte": 16 },
+      "reducao_ruido_niveis": {
+        "leve": 6,
+        "media": 10,
+        "forte": 16
+      },
       "deesser": "auto",
-      "compressor": { "threshold_db": -21, "ratio": 2.5, "attack_ms": 8, "release_ms": 150, "makeup_db": 2 },
+      "compressor": {
+        "threshold_db": -21,
+        "ratio": 2.5,
+        "attack_ms": 8,
+        "release_ms": 150,
+        "makeup_db": 2
+      },
       "eq_auto": true
     },
     "musica": {
@@ -54,7 +67,6 @@
       "fade_out_s": 1.5
     }
   },
-
   "zonas_seguras": {
     "_nota": "Áreas ocupadas pela interface do Reels em 1080x1920. Valores iniciais conservadores; validar com captura de tela real do Instagram antes de aprovar.",
     "topo": 220,
@@ -63,7 +75,6 @@
     "direita": 150,
     "coluna_icones_y_inicio": 980
   },
-
   "legendas": {
     "fonte": "DM Sans",
     "arquivo_fonte": "DMSans-Bold.ttf",
@@ -90,19 +101,97 @@
     "fade_entrada_ms": 60,
     "fade_saida_ms": 0,
     "caixa_alta": false,
-    "palavras_fracas_fim_de_linha": ["a", "o", "as", "os", "e", "é", "de", "da", "do", "das", "dos", "em", "no", "na", "nos", "nas", "um", "uma", "que", "com", "por", "pra", "para", "se", "ao", "à", "seu", "sua", "mais", "mas", "ou", "como"]
+    "palavras_fracas_fim_de_linha": [
+      "a",
+      "o",
+      "as",
+      "os",
+      "e",
+      "é",
+      "de",
+      "da",
+      "do",
+      "das",
+      "dos",
+      "em",
+      "no",
+      "na",
+      "nos",
+      "nas",
+      "um",
+      "uma",
+      "que",
+      "com",
+      "por",
+      "pra",
+      "para",
+      "se",
+      "ao",
+      "à",
+      "seu",
+      "sua",
+      "mais",
+      "mas",
+      "ou",
+      "como"
+    ]
   },
-
   "graficos": {
-    "titulo": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 78, "caixa_alta": true, "y_topo": 330, "caixa_alfa": 0.12, "padding": 22 },
-    "dado": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 160, "tamanho_rotulo": 48, "y_centro": 760 },
-    "termo": { "fonte": "Space Grotesk", "negrito": true, "tamanho": 68, "tamanho_apoio": 46, "y_topo": 330 },
-    "rotulo": { "fonte": "DM Sans 14pt SemiBold", "negrito": false, "tamanho": 54, "tamanho_apoio": 40, "y_base": 1060 },
-    "capitulo": { "fonte": "Space Grotesk Medium", "tamanho": 48, "y_topo": 250 },
-    "cartela_final": { "assinatura": "ENTENDA. QUESTIONE. DECIDA.", "tamanho": 96, "tamanho_cta": 52 },
-    "fade_ms": 150
+    "titulo": {
+      "fonte": "Space Grotesk",
+      "negrito": true,
+      "tamanho": 78,
+      "caixa_alta": true,
+      "y_topo": 330,
+      "caixa_alfa": 0.12,
+      "padding": 22
+    },
+    "dado": {
+      "fonte": "Space Grotesk",
+      "negrito": true,
+      "tamanho": 160,
+      "tamanho_rotulo": 48,
+      "y_centro": 760
+    },
+    "termo": {
+      "fonte": "Space Grotesk",
+      "negrito": true,
+      "tamanho": 68,
+      "tamanho_apoio": 46,
+      "y_topo": 330
+    },
+    "rotulo": {
+      "fonte": "DM Sans 14pt SemiBold",
+      "negrito": false,
+      "tamanho": 54,
+      "tamanho_apoio": 40,
+      "y_base": 1060
+    },
+    "capitulo": {
+      "fonte": "Space Grotesk Medium",
+      "tamanho": 48,
+      "y_topo": 250
+    },
+    "cartela_final": {
+      "assinatura": "ENTENDA. QUESTIONE. DECIDA.",
+      "tamanho": 96,
+      "tamanho_cta": 52
+    },
+    "fade_ms": 150,
+    "card_foto": {
+      "_nota": "Foto/documento sobre o vídeo (B-roll modo 'card'): moldura off-white de papel, sombra grafite, fundo escurecido.",
+      "largura_max": 860,
+      "altura_max": 940,
+      "centro_y": 760,
+      "borda_px": 12,
+      "sombra_px": 14,
+      "sombra_alfa": 0.55,
+      "escurecer_fundo": 0.5,
+      "subida_px": 24,
+      "entrada_s": 0.3,
+      "fade_s": 0.25
+    }
   },
-
   "qa": {
     "black_pix_th": 0.05,
     "black_min_s": 0.12,

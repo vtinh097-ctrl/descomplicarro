@@ -26,6 +26,7 @@ Obrigatórias: FFmpeg/FFprobe (com libx264, aac, libass), Python ≥ 3.9. Recome
 | A | `python3 scripts/transcribe.py brutos/A.mp4 --out trans/A.json --vocab "termos, marcas"` | palavras com tempo + `.txt` |
 | A | `python3 scripts/decupagem.py trans/A.json [trans/B.json] --out trans/decupagem.md` | takes, repetições, ressalvas ⚠, ganchos ★ |
 | B | `python3 scripts/montar.py --decupagem trans/decupagem.json --takes "A:00.3,01,02" --out projeto.json` | rascunho da EDL com cortes no silêncio real |
+| B | ou `montar.py ... --trechos "E:12.42-15.0,15.4-19.9"` (cortes dentro de fala contínua, tempos de palavra) | idem |
 | B | editar `projeto.json` (enquadramento, B-roll, gráficos, áudio) | |
 | B | `python3 scripts/captions.py build projeto.json` → revisar → `captions.py lint projeto.json` | `legendas.json` |
 | B | `python3 scripts/render.py projeto.json` (`--rascunho` para checar montagem rápido) | `saida/vN.mp4` |
@@ -38,8 +39,8 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 
 - `fontes` `{id: caminho}` · `transcricoes` `{id: caminho}` · `saida` · `legendas` · `padrao` (outro config, opcional)
 - `segmentos[]`: `fonte`, `in`, `out`, `enquadramento {modo: recortar|encaixar, zoom, x, y}`, `ganho_db`, `cor {brilho, contraste, saturacao, gama}`, `fade_entrada`, `fade_saida` (para grafite), `sem_legenda`, `nota`
-- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento`, `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
-- `graficos[]`: `tipo` (titulo, termo, dado, rotulo, capitulo, nota, cartela_final), `inicio`, `fim`, textos do tipo, `destaques`
+- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento` (`modo`: recortar | encaixar | card; no card: `recorte`, `largura_max`, `altura_max`, `centro_y`), `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
+- `graficos[]`: `tipo` (titulo, termo, dado, rotulo [`lado`], capitulo, nota, cartela, cartela_final), `inicio`, `fim`, textos do tipo, `destaques`
 - `destaques_globais`: termos destacados em laranja em qualquer bloco de legenda
 - `cauda_s`: segundos extras em grafite no final (para a cartela entrar depois da última palavra)
 - `audio`: sobrescritas da cadeia de voz · `musica`: `arquivo`, `autorizada`, `licenca`, `volume_db`, `ducking`

@@ -4,6 +4,9 @@
 Uso:
   python3 scripts/montar.py --decupagem decupagem.json --takes "A:01.2,02,03,04" --out projeto.json
   (vários arquivos: --takes "A:01.2,02;B:00,03")
+  python3 scripts/montar.py --decupagem decupagem.json --trechos "E:12.42-15.0,15.4-19.9" --out projeto.json
+  (--trechos: cortes DENTRO de uma fala contínua — início da 1ª palavra e fim da última, da transcrição;
+   as bordas são ajustadas ao silêncio real sem invadir a palavra vizinha)
 
 Notação: GG = grupo da decupagem (take 1); GG.k = take k do grupo GG. A ordem da lista é a ordem
 de montagem (pode reordenar falas — registre o motivo na proposta).
@@ -41,6 +44,13 @@ def refine(db, thr, t_ini, t_fim, lo_lim, hi_lim, pre, post):
     hi = min(int(hi_lim * 100), j + 40, len(db) - 1)
     while j < hi and db[j] > thr:
         j += 1
+    # o Whisper às vezes estica a palavra sobre o silêncio seguinte/anterior: recolhe até a energia real
+    i_min = int(t_ini * 100)
+    while i < min(len(db) - 1, i_min + 40) and db[i] <= thr and i < j:
+        i += 1
+    j_min = int(t_fim * 100)
+    while j > max(i + 5, j_min - 80) and db[j - 1] <= thr:
+        j -= 1
     ini = max(lo_lim, i / 100 - pre)
     fim = min(hi_lim, j / 100 + post)
     return round(ini, 3), round(fim, 3)
@@ -49,7 +59,8 @@ def refine(db, thr, t_ini, t_fim, lo_lim, hi_lim, pre, post):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--decupagem", required=True)
-    ap.add_argument("--takes", required=True)
+    ap.add_argument("--takes", default="")
+    ap.add_argument("--trechos", default="")
     ap.add_argument("--out", required=True)
     ap.add_argument("--respiro-antes", type=float, default=0.06)
     ap.add_argument("--respiro-depois", type=float, default=0.14)
@@ -62,7 +73,35 @@ def main():
     fontes, trans, segs = dict(proj.get("fontes", {})), dict(proj.get("transcricoes", {})), []
     trans_dir = Path(args.decupagem).resolve().parent
 
-    for part in args.takes.split(";"):
+    if not args.takes and not args.trechos:
+        die("informe --takes ou --trechos")
+    for part in [p for p in args.trechos.split(";") if p.strip()]:
+        key, spans = part.split(":")
+        key = key.strip()
+        tr_path = next((p for p in trans_dir.rglob(f"{key}.json") if "palavras" in load_json(p)), None)
+        if not tr_path:
+            die(f"transcrição {key}.json não encontrada sob {trans_dir}")
+        tr = load_json(tr_path)
+        src = Path(tr["arquivo"])
+        src = src if src.is_absolute() else (Path.cwd() / src)
+        fontes[key], trans[key] = str(src.resolve()), str(tr_path.resolve())
+        db, floor, speech = envelope_db(src)
+        thr = floor + max(6.0, (speech - floor) * 0.25)
+        words = tr["palavras"]
+        for sp in spans.split(","):
+            a, b = (float(x) for x in sp.split("-"))
+            inside = [w for w in words if w["ini"] >= a - 0.05 and w["fim"] <= b + 0.15]
+            if not inside:
+                die(f"nenhuma palavra em {key}:{sp}")
+            before = [w for w in words if w["fim"] <= inside[0]["ini"] + 1e-3 and w is not inside[0]]
+            after = [w for w in words if w["ini"] >= inside[-1]["fim"] - 1e-3 and w is not inside[-1]]
+            lo = before[-1]["fim"] + 0.02 if before else 0.0
+            hi = after[0]["ini"] - 0.02 if after else len(db) / 100
+            ini, fim = refine(db, thr, inside[0]["ini"], inside[-1]["fim"], lo, hi,
+                              args.respiro_antes, args.respiro_depois)
+            segs.append({"fonte": key, "in": ini, "out": fim, "nota": " ".join(w["w"] for w in inside)[:70],
+                         "enquadramento": {"zoom": 1.0, "x": 0.5, "y": 0.5}})
+    for part in [p for p in args.takes.split(";") if p.strip()]:
         key, picks = part.split(":")
         key = key.strip()
         if key not in dec:

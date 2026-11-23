@@ -78,6 +78,51 @@ def color_filters(seg, info):
     return f
 
 
+def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn):
+    """Foto como card sobre o vídeo: recorte opcional, moldura de papel off-white, sombra, fundo escurecido,
+    entrada com fade + leve subida (sem bounce). A voz continua por baixo."""
+    cc = cfg["graficos"]["card_foto"]
+    enq = b.get("enquadramento", {})
+    iw, ih = binf["video"]["largura"], binf["video"]["altura"]
+    rec = enq.get("recorte")  # {"x","y","w","h"} em frações da foto: mostra só o trecho que importa
+    f = []
+    if rec:
+        cw, ch = int(iw * rec["w"]) // 2 * 2, int(ih * rec["h"]) // 2 * 2
+        f.append(f"crop={cw}:{ch}:{int(iw * rec['x'])}:{int(ih * rec['y'])}")
+        iw, ih = cw, ch
+    bd = cc["borda_px"]
+    maxw = int(enq.get("largura_max", cc["largura_max"])) - 2 * bd
+    maxh = int(enq.get("altura_max", cc["altura_max"])) - 2 * bd
+    sc = min(maxw / iw, maxh / ih)
+    if sc > 1.6:
+        warn(f"B-roll {j + 1} (card): foto pequena ampliada {sc:.1f}x — enviar arquivo em resolução maior")
+    w, h = int(iw * sc) // 2 * 2, int(ih * sc) // 2 * 2
+    cw, ch = w + 2 * bd, h + 2 * bd
+    x = (W - cw) // 2
+    y = int(enq.get("centro_y", cc["centro_y"]) - ch / 2)
+    zs = cfg["zonas_seguras"]
+    y = max(zs["topo"] + 10, y)
+    if y + ch > cfg["legendas"]["base_y"] - cfg["legendas"]["tamanho"] * 2.4:
+        warn(f"B-roll {j + 1} (card): card pode encostar na área da legenda — reduzir altura_max")
+    t0, fd, rise, ent = float(b["inicio"]), cc["fade_s"], cc["subida_px"], cc["entrada_s"]
+    nfr = round(dur * fps)
+    off = hex_to_ffmpeg(cfg["marca"]["offwhite"])
+    gra = hex_to_ffmpeg(cfg["marca"]["grafite"])
+    fades = f"fade=t=in:st=0:d={fd}:alpha=1,fade=t=out:st={dur - fd:.3f}:d={fd}:alpha=1"
+    fc.append(f"[{idx}:v:0]fps={fps_str(fps)},{','.join(f + [''])}scale={w}:{h}:flags=lanczos,setsar=1,"
+              f"pad={cw}:{ch}:{bd}:{bd}:color={off},trim=end_frame={nfr},setpts=PTS-STARTPTS,format=yuva420p,"
+              f"{fades},setpts=PTS+{t0:.4f}/TB[card{j}]")
+    fc.append(f"color=c={gra}:s={W}x{H}:r={fps_str(fps)}:d={dur:.4f},format=yuva420p,"
+              f"colorchannelmixer=aa={cc['escurecer_fundo']},{fades},setpts=PTS+{t0:.4f}/TB[dim{j}]")
+    fc.append(f"color=c={gra}:s={cw}x{ch}:r={fps_str(fps)}:d={dur:.4f},format=yuva420p,"
+              f"colorchannelmixer=aa={cc['sombra_alfa']},boxblur=8:2,{fades},setpts=PTS+{t0:.4f}/TB[shd{j}]")
+    ymove = f"{rise}*max(0,1-(t-{t0:.4f})/{ent})"
+    fc.append(f"[{cur}][dim{j}]overlay=0:0:eof_action=pass:format=auto[d{j}]")
+    fc.append(f"[d{j}][shd{j}]overlay={x + cc['sombra_px'] // 2}:'{y + cc['sombra_px']}+{ymove}':eval=frame:"
+              f"eof_action=pass:format=auto[s{j}]")
+    fc.append(f"[s{j}][card{j}]overlay={x}:'{y}+{ymove}':eval=frame:eof_action=pass:format=auto[vb{j}]")
+
+
 def measure_latency(src, af, ss, rate=48000):
     """Mede o atraso (amostras) que uma cadeia de filtros introduz, usando 6 s da própria fala."""
     import subprocess
@@ -198,6 +243,11 @@ def main():
         else:
             inputs += ["-ss", f"{float(b.get('src_in', 0)):.3f}", "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
             binf = media_info(src)
+        if b.get("enquadramento", {}).get("modo") == "card":
+            card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn)
+            cur = f"vb{j}"
+            idx += 1
+            continue
         crop, amp = crop_expr(binf, W, H, b.get("enquadramento", {}), warn, f"B-roll {j + 1}", cfg)
         nfr = round(dur * fps)
         fd = float(b.get("fade", 0.15))

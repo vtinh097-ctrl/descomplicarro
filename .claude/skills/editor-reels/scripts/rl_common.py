@@ -225,7 +225,11 @@ def extract_frame(path, t: float, out_png, width=None, vf_extra=None):
     if vf:
         cmd += ["-vf", ",".join(vf)]
     cmd += [str(out_png)]
+    Path(out_png).unlink(missing_ok=True)
     run(cmd)
+    if not Path(out_png).exists() and t > 0.2:
+        # busca no último quadro às vezes não devolve imagem: recua um pouco
+        return extract_frame(path, t - 0.1, out_png, width, vf_extra)
     return out_png
 
 

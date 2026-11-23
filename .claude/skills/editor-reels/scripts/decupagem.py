@@ -103,6 +103,24 @@ def group_takes(utts, thr=0.6):
     return groups
 
 
+def word_cut_alerts(tr, segs, key):
+    """Corte dentro do intervalo de uma palavra E com som no ponto do corte (o Whisper às vezes estica
+    palavras sobre o silêncio; corte em silêncio real não é corte de palavra)."""
+    import montar
+    db, floor, speech = montar.envelope_db(tr["arquivo"])
+    thr = floor + max(6.0, (speech - floor) * 0.25)
+    out = []
+    for s in segs:
+        for w in tr["palavras"]:
+            for edge, name in ((s["in"], "entrada"), (s["out"], "saída")):
+                if w["ini"] + 0.03 < edge < w["fim"] - 0.03:
+                    k = int(edge * 100)
+                    if max(db[max(0, k - 2): k + 3]) > thr:
+                        out.append(f"✂ Corte na {name} de {s.get('id', '?')} ({tc(edge)}) com som, dentro de "
+                                   f"«{w['w']}» [{tc(w['ini'])}–{tc(w['fim'])}] — conferir")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("transcricoes", nargs="+")
@@ -161,12 +179,7 @@ def main():
                 if any(utts[i]["ressalva"] for i in g) and not any(inside(utts[i]) for i in g):
                     u = utts[g[0]]
                     alerts.append(f"⚠ RESSALVA possivelmente removida ({key} {tc(u['ini'])}): «{u['texto']}»")
-            for s in segs:
-                for w in tr["palavras"]:
-                    for edge, name in ((s["in"], "entrada"), (s["out"], "saída")):
-                        if w["ini"] + 0.03 < edge < w["fim"] - 0.03:
-                            alerts.append(f"✂ Corte na {name} do segmento {s.get('id', '?')} ({tc(edge)}) "
-                                          f"corta a palavra «{w['w']}» [{tc(w['ini'])}–{tc(w['fim'])}]")
+            alerts += word_cut_alerts(tr, segs, key)
     if proj:
         L += ["## Verificação da montagem", ""] + ([f"- {a}" for a in alerts] or
                                                   ["- Nenhuma ressalva removida e nenhum corte no meio de palavra."])

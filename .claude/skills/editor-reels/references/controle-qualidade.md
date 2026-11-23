@@ -26,6 +26,8 @@ Abrir com a ferramenta de leitura de imagem:
 - Reler `legendas.json` inteiro: ortografia, fala real, termos.
 - Conferir que o conteúdo técnico está correto e com as ressalvas.
 
+Lições do 1º material real (entrevista, 23/11/2026): o Whisper estica palavras sobre o silêncio — confirmar bordas pela energia do áudio (montar/decupagem já fazem); entrevista espontânea vem sem pontuação — revisar a transcrição antes de gerar legendas, pois a pontuação guia as quebras; conferir nos pares de corte se alguém atravessa a lente; rótulo de nome sempre do lado da pessoa; ao mudar a duração, recalcular a cartela final.
+
 Lições do teste técnico (registradas para não repetir): a sobreposição das zonas seguras precisa de contorno (cor sólida some em fundos coloridos); gráficos secundários abaixo de ~44 px de altura ficam ilegíveis no celular; uma cartela final colocada antes do fim da fala esconde a última legenda — o lint agora acusa.
 
 ## 3. Relatório de entrega (mensagem ao usuário)

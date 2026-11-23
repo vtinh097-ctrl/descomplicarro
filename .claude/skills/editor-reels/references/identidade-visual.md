@@ -38,7 +38,12 @@ Valores iniciais conservadores. **Validar no primeiro teste real** com uma captu
 | `rotulo` | Nome de quem fala / da peça | DM Sans SemiBold caixa alta + linha de apoio, fio laranja acima |
 | `capitulo` | Bloco N.01, N.02… (vídeos mais longos) | Space Grotesk Medium, "N.0X" em laranja |
 | `nota` | Correção ou ressalva em tela | DM Sans em caixa grafite, barra laranja |
+| `cartela` | Virada de bloco ou cobrir imagem inutilizável (ex.: alguém atravessando a lente) sem perder a fala | Tela grafite, frase em Space Grotesk, fio laranja; legenda continua por cima |
 | `cartela_final` | Encerramento/CTA | Tela grafite, "ENTENDA. QUESTIONE. DECIDA." empilhado com ponto final laranja, CTA |
+
+`rotulo` aceita `"lado": "direita"` — o nome fica **do lado de quem está sendo nomeado** (em entrevistas, nunca sobre o entrevistador).
+
+**Fotos e documentos como card** (B-roll com `enquadramento.modo: "card"`): a foto entra sobre o vídeo com moldura de papel off-white, sombra grafite e fundo escurecido, com fade + leve subida; a voz e a legenda continuam. `recorte` (frações x, y, w, h) mostra só o trecho que importa (ex.: o anúncio dentro da página do jornal). Use para documentos, recortes de jornal, fotos de época — tudo que é prova ou memória da história contada. Entra na palavra que o cita.
 
 Regras: um gráfico por vez (além da legenda); entrada/saída com fade de 150 ms; nada de bounce, glow, gradiente, 3D, ícone de app, emoji, sticker.
 
