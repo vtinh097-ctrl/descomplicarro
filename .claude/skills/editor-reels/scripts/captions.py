@@ -244,7 +244,7 @@ def cmd_lint(proj, args, quiet=False):
             for b in blocks:
                 if b["ini"] < g["fim"] and g["inicio"] < b["fim"]:
                     add("ALERTA", gid, f"legenda {b['id']} sob a cartela final (fica oculta)")
-        if g["tipo"] in ("titulo", "termo", "nota"):
+        if g["tipo"] in ("titulo", "termo", "selo", "nota"):
             txt = g.get("texto") or g.get("termo", "")
             st = cfg["graficos"].get(g["tipo"], cfg["graficos"]["titulo"])
             if g["tipo"] != "nota":
@@ -385,7 +385,7 @@ def cmd_ass(proj, args):
             body = "\\N".join(highlight(l, hl, base_c, hi_c) for l in lines)
             if g.get("ponto_laranja", True) and body.endswith("."):
                 body = body[:-1] + "{\\1c" + hi_c + "&}.{\\1c" + base_c + "&}"
-            y = st["y_topo"]
+            y = g.get("y", st["y_topo"])  # subir/descer para não cobrir rostos
             E(3, a, b, "Titulo", f"{{\\fad({fi},{fo})\\move({cx:.0f},{y + 14},{cx:.0f},{y},0,220)}}{body}")
         elif t == "dado":
             st = gc["dado"]
@@ -395,7 +395,8 @@ def cmd_ass(proj, args):
             if g.get("rotulo"):
                 E(3, a, b, "DadoRotulo", f"{{\\fad({fi},{fo})\\pos({cx:.0f},{y + st['tamanho'] * 0.5 + 26:.0f})}}"
                                          f"{esc(g['rotulo'])}")
-        elif t == "termo":
+        elif t in ("termo", "selo"):
+            # selo = mesmo desenho do termo, para contexto (evento, local, data): "termo" + "explicacao"
             st = gc["termo"]
             y = g.get("y", st["y_topo"])
             y2 = y + st["tamanho"] + 40

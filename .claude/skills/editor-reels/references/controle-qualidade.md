@@ -20,7 +20,7 @@ Trechos intencionais (cartela, cauda grafite, fades) são excluídos das verific
 Abrir com a ferramenta de leitura de imagem:
 - `qa_inicio_meio_fim.jpg` — 1º quadro já tem o gancho? Rosto/expressão bons? O fim fecha limpo (sem quadro preto, sem corte no meio da palavra)?
 - `qa_cortes.jpg` — pares antes/depois de cada corte: salto estranho de cabeça, olhos fechados, boca torta, mudança de luz/cor, objeto que some?
-- `qa_textos_zonas.jpg` — textos fora das áreas vermelhas, destaques certos, nada sobre o rosto em momento importante, um gráfico por vez.
+- `qa_textos_zonas.jpg` — textos fora das áreas vermelhas, destaques certos, **nenhum card/gráfico sobre rostos** (regra do usuário), um gráfico por vez.
 - `quadros/legenda_100pct.png` — nitidez do texto, contorno, acentos.
 - Se algo parecer duvidoso, extrair quadros extras (`rl_common.extract_frame`) ou fazer folha de contato de um trecho.
 - Reler `legendas.json` inteiro: ortografia, fala real, termos.
