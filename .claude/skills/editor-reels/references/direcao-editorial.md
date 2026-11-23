@@ -107,7 +107,14 @@ Toda vez que a fala cita algo **visível** (uma peça, uma luz do painel, um com
 - Encerramento opcional com cartela grafite (`cartela_final`) com a assinatura "ENTENDA. QUESTIONE. DECIDA." por 1,5–2,5 s. Logo oficial: **ainda não disponível no repositório** — não improvisar logotipo; usar só o nome em texto se aprovado.
 - Corte final limpo: a última palavra termina, ~0,3–0,5 s de respiro, fim (ou fade para grafite de ~0,4 s). Sem silêncio longo no final (o Reel volta em loop).
 
-## 4. Modelo da proposta (Etapa A)
+## 4. Texto do post (legenda do Instagram)
+- 1ª linha = gancho (é o que aparece antes do "mais"); mesma ideia do título do vídeo.
+- Só fatos verificáveis (fala gravada, documento mostrado); dado incerto vai para confirmação do usuário.
+- Tom editorial, frases curtas, sem hype nem emoji em excesso; fecha com o CTA vigente.
+- **Máximo de 5 hashtags** (limite do Instagram), específicas do assunto + #Descomplicarro.
+- Sugerir marcações (@) de pessoas/organizações citadas, pedindo os perfis ao usuário.
+
+## 5. Modelo da proposta (Etapa A)
 
 ```
 DIAGNÓSTICO — [nome do projeto]
