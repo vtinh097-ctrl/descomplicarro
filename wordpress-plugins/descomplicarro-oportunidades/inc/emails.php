@@ -15,16 +15,9 @@ function dco_email_remetente_nome() {
 	return 'DESCOMPLICARRO';
 }
 
-/**
- * Endereço de remetente preferencial. ATENÇÃO: isto só funciona de verdade
- * se oportunidades@descomplicarro.com.br existir como caixa de e-mail real
- * (ou estiver autorizado a enviar pelo domínio) na hospedagem — confirme
- * isso no painel da Hostinger ANTES de instalar esta atualização. Um
- * endereço que não existe/não está autorizado pode ser rejeitado ou cair
- * em spam, piorando a entrega em vez de melhorá-la.
- */
+/** Caixa de e-mail profissional ativa do DESCOMPLICARRO, confirmada pelo cliente em 23/11. */
 function dco_email_remetente_endereco() {
-	return 'oportunidades@descomplicarro.com.br';
+	return 'contato@descomplicarro.com.br';
 }
 
 /**
