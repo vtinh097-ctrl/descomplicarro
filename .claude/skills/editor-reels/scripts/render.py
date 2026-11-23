@@ -78,7 +78,7 @@ def color_filters(seg, info):
     return f
 
 
-def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn):
+def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn, dim=None):
     """Foto como card sobre o vídeo: recorte opcional, moldura de papel off-white, sombra, fundo escurecido,
     entrada com fade + leve subida (sem bounce). A voz continua por baixo."""
     cc = cfg["graficos"]["card_foto"]
@@ -86,6 +86,8 @@ def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn):
     iw, ih = binf["video"]["largura"], binf["video"]["altura"]
     rec = enq.get("recorte")  # {"x","y","w","h"} em frações da foto: mostra só o trecho que importa
     f = []
+    if enq.get("girar"):  # graus, sentido horário: nivela documento fotografado torto (antes do recorte)
+        f.append(f"rotate={float(enq['girar'])}*PI/180:fillcolor=black")
     if rec:
         cw, ch = int(iw * rec["w"]) // 2 * 2, int(ih * rec["h"]) // 2 * 2
         f.append(f"crop={cw}:{ch}:{int(iw * rec['x'])}:{int(ih * rec['y'])}")
@@ -109,11 +111,24 @@ def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn):
     off = hex_to_ffmpeg(cfg["marca"]["offwhite"])
     gra = hex_to_ffmpeg(cfg["marca"]["grafite"])
     fades = f"fade=t=in:st=0:d={fd}:alpha=1,fade=t=out:st={dur - fd:.3f}:d={fd}:alpha=1"
-    fc.append(f"[{idx}:v:0]fps={fps_str(fps)},{','.join(f + [''])}scale={w}:{h}:flags=lanczos,setsar=1,"
+    mk = ""
+    m = enq.get("marcar")  # {"x","y","w","h"} em frações da imagem já recortada: contorno laranja no trecho citado
+    if m:
+        lar = hex_to_ffmpeg(cfg["marca"]["laranja"])
+        mk = (f"drawbox=x={int(m['x'] * w)}:y={int(m['y'] * h)}:w={int(m['w'] * w)}:h={int(m['h'] * h)}:"
+              f"color={lar}:t={cc.get('marcar_px', 5)},")
+    fc.append(f"[{idx}:v:0]fps={fps_str(fps)},{','.join(f + [''])}scale={w}:{h}:flags=lanczos,setsar=1,{mk}"
               f"pad={cw}:{ch}:{bd}:{bd}:color={off},trim=end_frame={nfr},setpts=PTS-STARTPTS,format=yuva420p,"
               f"{fades},setpts=PTS+{t0:.4f}/TB[card{j}]")
-    fc.append(f"color=c={gra}:s={W}x{H}:r={fps_str(fps)}:d={dur:.4f},format=yuva420p,"
-              f"colorchannelmixer=aa={cc['escurecer_fundo']},{fades},setpts=PTS+{t0:.4f}/TB[dim{j}]")
+    # fundo escurecido: cards em sequência compartilham um único escurecimento contínuo (sem "piscar")
+    if dim:
+        d0, dd = dim
+        dfades = f"fade=t=in:st=0:d={fd}:alpha=1,fade=t=out:st={dd - fd:.3f}:d={fd}:alpha=1"
+        fc.append(f"color=c={gra}:s={W}x{H}:r={fps_str(fps)}:d={dd:.4f},format=yuva420p,"
+                  f"colorchannelmixer=aa={cc['escurecer_fundo']},{dfades},setpts=PTS+{d0:.4f}/TB[dim{j}]")
+    else:
+        fc.append(f"color=c={gra}:s={W}x{H}:r={fps_str(fps)}:d=0.1,format=yuva420p,colorchannelmixer=aa=0,"
+                  f"setpts=PTS+{t0:.4f}/TB[dim{j}]")
     fc.append(f"color=c={gra}:s={cw}x{ch}:r={fps_str(fps)}:d={dur:.4f},format=yuva420p,"
               f"colorchannelmixer=aa={cc['sombra_alfa']},boxblur=8:2,{fades},setpts=PTS+{t0:.4f}/TB[shd{j}]")
     ymove = f"{rise}*max(0,1-(t-{t0:.4f})/{ent})"
@@ -230,7 +245,23 @@ def main():
     # 3b. B-roll
     cur = "vcat"
     amb = []
-    for j, b in enumerate(proj.get("broll", [])):
+    # agrupa cards encadeados (próximo começa até 0,3 s após o fim do anterior) num só escurecimento
+    brolls = proj.get("broll", [])
+    is_card = [x.get("enquadramento", {}).get("modo") == "card" for x in brolls]
+    dims, k = {}, 0
+    while k < len(brolls):
+        if not is_card[k]:
+            k += 1
+            continue
+        g0, g1 = k, k
+        while g1 + 1 < len(brolls) and is_card[g1 + 1] and \
+                float(brolls[g1 + 1]["inicio"]) <= float(brolls[g1]["inicio"]) + float(brolls[g1]["duracao"]) + 0.3:
+            g1 += 1
+        a0 = float(brolls[g0]["inicio"])
+        a1 = max(float(x["inicio"]) + float(x["duracao"]) for x in brolls[g0:g1 + 1])
+        dims[g0] = (a0, a1 - a0)
+        k = g1 + 1
+    for j, b in enumerate(brolls):
         src = resolve(base, b["arquivo"])
         if not src.exists():
             die(f"B-roll não encontrado: {src}")
@@ -244,7 +275,7 @@ def main():
             inputs += ["-ss", f"{float(b.get('src_in', 0)):.3f}", "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
             binf = media_info(src)
         if b.get("enquadramento", {}).get("modo") == "card":
-            card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn)
+            card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn, dims.get(j))
             cur = f"vb{j}"
             idx += 1
             continue

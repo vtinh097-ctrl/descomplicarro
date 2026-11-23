@@ -39,7 +39,7 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 
 - `fontes` `{id: caminho}` · `transcricoes` `{id: caminho}` · `saida` · `legendas` · `padrao` (outro config, opcional)
 - `segmentos[]`: `fonte`, `in`, `out`, `enquadramento {modo: recortar|encaixar, zoom, x, y}`, `ganho_db`, `cor {brilho, contraste, saturacao, gama}`, `fade_entrada`, `fade_saida` (para grafite), `sem_legenda`, `nota`
-- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento` (`modo`: recortar | encaixar | card; no card: `recorte`, `largura_max`, `altura_max`, `centro_y`), `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
+- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento` (`modo`: recortar | encaixar | card; no card: `girar`, `recorte`, `marcar`, `largura_max`, `altura_max`, `centro_y`), `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
 - `graficos[]`: `tipo` (titulo, termo, dado, rotulo [`lado`], capitulo, nota, cartela, cartela_final), `inicio`, `fim`, textos do tipo, `destaques`
 - `destaques_globais`: termos destacados em laranja em qualquer bloco de legenda
 - `cauda_s`: segundos extras em grafite no final (para a cartela entrar depois da última palavra)
@@ -58,6 +58,10 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 MP4 · H.264 High 4.1 · 1080×1920 · yuv420p · BT.709 · CRF 17 preset slow (maxrate 16 Mb/s) · GOP 2 s · fps 30 (ou o da origem quando 23,976/24/25/29,97) · AAC 192 kbps 48 kHz estéreo · faststart.
 
 Alternativas via `exportacao`: 4:5 para feed (1080×1350), 1:1, 60 fps (só se a origem for 60 e o conteúdo pedir movimento), CRF maior para arquivo menor. Ao mudar dimensões, rever zonas seguras e posições dos gráficos.
+
+## Fotos de celular (HEIC)
+Fotos de iPhone chegam em HEIC, que o FFmpeg 6.1 não lê. Converter antes, respeitando a orientação:
+`pip install pillow-heif` e `ImageOps.exif_transpose(Image.open(f)).convert("RGB").save("foto.jpg", quality=95)` (com `pillow_heif.register_heif_opener()`).
 
 ## Limitações conhecidas (v0.1)
 - **Multicâmera** (duas câmeras gravando a mesma fala): ainda não há sincronização automática entre câmeras nem transcrição compartilhada; a verificação de ressalvas trata cada câmera separadamente e gera alertas falsos. Implementar quando houver material multicâmera real (sincronizar por correlação de áudio, como o QA já faz).
