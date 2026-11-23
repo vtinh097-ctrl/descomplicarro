@@ -15,9 +15,36 @@ function dco_email_remetente_nome() {
 	return 'DESCOMPLICARRO';
 }
 
+/**
+ * Endereço de remetente preferencial. ATENÇÃO: isto só funciona de verdade
+ * se oportunidades@descomplicarro.com.br existir como caixa de e-mail real
+ * (ou estiver autorizado a enviar pelo domínio) na hospedagem — confirme
+ * isso no painel da Hostinger ANTES de instalar esta atualização. Um
+ * endereço que não existe/não está autorizado pode ser rejeitado ou cair
+ * em spam, piorando a entrega em vez de melhorá-la.
+ */
+function dco_email_remetente_endereco() {
+	return 'oportunidades@descomplicarro.com.br';
+}
+
+/**
+ * Só troca o remetente (nome + endereço) para ESTE envio específico — o
+ * filtro é adicionado e removido em volta de uma única chamada a wp_mail(),
+ * então nenhum outro e-mail do WordPress ou de outro plugin, disparado em
+ * qualquer outro momento da mesma requisição, é afetado.
+ */
 function dco_enviar_email( $destinatario, $assunto, $corpo_html ) {
+	$definir_nome     = function () { return dco_email_remetente_nome(); };
+	$definir_endereco = function () { return dco_email_remetente_endereco(); };
+	add_filter( 'wp_mail_from_name', $definir_nome );
+	add_filter( 'wp_mail_from', $definir_endereco );
+
 	$headers = array( 'Content-Type: text/html; charset=UTF-8' );
-	return wp_mail( $destinatario, $assunto, dco_email_layout( $corpo_html ), $headers );
+	$enviado = wp_mail( $destinatario, $assunto, dco_email_layout( $corpo_html ), $headers );
+
+	remove_filter( 'wp_mail_from_name', $definir_nome );
+	remove_filter( 'wp_mail_from', $definir_endereco );
+	return $enviado;
 }
 
 /** Envelope visual simples e consistente para todos os e-mails deste plugin. */
@@ -25,7 +52,8 @@ function dco_email_layout( $conteudo_html ) {
 	return '<div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#252525;">'
 		. '<p style="font-size:12px;letter-spacing:1px;color:#C65A32;text-transform:uppercase;margin-bottom:24px;">DESCOMPLICARRO</p>'
 		. $conteudo_html
-		. '<p style="font-size:12px;color:#888;margin-top:32px;border-top:1px solid #eee;padding-top:16px;">Este é um e-mail automático do site descomplicarro.com.br — se você não reconhece esta ação, pode ignorá-lo com segurança.</p>'
+		. '<p style="font-size:13px;color:#252525;margin-top:28px;">Equipe DESCOMPLICARRO<br><a href="https://descomplicarro.com.br" style="color:#C65A32;">descomplicarro.com.br</a></p>'
+		. '<p style="font-size:12px;color:#888;margin-top:16px;border-top:1px solid #eee;padding-top:16px;">Este é um e-mail automático do site descomplicarro.com.br — se você não reconhece esta ação, pode ignorá-lo com segurança.</p>'
 		. '</div>';
 }
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DESCOMPLICARRO — Oportunidades Automotivas
  * Description: Banco de currículos e vagas do setor automotivo (autogestão por link mágico, sem senha), métricas simples de cliques e automação editorial — construído como plugin próprio para que os dados sobrevivam a trocas/atualizações do tema DESCOMPLICARRO. O tema cuida só da apresentação visual.
- * Version: 0.5.0
+ * Version: 0.5.1
  * Author: DESCOMPLICARRO
  * Text Domain: descomplicarro-oportunidades
  *
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DCO_VERSION', '0.5.0' );
+define( 'DCO_VERSION', '0.5.1' );
 define( 'DCO_PLUGIN_FILE', __FILE__ );
 define( 'DCO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DCO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
