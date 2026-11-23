@@ -30,6 +30,7 @@ Obrigatórias: FFmpeg/FFprobe (com libx264, aac, libass), Python ≥ 3.9. Recome
 | B | editar `projeto.json` (enquadramento, B-roll, gráficos, áudio) | |
 | B | `python3 scripts/captions.py build projeto.json` → revisar → `captions.py lint projeto.json` | `legendas.json` |
 | B | `python3 scripts/render.py projeto.json` (`--rascunho` para checar montagem rápido) | `saida/vN.mp4` |
+| C | `python3 scripts/capa.py --video brutos/E.mov --t 46.8 --titulo "..." --destaques "..." --out saida/capa.jpg [--card ...]` | capa 1080×1920 + `_grade.jpg` + `_zonas.jpg` |
 | B/C | `python3 scripts/qa.py projeto.json` | `saida/qa_vN/relatorio.md` + prévias |
 
 Importante: o identificador da fonte (`A`) é o nome do arquivo de transcrição (`trans/A.json`); mantenha-os iguais.

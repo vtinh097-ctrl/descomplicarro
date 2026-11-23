@@ -67,5 +67,8 @@ Crie uma pasta de trabalho do projeto **fora do repositório** (ex.: no scratchp
 3. Entregue o arquivo final + relatório.
 4. Se o usuário validar o padrão, **registre-o** em `references/padroes-aprovados.md` (e os parâmetros em `config/padrao.json`, subindo a versão). Pergunte antes de alterar o padrão.
 
+## Capa
+Quando pedida (ou ao entregar a versão final, oferecer): `scripts/capa.py` — quadro do vídeo + título do gancho (+ card do documento, se houver). Regras em `identidade-visual.md → Capa`. Revisar a imagem e a prévia da grade do perfil antes de entregar.
+
 ## Entrega de arquivos
 Arquivos finais ficam na pasta de trabalho do projeto; envie ao usuário com a ferramenta de envio de arquivos (vídeo + 1 folha de prévia do QA). Nunca commite mídia no repositório.

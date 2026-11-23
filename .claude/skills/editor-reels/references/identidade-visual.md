@@ -50,6 +50,13 @@ Valores iniciais conservadores. **Validar no primeiro teste real** com uma captu
 
 Regras: um gráfico por vez (além da legenda); entrada/saída com fade de 150 ms; nada de bounce, glow, gradiente, 3D, ícone de app, emoji, sticker.
 
+## Capa do Reel (`scripts/capa.py`)
+- Quadro real do vídeo que resume a história (pessoa + assunto em cena, gesto expressivo), rostos sempre livres.
+- Título = o mesmo do gancho, Space Grotesk Bold caixa alta, caixas grafite, destaque laranja e ponto final laranja; quebra sem palavra fraca no fim da linha (o script reduz o corpo em passos pequenos se a boa quebra não couber).
+- Opcional: card do documento-chave (mesmo estilo do vídeo, com marcação), longe de rostos e gestos.
+- Todo texto dentro do recorte da **grade do perfil (3:4 central, y 240–1680)** e fora da interface do Reels — o script gera `_grade.jpg` (como aparece no perfil) e `_zonas.jpg`, e avisa se algo sair.
+- Entregar 2 variantes quando houver escolha real (ex.: com e sem documento).
+
 ## Logotipo
 O repositório ainda **não tem o logotipo oficial** (só placeholder no site). Não desenhar logotipo. Se a marca enviar o arquivo, registrar aqui e criar um tipo de gráfico para ele.
 
