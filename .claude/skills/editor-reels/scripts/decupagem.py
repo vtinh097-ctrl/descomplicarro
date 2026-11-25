@@ -103,6 +103,14 @@ def group_takes(utts, thr=0.6):
     return groups
 
 
+def utterance_kept(u, segs, words):
+    """True se TODAS as palavras do enunciado estão em algum segmento (o enunciado pode atravessar vários
+    segmentos quando o corte silencioso remove pausas internas)."""
+    ws = [w for w in words if w["ini"] >= u["ini"] - 0.01 and w["fim"] <= u["fim"] + 0.01]
+    return bool(ws) and all(any(s["in"] - 0.02 <= (w["ini"] + w["fim"]) / 2 <= s["out"] + 0.02 for s in segs)
+                            for w in ws)
+
+
 def word_cut_alerts(tr, segs, key):
     """Corte dentro do intervalo de uma palavra E com som no ponto do corte (o Whisper às vezes estica
     palavras sobre o silêncio; corte em silêncio real não é corte de palavra)."""
@@ -173,7 +181,7 @@ def main():
             segs = [s for s in proj["segmentos"] if s["fonte"] in src_ids]
 
             def inside(u):
-                return any(s["in"] <= u["ini"] + 0.05 and u["fim"] - 0.05 <= s["out"] for s in segs)
+                return utterance_kept(u, segs, tr["palavras"])
 
             for g in groups:
                 if any(utts[i]["ressalva"] for i in g) and not any(inside(utts[i]) for i in g):

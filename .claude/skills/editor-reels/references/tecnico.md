@@ -40,9 +40,10 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 
 - `fontes` `{id: caminho}` · `transcricoes` `{id: caminho}` · `saida` · `legendas` · `padrao` (outro config, opcional)
 - `segmentos[]`: `fonte`, `in`, `out`, `enquadramento {modo: recortar|encaixar, zoom, x, y}`, `ganho_db`, `cor {brilho, contraste, saturacao, gama}`, `fade_entrada`, `fade_saida` (para grafite), `sem_legenda`, `nota`
-- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento` (`modo`: recortar | encaixar | card; no card: `girar`, `recorte`, `marcar`, `largura_max`, `altura_max`, `centro_y`), `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
+- `broll[]`: `arquivo`, `inicio`, `duracao`, `src_in`, `enquadramento` (`modo`: recortar | encaixar | card | flutuante [`centro`, `largura`, `piscar`, `sombra`]; no card: `girar`, `recorte`, `marcar`, `largura_max`, `altura_max`, `centro_y`), `fade` (0,15 s), `som_ambiente_db`, `origem` (direito de uso)
 - `graficos[]`: `tipo` (titulo, termo, dado, rotulo [`lado`], capitulo, nota, cartela, cartela_final), `inicio`, `fim`, textos do tipo, `destaques`
 - `destaques_globais`: termos destacados em laranja em qualquer bloco de legenda
+- `transicao_cortes`: `{"tipo": "dissolve", "duracao": 0.13}` — dissolução curta em TODOS os cortes (corte silencioso com plano fixo); usa os quadros de silêncio após cada corte, então a sincronia não muda
 - `cauda_s`: segundos extras em grafite no final (para a cartela entrar depois da última palavra)
 - `audio`: sobrescritas da cadeia de voz · `musica`: `arquivo`, `autorizada`, `licenca`, `volume_db`, `ducking`
 - `exportacao`: `fps`, `largura`, `altura`, `crf`, `preset` (alternativas)
@@ -59,6 +60,12 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 MP4 · H.264 High 4.1 · 1080×1920 · yuv420p · BT.709 · CRF 17 preset slow (maxrate 16 Mb/s) · GOP 2 s · fps 30 (ou o da origem quando 23,976/24/25/29,97) · AAC 192 kbps 48 kHz estéreo · faststart.
 
 Alternativas via `exportacao`: 4:5 para feed (1080×1350), 1:1, 60 fps (só se a origem for 60 e o conteúdo pedir movimento), CRF maior para arquivo menor. Ao mudar dimensões, rever zonas seguras e posições dos gráficos.
+
+## Remoção de fundo (objetos flutuantes)
+`pip install rembg onnxruntime`; modelo `isnet-general-use` (baixado do GitHub na 1ª vez). `remove(img, session=new_session("isnet-general-use"), alpha_matting=True)` e recortar pelo `getbbox()`. Conferir o recorte sobre fundo escuro E claro antes de usar.
+
+## Corte silencioso
+Medir silêncios reais pela energia (limiar = piso + máx(6 dB, 25% da faixa), duração ≥ 0,25 s), agrupar as palavras entre silêncios e passar os grupos para `montar.py --trechos`; o respiro padrão (0,06 s antes / 0,14 s depois) deixa ~0,2 s entre frases. Conferir a fala duplicada pelo Whisper na emenda de segmentos (ex.: "não não") pela energia antes de cortar — às vezes a duplicação é só da transcrição.
 
 ## Fotos de celular (HEIC)
 Fotos de iPhone chegam em HEIC, que o FFmpeg 6.1 não lê. Converter antes, respeitando a orientação:

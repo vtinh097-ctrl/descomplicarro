@@ -67,7 +67,7 @@ def main():
     ap.add_argument("--juntar-pausa", type=float, default=0.45,
                     help="enunciados consecutivos na origem com pausa ≤ isto ficam no mesmo segmento")
     args = ap.parse_args()
-    dec = load_json(args.decupagem)["fontes"]
+    dec = load_json(args.decupagem)["fontes"] if args.takes else {}
     out_path = Path(args.out).resolve()
     proj = load_json(out_path) if out_path.exists() else {}
     fontes, trans, segs = dict(proj.get("fontes", {})), dict(proj.get("transcricoes", {})), []

@@ -78,6 +78,51 @@ def color_filters(seg, info):
     return f
 
 
+def prep_float(src, b, cfg, base):
+    """Recorte sem fundo (PNG com alfa) → tamanho final + sombra suave abaixo (sensação de flutuar)."""
+    from PIL import Image, ImageDraw, ImageFilter
+    enq = b["enquadramento"]
+    im = Image.open(src).convert("RGBA")
+    bb = im.getbbox()
+    im = im.crop(bb) if bb else im
+    w = int(enq.get("largura", 300))
+    h = round(w * im.height / im.width)
+    im = im.resize((w, h), Image.LANCZOS)
+    pad = 40
+    can = Image.new("RGBA", (w + 2 * pad, h + 2 * pad), (0, 0, 0, 0))
+    if enq.get("sombra", True):
+        sh = Image.new("RGBA", can.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh).ellipse([pad + w * 0.08, pad + h * 0.86, pad + w * 0.92, pad + h * 1.04], fill=(0, 0, 0, 120))
+        can = Image.alpha_composite(can, sh.filter(ImageFilter.GaussianBlur(12)))
+    can.alpha_composite(im, (pad, pad))
+    out = base / "build" / f"flutuante_{Path(src).stem}_{w}.png"
+    out.parent.mkdir(exist_ok=True)
+    can.save(out)
+    return out
+
+
+def float_overlay(fc, idx, j, b, src, cur, cfg, fps, dur, base, warn):
+    """Objeto flutuante: posicionado pelo centro; entra e sai piscando (liga-desliga-liga), sem fundo."""
+    from PIL import Image
+    enq = b["enquadramento"]
+    png = src  # já preparado (prep_float) na leitura das entradas
+    cw, ch = Image.open(png).size
+    cx, cy = enq["centro"]
+    x, y = int(cx - cw / 2), int(cy - ch / 2)
+    t0, f = float(b["inicio"]), 1 / fps
+    t1 = t0 + dur
+    if enq.get("piscar", True):
+        on = [(t0, t0 + 2 * f), (t0 + 4 * f, t1 - 4 * f), (t1 - 2 * f, t1)]
+    else:
+        on = [(t0, t1)]
+    en = "+".join(f"between(t,{a:.4f},{c - 0.0001:.4f})" for a, c in on)
+    zs = cfg["zonas_seguras"]
+    if x < zs["esquerda"] or x + cw - 40 > 1080 - zs["direita"] and y + ch > zs["coluna_icones_y_inicio"]:
+        warn(f"B-roll {j + 1} (flutuante): pode encostar na coluna de ícones do Instagram")
+    fc.append(f"[{idx}:v:0]fps={fps_str(fps)},format=rgba,setpts=PTS-STARTPTS+{t0:.4f}/TB[fl{j}]")
+    fc.append(f"[{cur}][fl{j}]overlay={x}:{y}:eof_action=pass:format=auto:enable='{en}'[vb{j}]")
+
+
 def card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn, dim=None):
     """Foto como card sobre o vídeo: recorte opcional, moldura de papel off-white, sombra, fundo escurecido,
     entrada com fade + leve subida (sem bounce). A voz continua por baixo."""
@@ -204,6 +249,8 @@ def main():
     idx = 0
     # 3a. segmentos
     vlabels, alabels = [], []
+    tc_cfg = proj.get("transicao_cortes") or {}
+    dfr = round(float(tc_cfg.get("duracao", 0.13)) * fps) if tc_cfg.get("tipo") == "dissolve" else 0
     fade_ms = ac["fade_corte_ms"] / 1000
     gra = hex_to_ffmpeg(cfg["marca"]["grafite"])
     for s in proj["segmentos"]:
@@ -212,8 +259,11 @@ def main():
         inputs += ["-ss", f"{s['in']:.6f}", "-t", f"{s['_dur'] + 0.5:.6f}", "-i", str(src)]
         crop, amp = crop_expr(inf, W, H, s.get("enquadramento", {}), warn, s["id"], cfg)
         s["_ampliacao"] = round(amp, 2)
+        # dissolução: o trecho leva alguns quadros a mais da origem (o silêncio logo após o corte) para
+        # cruzar com o próximo — a imagem do próximo trecho começa exatamente com o áudio dele
+        extra = dfr if (dfr and s is not proj["segmentos"][-1]) else 0
         vf = color_filters(s, inf) + [
-            f"fps={fps_str(fps)}", crop, "setsar=1", f"trim=end_frame={s['_frames']}", "setpts=PTS-STARTPTS"]
+            f"fps={fps_str(fps)}", crop, "setsar=1", f"trim=end_frame={s['_frames'] + extra}", "setpts=PTS-STARTPTS"]
         if s.get("fade_entrada"):
             vf.append(f"fade=t=in:st=0:d={s['fade_entrada']}:color={gra}")
         if s.get("fade_saida"):
@@ -233,7 +283,15 @@ def main():
         alabels.append(f"[a{idx}]")
         idx += 1
     n = len(proj["segmentos"])
-    fc.append("".join(v + a for v, a in zip(vlabels, alabels)) + f"concat=n={n}:v=1:a=1[vcat0][acat0]")
+    if dfr and n > 1:
+        prev = vlabels[0]
+        for k, seg in enumerate(proj["segmentos"][1:], 1):
+            lab = "[vcat0]" if k == n - 1 else f"[x{k}]"
+            fc.append(f"{prev}{vlabels[k]}xfade=transition=fade:duration={dfr / fps:.6f}:offset={seg['_ini']:.6f}{lab}")
+            prev = lab
+        fc.append("".join(alabels) + f"concat=n={n}:v=0:a=1[acat0]")
+    else:
+        fc.append("".join(v + a for v, a in zip(vlabels, alabels)) + f"concat=n={n}:v=1:a=1[vcat0][acat0]")
     if proj["_cauda_frames"]:
         cd = proj["_cauda_frames"] / fps
         fc.append(f"[vcat0]tpad=stop_mode=add:stop_duration={cd:.6f}:color={gra}[vcat]")
@@ -267,13 +325,22 @@ def main():
             die(f"B-roll não encontrado: {src}")
         is_img = src.suffix.lower() in IMG_EXT
         dur = float(b["duracao"])
-        if is_img:
+        if b.get("enquadramento", {}).get("modo") == "flutuante":
+            src = prep_float(src, b, cfg, base)  # PNG com sombra, já no tamanho final
+            inputs += ["-loop", "1", "-framerate", fps_str(fps), "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
+            binf = None
+        elif is_img:
             inputs += ["-loop", "1", "-framerate", fps_str(fps), "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
             binf = media_info(src)
             binf["video"]["hdr"] = False
         else:
             inputs += ["-ss", f"{float(b.get('src_in', 0)):.3f}", "-t", f"{dur + 0.2:.3f}", "-i", str(src)]
             binf = media_info(src)
+        if b.get("enquadramento", {}).get("modo") == "flutuante":
+            float_overlay(fc, idx, j, b, src, cur, cfg, fps, dur, base, warn)
+            cur = f"vb{j}"
+            idx += 1
+            continue
         if b.get("enquadramento", {}).get("modo") == "card":
             card_overlay(fc, idx, j, b, binf, cur, cfg, W, H, fps, dur, warn, dims.get(j))
             cur = f"vb{j}"
@@ -426,6 +493,13 @@ def main():
         "lint": [list(i) for i in issues], "rascunho": args.rascunho,
         "comando_passo1": cmd1,
     }
+    # avisos de ampliação iguais em todos os segmentos viram uma linha só
+    import re as _re
+    amps = [w for w in warnings if _re.match(r"S\d+: ampliação", w)]
+    if len(amps) > 2 and len({w.split(": ", 1)[1] for w in amps}) == 1:
+        rest = [w for w in warnings if w not in amps]
+        warnings[:] = [f"todos os {len(amps)} segmentos: {amps[0].split(': ', 1)[1]}"] + rest
+        log["avisos"] = warnings
     save_json(build / "render_log.json", log)
     for w in warnings:
         print(f"  AVISO: {w}")

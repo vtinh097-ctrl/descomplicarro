@@ -305,7 +305,7 @@ def check_ressalvas(rep, proj):
         segs = [s for s in proj["segmentos"] if s["fonte"] == key]
 
         def inside(u):
-            return any(s["in"] <= u["ini"] + 0.05 and u["fim"] - 0.05 <= s["out"] for s in segs)
+            return decupagem.utterance_kept(u, segs, tr["palavras"])
         found = False
         for g in groups:
             if any(utts[i]["ressalva"] for i in g) and not any(inside(utts[i]) for i in g):
