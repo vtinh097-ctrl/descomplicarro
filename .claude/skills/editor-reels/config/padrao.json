@@ -6,7 +6,11 @@
     "offwhite": "#F4F1EA",
     "laranja": "#C65A32",
     "fonte_titulo": "Space Grotesk",
-    "fonte_texto": "DM Sans"
+    "fonte_texto": "DM Sans",
+    "logo": "assets/logo/descomplicarro-logo-claro.png",
+    "logo_fundo_claro": "assets/logo/descomplicarro-logo-escuro.png",
+    "simbolo": "assets/logo/descomplicarro-simbolo-claro.png",
+    "simbolo_fundo_claro": "assets/logo/descomplicarro-simbolo-escuro.png"
   },
   "video": {
     "largura": 1080,

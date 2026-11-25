@@ -21,8 +21,9 @@ Ferramenta: `scripts/capa.py --modelo A` (padrão do script).
   Space Grotesk Bold caixa alta, 2 linhas sempre que possível, 1 destaque + pontuação final em laranja.
 - Faixa grafite translúcida atrás do título (legibilidade em qualquer fundo).
 - **Marca no topo à esquerda**, numa plaquinha grafite, sempre no mesmo lugar (identidade na grade do perfil).
-  Logotipo oficial: **PENDENTE** — o usuário vai enviar. Até lá, só o nome "DESCOMPLICARRO" em texto.
+  Logotipo oficial instalado em 25/11/2026 (`assets/logo/descomplicarro-logo-claro.png`, ~430 px de largura).
   O quadrado com ponto laranja do site é placeholder e foi rejeitado — não usar.
+  PENDENTE: confirmar se as cores do logo (#33302C / #C35932 / #FAF8EC) passam a ser as oficiais da skill.
 - Sem série/nome de quadro; sem elemento de apoio fixo (card/carro) na capa.
 - Título visível no recorte da grade (3:4) e fora da interface do Reels — o script confere.
 Rejeitados: modelo B (assinatura sob o título) e C (símbolo mínimo).

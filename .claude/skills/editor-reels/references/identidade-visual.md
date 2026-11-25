@@ -59,8 +59,16 @@ Regras: um gráfico por vez (além da legenda); entrada/saída com fade de 150 m
 - Todo texto dentro do recorte da **grade do perfil (3:4 central, y 240–1680)** e fora da interface do Reels — o script gera `_grade.jpg` (como aparece no perfil) e `_zonas.jpg`, e avisa se algo sair.
 - Entregar 2 variantes quando houver escolha real (ex.: com e sem documento).
 
-## Logotipo
-O repositório ainda **não tem o logotipo oficial**. O quadrado de contorno com ponto laranja do cabeçalho do site é **placeholder** (rejeitado pelo usuário como marca, 25/11/2026) — nunca usar como logo. Quando o arquivo oficial chegar: salvar em `assets/logo/` (PNG transparente, versão clara para fundo escuro) e apontar em `config/padrao.json → marca.logo`; o `capa.py` passa a usá-lo automaticamente. Se a marca enviar o arquivo, registrar aqui e criar um tipo de gráfico para ele.
+## Logotipo (oficial — recebido em 25/11/2026)
+Arquivos em `assets/logo/` (PNG transparente, 3000 px):
+- `descomplicarro-logo-claro.png` — para fundo ESCURO (usado na capa, sobre a plaquinha grafite);
+- `descomplicarro-logo-escuro.png` — para fundo CLARO;
+- `descomplicarro-simbolo-claro.png` / `-escuro.png` — só o símbolo (arco), para usos pequenos.
+Conjunto: símbolo em arco (grafite/off-white + laranja) + "DESCOMPLICARRO" com D e C em laranja + assinatura
+"ENTENDA. QUESTIONE. DECIDA." em cinza. Não redesenhar, recolorir, distorcer nem separar a assinatura sem aprovação.
+O quadrado com ponto laranja do cabeçalho do site é placeholder antigo — nunca usar.
+Cores medidas no arquivo oficial: grafite #33302C, laranja #C35932, off-white #FAF8EC, cinza #9C978E
+(ligeiramente diferentes dos tokens atuais do site/skill — ver decisão pendente em padroes-aprovados.md).
 
 ## Enquadramento
 - Material vertical: usar inteiro (ampliação 1,0×).

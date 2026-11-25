@@ -129,7 +129,7 @@ def draw_marca(im, x, y, cfg, tipo="completa", escala=1.0, placa=False, centro=F
     if lp and lp.exists():
         lg = Image.open(lp).convert("RGBA")
         lg = lg.crop(lg.getbbox())
-        h = int(64 * escala)
+        h = int(84 * escala)  # logo 5,1:1 → ~430 px de largura
         lg = lg.resize((round(lg.width * h / lg.height), h), Image.LANCZOS)
         w = lg.width
     else:
