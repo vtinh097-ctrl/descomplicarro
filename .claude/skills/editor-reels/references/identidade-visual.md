@@ -60,7 +60,7 @@ Regras: um gráfico por vez (além da legenda); entrada/saída com fade de 150 m
 - Entregar 2 variantes quando houver escolha real (ex.: com e sem documento).
 
 ## Logotipo
-O repositório ainda **não tem o logotipo oficial** (só placeholder no site). Não desenhar logotipo. Se a marca enviar o arquivo, registrar aqui e criar um tipo de gráfico para ele.
+O repositório ainda **não tem o logotipo oficial**. O quadrado de contorno com ponto laranja do cabeçalho do site é **placeholder** (rejeitado pelo usuário como marca, 25/11/2026) — nunca usar como logo. Quando o arquivo oficial chegar: salvar em `assets/logo/` (PNG transparente, versão clara para fundo escuro) e apontar em `config/padrao.json → marca.logo`; o `capa.py` passa a usá-lo automaticamente. Se a marca enviar o arquivo, registrar aqui e criar um tipo de gráfico para ele.
 
 ## Enquadramento
 - Material vertical: usar inteiro (ampliação 1,0×).

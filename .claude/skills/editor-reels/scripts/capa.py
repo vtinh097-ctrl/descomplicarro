@@ -13,8 +13,8 @@ Modelos (o padrão aprovado fica registrado em references/identidade-visual.md �
 Todos: quadro real do vídeo (HDR convertido), faixa grafite translúcida atrás do título (legibilidade),
 título Space Grotesk Bold caixa alta com 1 destaque laranja e ponto final laranja, quebra sem palavra fraca.
 
-MARCA: o símbolo e a assinatura reproduzem o conjunto PROVISÓRIO do site (assets/css/style.css → .site-logo).
-Quando o logotipo oficial chegar, troque só a função draw_marca() — todas as capas acompanham.
+MARCA: logotipo oficial em config/padrao.json → marca.logo (PNG transparente, versão clara). Enquanto não houver,
+usa o nome em texto e avisa. O quadrado com ponto laranja do site é PLACEHOLDER — não é a marca.
 
 Gera também <out>_grade.jpg (recorte 3:4 da grade do perfil) e <out>_zonas.jpg, e avisa se algo sair dessas áreas.
 """
@@ -117,38 +117,40 @@ def band(im, y0, y1, cfg, alpha=0.55, feather=70):
 
 
 def draw_marca(im, x, y, cfg, tipo="completa", escala=1.0, placa=False, centro=False):
-    """Símbolo (quadrado de contorno + ponto laranja) + assinatura. Conjunto provisório do site."""
+    """Marca na capa. Usa o LOGOTIPO OFICIAL (config/padrao.json → marca.logo: PNG com fundo transparente,
+    versão clara para fundo escuro). Sem o arquivo, escreve só o nome em texto — provisório, com aviso.
+    (O quadrado com ponto laranja do site é placeholder e NÃO é a marca: não usar.)"""
     from PIL import Image, ImageDraw
+    from rl_common import SKILL_DIR
     mk = cfg["marca"]
-    off, lar, gra = rgb(mk["offwhite"]), rgb(mk["laranja"]), rgb(mk["grafite"])
-    s = int(54 * escala)
-    fw, ft = font("SpaceGrotesk-Bold.ttf", int(38 * escala)), font("DMSans-Medium.ttf", int(16 * escala))
-    word, tag = "DESCOMPLICARRO", "ENTENDA. QUESTIONE. DECIDA."
-    track = 0.12 * ft.size
-    tag_w = sum(ft.getlength(c) for c in tag) + track * (len(tag) - 1)
-    text_w = max(fw.getlength(word), tag_w) if tipo == "completa" else 0
-    gap = int(16 * escala)
-    total_w = s + (gap + text_w if tipo == "completa" else 0)
+    off, gra = rgb(mk["offwhite"]), rgb(mk["grafite"])
+    logo = mk.get("logo")
+    lp = (SKILL_DIR / logo) if logo else None
+    if lp and lp.exists():
+        lg = Image.open(lp).convert("RGBA")
+        lg = lg.crop(lg.getbbox())
+        h = int(64 * escala)
+        lg = lg.resize((round(lg.width * h / lg.height), h), Image.LANCZOS)
+        w = lg.width
+    else:
+        print("  AVISO: logotipo oficial ausente (marca.logo) — usando o nome em texto, provisório")
+        lg = None
+        fw = font("SpaceGrotesk-Bold.ttf", int(40 * escala))
+        w, h = int(fw.getlength("DESCOMPLICARRO")), int(46 * escala)
     if centro:
-        x = int((W - total_w) / 2)
+        x = int((W - w) / 2)
     if placa:
         pad = int(16 * escala)
         ov = Image.new("RGBA", im.size, (0, 0, 0, 0))
-        ImageDraw.Draw(ov).rectangle([x - pad, y - pad, x + total_w + pad, y + s + pad], fill=gra + (225,))
+        ImageDraw.Draw(ov).rectangle([x - pad, y - pad, x + w + pad, y + h + pad], fill=gra + (225,))
         im.paste(Image.alpha_composite(im.convert("RGBA"), ov).convert("RGB"))
-    d = ImageDraw.Draw(im)
-    bw = max(2, int(3 * escala))
-    d.rectangle([x, y, x + s, y + s], outline=off, width=bw)
-    c = int(14 * escala)
-    d.rectangle([x + (s - c) // 2, y + (s - c) // 2, x + (s + c) // 2, y + (s + c) // 2], fill=lar)
-    if tipo == "completa":
-        tx = x + s + gap
-        d.text((tx, y - int(4 * escala)), word, font=fw, fill=off)
-        cx = tx
-        for ch in tag:
-            d.text((cx, y + int(38 * escala)), ch, font=ft, fill=off)
-            cx += ft.getlength(ch) + track
-    return (x, y, x + total_w, y + s)
+    if lg is not None:
+        base = im.convert("RGBA")
+        base.alpha_composite(lg, (x, y))
+        im.paste(base.convert("RGB"))
+    else:
+        ImageDraw.Draw(im).text((x, y - int(6 * escala)), "DESCOMPLICARRO", font=fw, fill=off)
+    return (x, y, x + w, y + h)
 
 
 def draw_card(im, path, girar, recorte, marcar, pos, largura, cfg):
@@ -230,7 +232,7 @@ def main():
     ap.add_argument("--t", type=float, required=True)
     ap.add_argument("--titulo", required=True)
     ap.add_argument("--destaques", default="")
-    ap.add_argument("--modelo", choices=["A", "B", "C"], default="A")
+    ap.add_argument("--modelo", choices=["A", "B", "C"], default="A", help="A = padrão aprovado (25/11/2026)")
     ap.add_argument("--y-titulo", type=int, default=0, help="topo do título (0 = automático, terço inferior)")
     ap.add_argument("--tamanho", type=int, default=100)
     ap.add_argument("--card")

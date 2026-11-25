@@ -15,6 +15,18 @@ Pontos que o primeiro teste real deve confirmar ou ajustar:
 - [ ] duração-alvo e ritmo (pausas reduzidas a ~0,2 s);
 - [ ] fluxo de aprovação (manter as 3 etapas ou simplificar).
 
+## Capa — Modelo A — aprovado em 25/11/2026
+Ferramenta: `scripts/capa.py --modelo A` (padrão do script).
+- Quadro real do vídeo (rostos livres; HDR convertido), título do gancho no terço inferior em caixas grafite,
+  Space Grotesk Bold caixa alta, 2 linhas sempre que possível, 1 destaque + pontuação final em laranja.
+- Faixa grafite translúcida atrás do título (legibilidade em qualquer fundo).
+- **Marca no topo à esquerda**, numa plaquinha grafite, sempre no mesmo lugar (identidade na grade do perfil).
+  Logotipo oficial: **PENDENTE** — o usuário vai enviar. Até lá, só o nome "DESCOMPLICARRO" em texto.
+  O quadrado com ponto laranja do site é placeholder e foi rejeitado — não usar.
+- Sem série/nome de quadro; sem elemento de apoio fixo (card/carro) na capa.
+- Título visível no recorte da grade (3:4) e fora da interface do Reels — o script confere.
+Rejeitados: modelo B (assinatura sob o título) e C (símbolo mínimo).
+
 ## Modelo de registro
 ```
 ## Padrão vX.Y — [nome curto] — aprovado em DD/MM/AAAA
