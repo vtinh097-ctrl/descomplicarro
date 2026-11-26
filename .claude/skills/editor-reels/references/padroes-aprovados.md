@@ -15,7 +15,10 @@ Pontos que o primeiro teste real deve confirmar ou ajustar:
 - [ ] duração-alvo e ritmo (pausas reduzidas a ~0,2 s);
 - [ ] fluxo de aprovação (manter as 3 etapas ou simplificar).
 
-## Capa — Modelo A — aprovado em 25/11/2026
+## Capa — Modelo A com logotipo oficial — APROVADO em 26/11/2026
+Versão aprovada: capas de referência "Qual eletrificado é pra você?" e "38 anos com o mesmo carro." geradas por
+`scripts/capa.py --modelo A` com `assets/logo/descomplicarro-logo-claro.png` (estado do commit 6321d87).
+Reproduzir exatamente este modelo; qualquer mudança no layout da capa exige nova aprovação.
 Ferramenta: `scripts/capa.py --modelo A` (padrão do script).
 - Quadro real do vídeo (rostos livres; HDR convertido), título do gancho no terço inferior em caixas grafite,
   Space Grotesk Bold caixa alta, 2 linhas sempre que possível, 1 destaque + pontuação final em laranja.
