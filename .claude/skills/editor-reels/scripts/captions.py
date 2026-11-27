@@ -232,8 +232,23 @@ def cmd_lint(proj, args, quiet=False):
         d = g["fim"] - g["inicio"]
         words = len(re.findall(r"\w+", " ".join(str(g.get(k, "")) for k in
                                                 ("texto", "valor", "rotulo", "termo", "explicacao", "apoio", "cta"))))
+        if g["tipo"] in ("termo", "selo"):
+            st_t = cfg["graficos"]["termo"]
+            xt = g.get("x", 126)
+            wmax = max([_meas.width(g.get("termo", "").upper(), "Space Grotesk", True, st_t["tamanho"])] +
+                       [_meas.width(x, "DM Sans 14pt Medium", False, st_t["tamanho_apoio"])
+                        for x in str(g.get("explicacao", "")).split("\n")])
+            if xt + wmax + 18 > W - cfg["zonas_seguras"]["direita"]:
+                add("FALHA", gid, f"termo sai da margem direita (x {xt} + {wmax:.0f}px) — quebrar linha com \\n ou mover")
         if g["tipo"] == "comparacao":
             words += len(re.findall(r"\w+", " ".join(" ".join(r) for r in g.get("linhas", []))))
+            if g.get("layout") == "empilhado":
+                need = max([_meas.width(l.upper(), "Space Grotesk", True, g.get("tamanho", 36)) for l, _ in g["linhas"]] +
+                           [_meas.width("= " + r, "DM Sans 14pt Medium", False, g.get("tamanho_dir", 34))
+                            for _, r in g["linhas"]]) + 44
+                if need > g["largura"] or g["x"] + g["largura"] > W - cfg["zonas_seguras"]["direita"] + 1:
+                    add("FALHA", gid, f"comparação empilhada não cabe (precisa {need:.0f}px; x+largura ≤ margem)")
+                g = dict(g, linhas=[])  # pula a checagem de colunas do layout em tabela
             fs = g.get("tamanho", 56)
             colw = (W - 150 - 90) / 2 - 34 - 20
             for l, r in g.get("linhas", []):
@@ -407,13 +422,14 @@ def cmd_ass(proj, args):
             # selo = mesmo desenho do termo, para contexto (evento, local, data): "termo" + "explicacao"
             st = gc["termo"]
             y = g.get("y", st["y_topo"])
+            xt = int(g.get("x", 126))  # posição horizontal (para usar áreas vazias do quadro/cenário)
             y2 = y + st["tamanho"] + 40
             bar_h = (y2 + st["tamanho_apoio"] + 14 if g.get("explicacao") else y + st["tamanho"] + 18) - (y - 18)
-            E(4, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(100, y - 18, 8, bar_h, hi_c))
-            E(3, a, b, "Termo", f"{{\\fad({fi},{fo})\\pos(126,{y})}}{esc(g['termo'].upper())}")
+            E(4, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(xt - 26, y - 18, 8, bar_h, hi_c))
+            E(3, a, b, "Termo", f"{{\\fad({fi},{fo})\\pos({xt},{y})}}{esc(g['termo'].upper())}")
             if g.get("explicacao"):
-                E(3, a, b, "TermoApoio", f"{{\\fad({fi},{fo})\\pos(126,{y2})}}"
-                                         f"{highlight(g['explicacao'], hl, base_c, hi_c)}")
+                E(3, a, b, "TermoApoio", f"{{\\fad({fi},{fo})\\pos({xt},{y2})}}"
+                                         f"{'\\N'.join(highlight(x, hl, base_c, hi_c) for x in g['explicacao'].split(chr(10)))}")
         elif t == "rotulo":
             # lado: "esquerda" (padrão) ou "direita" — o rótulo fica do lado de QUEM está sendo nomeado
             st = gc["rotulo"]
@@ -436,6 +452,23 @@ def cmd_ass(proj, args):
             # direita DM Sans, "=" laranja; linhas entram em sequência (escalonar, s)
             rows = g["linhas"]
             head = g.get("cabecalho")
+            if g.get("layout") == "empilhado":
+                # coluna estreita (cabe em áreas livres ao lado da pessoa): par em 2 linhas — "A" / "= B"
+                fl, fr = g.get("tamanho", 36), g.get("tamanho_dir", 34)
+                lh_l, lh_r, gap = int(fl * 1.3), int(fr * 1.3), 14
+                bx, bw, top = g["x"], g["largura"], g.get("y", 790)
+                box_h = len(rows) * (lh_l + lh_r) + (len(rows) - 1) * gap + 40
+                E(2, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(bx, top, bw, box_h, gra_c, 0.08))
+                E(2, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(bx, top, 6, box_h, hi_c))
+                y = top + 20
+                for k, (l, r) in enumerate(rows):
+                    a_k = min(b - 0.5, a + g.get("escalonar", 0.2) * k)
+                    E(3, a_k, b, "Termo", f"{{\\fad({fi},{fo})\\an7\\bord0\\fs{fl}\\pos({bx + 22},{y})}}{esc(l.upper())}")
+                    y += lh_l
+                    E(3, a_k, b, "TermoApoio", f"{{\\fad({fi},{fo})\\an7\\bord0\\fs{fr}\\pos({bx + 22},{y})}}"
+                                               f"{{\\1c{hi_c}&}}={{\\1c{base_c}&}} {highlight(r, hl, base_c, hi_c)}")
+                    y += lh_r + gap
+                continue
             fs = g.get("tamanho", 56)  # ≥ ~50: legível no celular (40 ficou pequeno demais no 1º uso)
             rh = int(fs * 1.4)
             top = g.get("y", 720)

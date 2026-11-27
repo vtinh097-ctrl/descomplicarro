@@ -51,6 +51,8 @@ Valores iniciais conservadores. **Validar no primeiro teste real** com uma captu
 
 **Objeto flutuante** (B-roll `enquadramento.modo: "flutuante"`): recorte sem fundo (PNG com alfa — fundo removido com rembg, modelo isnet-general-use), com sombra suave abaixo, posicionado pelo `centro` [x, y] e `largura` em px; entra e sai **piscando** (liga 2 quadros, apaga 2, fica). Uso validado: modelos de carro citados na fala, ~300 px de largura (um pouco maior que a mão da apresentadora), 3 s a partir da 1ª sílaba do nome, ao lado da pessoa na altura das mãos; modelos citados em sequência ficam empilhados. **Saída (decisão do usuário, 25/11/2026):** 3 s, mas se o assunto mudar antes (nova categoria, encerramento), o par sai junto na mudança, com mínimo de 1,5 s na tela — o objeto não pode ilustrar o assunto seguinte. Nunca sobre rosto, quadro explicativo ou legenda.
 
+**Regra do usuário (27/11/2026): cards rápidos OU posicionados sem cobrir partes importantes da pessoa (rosto, mãos gesticulando) nem o que ela escreveu no quadro.** Procedimento: medir em quadros da fonte (com régua de x/y) onde estão rosto, mãos e escrita no momento do card; usar o espaço realmente vazio (área em branco do quadro, parede); se o espaço for estreito, usar `comparacao` com `layout: "empilhado"` ou quebrar a explicação do `termo` em linhas (`\n`) e posicioná-lo com `x`; se não houver espaço, mover o card para um momento em que a pessoa não esteja escrevendo (ex.: logo após a conclusão). O lint acusa termo/comparação saindo da margem.
+
 Regras: um gráfico por vez (além da legenda); entrada/saída com fade de 150 ms; nada de bounce, glow, gradiente, 3D, ícone de app, emoji, sticker.
 
 ## Capa do Reel (`scripts/capa.py`)
