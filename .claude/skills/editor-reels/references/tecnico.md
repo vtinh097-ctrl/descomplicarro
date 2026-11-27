@@ -50,6 +50,9 @@ Modelo completo: `templates/projeto.exemplo.json`. Tempos de `segmentos` são **
 - `historico[]`: versões e ajustes aprovados
 
 ## Como o render garante corte e sincronia
+- A grade de quadros de cada segmento é ancorada no ponto de corte (`fps=…:start_time=0`): gravações de celular
+  com tempos irregulares chegavam a adiantar a imagem 2 quadros (66 ms) em alguns cortes — detectado pelo QA
+  (casamento de quadros) em 27/11/2026 e corrigido.
 - Cada segmento é lido com busca precisa (`-ss/-t` na entrada) e cortado em **número inteiro de quadros**; o áudio é cortado no mesmo número exato de amostras (1600 amostras/quadro a 30 fps). Sem deriva acumulada.
 - Reenquadramento: maior área 9:16 da origem ÷ zoom, centrada em (x, y), escalada com lanczos. Ampliação > 1,25× gera aviso; > 2× é bloqueio editorial (aviso forte).
 - HDR (HLG/PQ de celular) → tonemap para SDR BT.709. VFR → fps constante. Rotação de metadado respeitada.

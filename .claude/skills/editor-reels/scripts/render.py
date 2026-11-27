@@ -263,7 +263,7 @@ def main():
         # cruzar com o próximo — a imagem do próximo trecho começa exatamente com o áudio dele
         extra = dfr if (dfr and s is not proj["segmentos"][-1]) else 0
         vf = color_filters(s, inf) + [
-            f"fps={fps_str(fps)}", crop, "setsar=1", f"trim=end_frame={s['_frames'] + extra}", "setpts=PTS-STARTPTS"]
+            f"fps={fps_str(fps)}:start_time=0", crop, "setsar=1", f"trim=end_frame={s['_frames'] + extra}", "setpts=PTS-STARTPTS"]
         if s.get("fade_entrada"):
             vf.append(f"fade=t=in:st=0:d={s['fade_entrada']}:color={gra}")
         if s.get("fade_saida"):

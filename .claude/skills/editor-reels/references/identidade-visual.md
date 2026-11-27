@@ -39,6 +39,7 @@ Valores iniciais conservadores. **Validar no primeiro teste real** com uma captu
 | `capitulo` | Bloco N.01, N.02… (vídeos mais longos) | Space Grotesk Medium, "N.0X" em laranja |
 | `nota` | Correção ou ressalva em tela | DM Sans em caixa grafite, barra laranja |
 | `selo` | Contexto: evento, local, data (ex.: "Encontro de 27 anos · Maverick Clube de Curitiba") | Mesmo desenho do `termo`; entra no plano que MOSTRA o contexto (plano aberto do evento) |
+| `comparacao` | Analogia/equivalência em tabela curta ("luz da injeção = febre") | Caixa grafite com fio laranja; cabeçalho de colunas em laranja; esquerda Space Grotesk caixa alta, direita DM Sans, "=" laranja; linhas entram em sequência; corpo 56 (≥50 para ler no celular); entra no momento da conclusão |
 | `cartela` | Virada de bloco ou cobrir imagem inutilizável (ex.: alguém atravessando a lente) sem perder a fala | Tela grafite, frase em Space Grotesk, fio laranja; legenda continua por cima |
 | `cartela_final` | Encerramento/CTA | Tela grafite, "ENTENDA. QUESTIONE. DECIDA." empilhado com ponto final laranja, CTA |
 

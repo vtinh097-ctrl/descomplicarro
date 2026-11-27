@@ -232,6 +232,14 @@ def cmd_lint(proj, args, quiet=False):
         d = g["fim"] - g["inicio"]
         words = len(re.findall(r"\w+", " ".join(str(g.get(k, "")) for k in
                                                 ("texto", "valor", "rotulo", "termo", "explicacao", "apoio", "cta"))))
+        if g["tipo"] == "comparacao":
+            words += len(re.findall(r"\w+", " ".join(" ".join(r) for r in g.get("linhas", []))))
+            fs = g.get("tamanho", 56)
+            colw = (W - 150 - 90) / 2 - 34 - 20
+            for l, r in g.get("linhas", []):
+                if _meas.width(l.upper(), "Space Grotesk", True, fs) > colw or \
+                        _meas.width(r, "DM Sans 14pt Medium", False, fs) > colw:
+                    add("FALHA", gid, f"linha «{l} = {r}» não cabe na coluna — encurtar ou reduzir 'tamanho'")
         need = max(1.5, 0.25 * words + 0.5) if g["tipo"] not in ("cartela_final", "cartela") else 1.2
         if d < need - 0.05:
             add("ALERTA", gid, f"tempo de leitura curto ({d:.1f}s < {need:.1f}s)")
@@ -423,6 +431,34 @@ def cmd_ass(proj, args):
                 E(3, a, b, "Rotulo", f"{{\\fad({fi},{fo})\\pos(90,{y})}}{esc(g['texto'].upper())}")
                 if g.get("apoio"):
                     E(3, a, b, "RotuloApoio", f"{{\\fad({fi},{fo})\\pos(90,{y + 12})}}{esc(g['apoio'])}")
+        elif t == "comparacao":
+            # tabela curta "A = B" (analogias, equivalências): caixa grafite, esquerda Space Grotesk caixa alta,
+            # direita DM Sans, "=" laranja; linhas entram em sequência (escalonar, s)
+            rows = g["linhas"]
+            head = g.get("cabecalho")
+            fs = g.get("tamanho", 56)  # ≥ ~50: legível no celular (40 ficou pequeno demais no 1º uso)
+            rh = int(fs * 1.4)
+            top = g.get("y", 720)
+            x0, x1 = 90, W - 150
+            mid = (x0 + x1) / 2
+            nrow = len(rows) + (1 if head else 0)
+            box_h = nrow * rh + 48
+            E(2, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(x0, top, x1 - x0, box_h, gra_c, 0.08))
+            E(2, a, b, "Forma", f"{{\\fad({fi},{fo})}}" + rect(x0, top, 8, box_h, hi_c))
+            y = top + 24 + rh / 2
+            st_ = g.get("escalonar", 0.3)
+            if head:
+                E(3, a, b, "TermoApoio", f"{{\\fad({fi},{fo})\\an6\\bord0\\shad0\\fs{int(fs * 0.65)}\\1c{hi_c}&\\pos({mid - 34:.0f},{y:.0f})}}{esc(head[0].upper())}")
+                E(3, a, b, "TermoApoio", f"{{\\fad({fi},{fo})\\an4\\bord0\\shad0\\fs{int(fs * 0.65)}\\1c{hi_c}&\\pos({mid + 34:.0f},{y:.0f})}}{esc(head[1].upper())}")
+                y += rh
+            for k, (l, r) in enumerate(rows):
+                a_k = a + st_ * (k + 1)
+                if a_k >= b:
+                    break
+                E(3, a_k, b, "Termo", f"{{\\fad({fi},{fo})\\an6\\bord0\\fs{fs}\\pos({mid - 34:.0f},{y:.0f})}}{esc(l.upper())}")
+                E(3, a_k, b, "Termo", f"{{\\fad({fi},{fo})\\an5\\bord0\\fs{fs}\\1c{hi_c}&\\pos({mid:.0f},{y:.0f})}}=")
+                E(3, a_k, b, "TermoApoio", f"{{\\fad({fi},{fo})\\an4\\bord0\\fs{fs}\\pos({mid + 34:.0f},{y:.0f})}}{highlight(r, hl, base_c, hi_c)}")
+                y += rh
         elif t == "cartela":
             # cartela intermediária: tela grafite com uma frase (virada de bloco ou para cobrir imagem
             # inutilizável). Fica ABAIXO das legendas — a fala continua legendada.
